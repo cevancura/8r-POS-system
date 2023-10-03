@@ -1,6 +1,4 @@
-# Order History
-
-
+# Menu Drink Dictionary
 
 class Drink:
     drink_id : str
@@ -45,7 +43,7 @@ drinks = {
     "0029": Drink("0029", "Fruit Tea Mango & Passion Fruit", 5),
     "0030": Drink("0030", "Fruit Tea Tropical Fruit", 5),
     "0031": Drink("0031", "Fruit Tea Hawaii Fruit", 5),
-    "0032": Drink("0032", "Fruit Tea Passion Fruit, Orange and Grapefruit", 5),
+    "0032": Drink("0032", "Fruit Tea Passion Fruit Orange and Grapefruit", 5),
     "0033": Drink("0033", "Fresh Milk Fresh Milk", 4),
     "0034": Drink("0034", "Fresh Milk Black", 4),
     "0035": Drink("0035", "Fresh Milk Green", 4),
