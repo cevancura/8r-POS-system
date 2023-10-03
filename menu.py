@@ -62,3 +62,15 @@ drinks = {
     "0046": Drink("0046", "Milk Tea Ice Cream", 6),
 
 }
+
+# make .csv for drink dictionary
+file = open("drink_dictionary.csv", "w") 
+
+# headers
+file.write("drink_id,name,price\n")
+for drink in drinks.keys() :
+    file.write(str(drinks[drink].drink_id) + ",")
+    file.write(str(drinks[drink].name) + ",")
+    file.write(str(drinks[drink].price) + "\n")
+
+file.close()
