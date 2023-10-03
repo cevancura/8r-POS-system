@@ -1,0 +1,71 @@
+Product ID,Item Name,"
+Total Amount",Current Amount,Restock
+500001,"Black 
+",1000,260,No
+500002,"Green
+",1000,123,Yes
+500003,"Oolong
+",1000,45,Yes
+500004,"Coffee
+",1000,377,No
+500005,"Ginger
+",1000,595,No
+500006,"Hokkaido
+",1000,625,No
+500007,"Okinawa
+",1000,267,No
+500008,"Thai
+",1000,343,No
+500009,"Taro
+",1000,324,No
+500010,"Mango
+",1000,934,No
+500011,"QQ Happy Family
+",1000,348,No
+500012,"Matcha
+",1000,194,Yes
+500013,"Wintermelon
+",1000,755,No
+500014,"Ginger
+",1000,712,No
+500015,"Strawberry
+",1000,260,No
+500016,"Peach
+",1000,952,No
+500017,"Kiwi
+",1000,174,Yes
+500018,"Passion Fruit
+",1000,204,No
+500019,"Tropical Fruit
+",1000,444,No
+500020,"Hawaii Fruit
+",1000,55,Yes
+500021,"Orange and Grapefruit
+",1000,99,Yes
+500022,"Pearl
+",1000,212,No
+500023,"Aloe Vera
+",1000,798,No
+500024,"Lychee Jelly
+",1000,327,No
+500025,"Mini Pearl
+",1000,944,No
+500026,"Red Bean
+",1000,85,No
+500027,"Creama
+",1000,444,No
+500028,"Ice Cream
+",1000,924,No
+500029,"Herb Jelly
+",1000,508,No
+500030,"Crystal Boba
+",1000,51,No
+500031,Pudding,1000,434,No
+600001,Small Cups,1000,452,No
+600002,Large Cups,1000,201,Yes
+600003,Straws ,1000,415,Yes
+600004,To-go bags,1000,158,No
+600005,Napkins,1000,254,No
+600006,Ice Bags,1000,299,No
+600007,Sugar,1000,831,Yes
+600008,Milk,1000,495,No
