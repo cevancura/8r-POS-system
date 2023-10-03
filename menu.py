@@ -6,6 +6,11 @@ class Drink:
     drink_id : str
     name : str
     price : float
+    
+    def __init__(self, id, name_, price_) -> None:
+        self.drink_id = id
+        self.name = name_
+        self.price = price_    
 
 
 drinks = {
