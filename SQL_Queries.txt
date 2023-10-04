@@ -31,7 +31,25 @@ SELECT order_date SUM(total_cost) AS total_order_cost FROM sales_table GROUP BY 
 11. Calculate the total sales for a specific day
 
 
-12. Get the top-selling boba flavor id
+12. Get the top-selling drink id.
+SELECT TOP 1
+	drink_id,
+	COUNT(drink_id) AS drink_count
+FROM (
+    SELECT drink1 AS drink_id FROM sales_table
+    UNION ALL SELECT drink2 FROM sales_table
+    UNION ALL SELECT drink3 FROM sales_table
+    UNION ALL SELECT drink4 FROM sales_table
+    UNION ALL SELECT drink5 FROM sales_table
+    UNION ALL SELECT drink6 FROM sales_table
+    UNION ALL SELECT drink7 FROM sales_table
+    UNION ALL SELECT drink8 FROM sales_table
+    UNION ALL SELECT drink9 FROM sales_table
+    UNION ALL SELECT drink10 FROM sales_table
+) AS all_drinks
+GROUP BY drink_id
+ORDER BY drink_count DESC;
+
 
 
 13. Calculate total sales between time periods (start and end date included)
