@@ -35,18 +35,23 @@ Example: UPDATE drink_dictionary SET price = 5.49 WHERE name = 'Classic Milk Tea
 8. Find which employee earned the most tips
 SELECT id, tips FROM employees ORDER BY tips DESC LIMIT 1;
 
-9. Add item to Order Sales History
+9. Insert new item into inventory
+INSERT INTO inventory (productid, itemname, totalamount, currentamount, restock) VALUES ('600009', 'Ice', 1000, 245, 'f');
+
+10. Add item to Order Sales History
+INSERT INTO order_history VALUES (‘10040000’, ‘2023-10-02’, ‘11:05:39’, 6,31,0005,0040,0045,0042,0029,0017);
 
 
-10. Update Inventory Item Current Amount and Restock value
+
+11. Update Inventory Item Current Amount and Restock value
 UPDATE inventory SET currentamount = ‘new_quantity’, restock = CASE WHEN ‘new_quantity’ > 200 THEN FALSE ELSE TRUE END WHERE productid = ‘productid_number’; 
 Example: UPDATE inventory SET currentamount = 300, restock = CASE WHEN 300 > 200 THEN FALSE ELSE TRUE END WHERE productid = 500002;
 
 
-11. Calculate the total sales for a specific day
+12. Calculate the total sales for a specific day
 
 
-12. Get the top-selling drink id.
+13. Get the top-selling drink id.
 SELECT TOP 1
 	drink_id,
 	COUNT(drink_id) AS drink_count
@@ -67,13 +72,13 @@ ORDER BY drink_count DESC;
 
 
 
-13. Calculate total sales between time periods (start and end date included)
+14. Calculate total sales between time periods (start and end date included)
 
 
-14. Calculate the total drinks sold for a specific day
+15. Calculate the total drinks sold for a specific day
 SELECT order_date SUM(num_drinks) AS total_drinks_sold FROM sales_table WHERE order_date = ‘2022-07-11’ GROUP BY order_date;
 
-15. Retrieve a list of all ingredients and their current quantities in stock.
+16. Retrieve a list of all ingredients and their current quantities in stock.
 SELECT itemname, currentamount FROM inventory;
 
 
