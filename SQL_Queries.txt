@@ -1,7 +1,18 @@
 1. 52 Weeks of Sales History: select count of orders grouped by week. 
+SELECT EXTRACT (WEEK FROM order_date) AS week_number, COUNT(*) AS order_count 
+FROM order_history
+GROUP BY EXTRACT (WEEK FROM order_date)
+ORDER BY week_number;
 
 
 2. Realistic Sales History: select count of orders, sum of order total grouped by hour.
+SELECT
+    EXTRACT(HOUR FROM order_time) AS hour_of_day,
+    COUNT(order_id) AS order_count,
+    SUM(total_cost) AS total_order_cost
+FROM order_history
+GROUP BY EXTRACT(HOUR FROM order_time)
+ORDER BY EXTRACT(HOUR FROM order_time);
 
 
 3. 2 Peak Days: select top 10 sums of order total grouped by day in descending order.
@@ -14,7 +25,7 @@ SELECT order_date SUM(total_cost) AS total_order_cost FROM sales_table GROUP BY 
 
 
 6. Get all Items that need to be restocked.
-
+SELECT productid from Inventory WHERE Restock = 't';
 
 7. Modify current price of a product
 UPDATE drink_dictionary SET price = *new price* WHERE name = 'name of drink';
