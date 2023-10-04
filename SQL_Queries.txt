@@ -5,7 +5,7 @@
 
 
 3. 2 Peak Days: select top 10 sums of order total grouped by day in descending order.
-
+SELECT order_date SUM(total_cost) AS total_order_cost FROM sales_table GROUP BY order_date ORDER BY total_order_cost DESC LIMIT 10;
 
 4. 20 Items in Inventory: select row count from inventory.
 
