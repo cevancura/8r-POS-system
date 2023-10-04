@@ -19,7 +19,11 @@ ORDER BY EXTRACT(HOUR FROM order_time);
 
 -- 2 Peak Days: select top 10 sums of order total grouped by day in descending order.
 (peak.sql)
-SELECT order_date SUM(total_cost) AS total_order_cost FROM sales_table GROUP BY order_date ORDER BY total_order_cost DESC LIMIT 10;
+SELECT order_date, SUM(total_cost) AS total_order_cost 
+FROM order_history 
+GROUP BY order_date 
+ORDER BY total_order_cost DESC 
+LIMIT 10; 
 
 -- 20 Items in Inventory: select row count from inventory.
 (rowcount.sql)
