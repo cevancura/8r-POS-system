@@ -1,1 +1,33 @@
+1. 52 Weeks of Sales History: select count of orders grouped by week. 
+
+
+2. Realistic Sales History: select count of orders, sum of order total grouped by hour.
+
+
+3. 2 Peak Days: select top 10 sums of order total grouped by day in descending order.
+
+
+4. 20 Items in Inventory: select row count from inventory.
+
+
+5. Get Current amount of a certain product from inventory.
+
+
+6. Get all Items that need to be restocked.
+
+
+7. Modify current amount of a product
+
+
+8. If current amount is less than 200 then set restock value as true
+
+
+9. Add item to Order Sales History
+
+
+10. Update Inventory Item Current Amount and Restock value
+
+
+11. Calculate the total sales for a specific day
+
 
