@@ -54,24 +54,25 @@ FROM order_history
 WHERE order_date = '2022-11-07';
 
 13. Get the top-selling drink id.
-SELECT TOP 1
-	drink_id,
-	COUNT(drink_id) AS drink_count
+SELECT drink_id, drink_count
 FROM (
-    SELECT drink1 AS drink_id FROM sales_table
-    UNION ALL SELECT drink2 FROM sales_table
-    UNION ALL SELECT drink3 FROM sales_table
-    UNION ALL SELECT drink4 FROM sales_table
-    UNION ALL SELECT drink5 FROM sales_table
-    UNION ALL SELECT drink6 FROM sales_table
-    UNION ALL SELECT drink7 FROM sales_table
-    UNION ALL SELECT drink8 FROM sales_table
-    UNION ALL SELECT drink9 FROM sales_table
-    UNION ALL SELECT drink10 FROM sales_table
-) AS all_drinks
-GROUP BY drink_id
-ORDER BY drink_count DESC;
-
+    SELECT drink_id, COUNT(drink_id) AS drink_count
+    FROM (
+        SELECT drink1 AS drink_id FROM order_history
+        UNION ALL SELECT drink2 FROM order_history
+        UNION ALL SELECT drink3 FROM order_history
+        UNION ALL SELECT drink4 FROM order_history
+        UNION ALL SELECT drink5 FROM order_history
+        UNION ALL SELECT drink6 FROM order_history
+        UNION ALL SELECT drink7 FROM order_history
+        UNION ALL SELECT drink8 FROM order_history
+        UNION ALL SELECT drink9 FROM order_history
+        UNION ALL SELECT drink10 FROM order_history
+    ) AS all_drinks
+    GROUP BY drink_id
+) subquery
+ORDER BY drink_count DESC
+LIMIT 1;
 
 
 14. Calculate total sales between time periods (start and end date included)
