@@ -2,7 +2,7 @@
 
 # max 10 drinks per order
 
-from random import randrange
+from random import randrange, seed
 from datetime import date, timedelta
 from menu import drinks 
 
@@ -46,6 +46,9 @@ class Order:
         self.drink10 = drink10
         self.total_cost = 0
 
+# random seed (so repeatable)
+seed(7)
+
 # make .csv for order generator
 file = open("order_history.csv", "w") 
 
@@ -61,9 +64,9 @@ drink_array = []
 
 for day in dates(start, end) :
     if (day == date(2023, 8, 21) or day == date(2023, 1, 17)) :
-        num_orders = randrange(150, 250)
+        num_orders = randrange(190, 250)
     else :
-        num_orders = randrange(75, 125)
+        num_orders = randrange(75, 145)
 
     time = timedelta(hours=11)
 
@@ -103,7 +106,11 @@ for day in dates(start, end) :
 
         for i in range(order_drinks) :
             file.write(drink_array[i]) 
-            if (i != order_drinks-1) :
+            if (i != 9) :
+                file.write(",")
+        for i in range(10-order_drinks) :
+            file.write("0000")
+            if (i != 9-order_drinks) :
                 file.write(",")
 
         drink_array.clear()
