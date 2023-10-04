@@ -16,11 +16,13 @@ SELECT order_date SUM(total_cost) AS total_order_cost FROM sales_table GROUP BY 
 6. Get all Items that need to be restocked.
 
 
-7. Modify current amount of a product
+7. Modify current price of a product
+UPDATE drink_dictionary SET price = *new price* WHERE name = 'name of drink';
+Example: UPDATE drink_dictionary SET price = 5.49 WHERE name = 'Classic Milk Tea';
 
 
-8. If current amount is less than 200 then set restock value as true
-
+8. Find which employee earned the most tips
+SELECT id, tips FROM employees ORDER BY tips DESC LIMIT 1;
 
 9. Add item to Order Sales History
 
@@ -28,7 +30,6 @@ SELECT order_date SUM(total_cost) AS total_order_cost FROM sales_table GROUP BY 
 10. Update Inventory Item Current Amount and Restock value
 UPDATE inventory SET currentamount = ‘new_quantity’, restock = CASE WHEN ‘new_quantity’ > 200 THEN FALSE ELSE TRUE END WHERE productid = ‘productid_number’; 
 Example: UPDATE inventory SET currentamount = 300, restock = CASE WHEN 300 > 200 THEN FALSE ELSE TRUE END WHERE productid = 500002;
-
 
 
 11. Calculate the total sales for a specific day
