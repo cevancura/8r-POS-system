@@ -1,11 +1,11 @@
-1. 52 Weeks of Sales History: select count of orders grouped by week. 
+-- 52 Weeks of Sales History: select count of orders grouped by week. 
 SELECT EXTRACT (WEEK FROM order_date) AS week_number, COUNT(*) AS order_count 
 FROM order_history
 GROUP BY EXTRACT (WEEK FROM order_date)
 ORDER BY week_number;
 
 
-2. Realistic Sales History: select count of orders, sum of order total grouped by hour.
+-- Realistic Sales History: select count of orders, sum of order total grouped by hour.
 SELECT
     EXTRACT(HOUR FROM order_time) AS hour_of_day,
     COUNT(order_id) AS order_count,
@@ -15,50 +15,50 @@ GROUP BY EXTRACT(HOUR FROM order_time)
 ORDER BY EXTRACT(HOUR FROM order_time);
 
 
-3. 2 Peak Days: select top 10 sums of order total grouped by day in descending order.
+-- 2 Peak Days: select top 10 sums of order total grouped by day in descending order.
 SELECT order_date SUM(total_cost) AS total_order_cost FROM sales_table GROUP BY order_date ORDER BY total_order_cost DESC LIMIT 10;
 
-4. 20 Items in Inventory: select row count from inventory.
+-- 20 Items in Inventory: select row count from inventory.
 SELECT Count(productid) 
 FROM inventory; 
 
 
 
 
-5. Get Current amount of a certain product from inventory.
+-- Get Current amount of a certain product from inventory.
 SELECT currentamount from Inventory 
 WHERE productid= '500001'; 
 
-6. Get all Items that need to be restocked.
+-- Get all Items that need to be restocked.
 SELECT productid from Inventory WHERE Restock = 't';
 
-7. Modify current price of a product
+-- Modify current price of a product
 UPDATE drink_dictionary SET price = *new price* WHERE name = 'name of drink';
 Example: UPDATE drink_dictionary SET price = 5.49 WHERE name = 'Classic Milk Tea';
 
 
-8. Find which employee earned the most tips
+-- Find which employee earned the most tips
 SELECT id, tips FROM employees ORDER BY tips DESC LIMIT 1;
 
-9. Insert new item into inventory
+-- Insert new item into inventory
 INSERT INTO inventory (productid, itemname, totalamount, currentamount, restock) VALUES ('600009', 'Ice', 1000, 245, 'f');
 
-10. Add item to Order Sales History
+-- Add item to Order Sales History
 INSERT INTO order_history VALUES (‘10040000’, ‘2023-10-02’, ‘11:05:39’, 6,31,0005,0040,0045,0042,0029,0017);
 
 
 
-11. Update Inventory Item Current Amount and Restock value
+-- Update Inventory Item Current Amount and Restock value
 UPDATE inventory SET currentamount = ‘new_quantity’, restock = CASE WHEN ‘new_quantity’ > 200 THEN FALSE ELSE TRUE END WHERE productid = ‘productid_number’; 
 Example: UPDATE inventory SET currentamount = 300, restock = CASE WHEN 300 > 200 THEN FALSE ELSE TRUE END WHERE productid = 500002;
 
 
-12. Calculate the total sales for a specific day
+-- Calculate the total sales for a specific day
 SELECT SUM(total_cost)
 FROM order_history
 WHERE order_date = '2022-11-07';
 
-13. Get the top-selling drink id.
+-- Get the top-selling drink id.
 SELECT drink_id, drink_count
 FROM (
     SELECT drink_id, COUNT(drink_id) AS drink_count
@@ -80,18 +80,18 @@ ORDER BY drink_count DESC
 LIMIT 1;
 
 
-14. Calculate total sales between time periods (start and end date included)
+-- Calculate total sales between time periods (start and end date included)
 SELECT SUM(total_cost)
 FROM order_history
 WHERE order_date >= '2022-10-09' AND order_date <= '2022-11-11';
 
-15. Calculate the total drinks sold for a specific day
+-- Calculate the total drinks sold for a specific day
 SELECT order_date, SUM(num_drinks) AS total_drinks_sold 
 FROM order_history
 WHERE order_date = '2022-11-11'
 GROUP BY order_date;
 
-16. Retrieve a list of all ingredients and their current quantities in stock.
+-- Retrieve a list of all ingredients and their current quantities in stock.
 SELECT itemname, currentamount FROM inventory;
 
 
