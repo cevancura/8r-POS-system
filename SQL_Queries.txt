@@ -1,4 +1,5 @@
 -- 52 Weeks of Sales History: select count of orders grouped by week. 
+(sales_hist.sql)
 SELECT EXTRACT (WEEK FROM order_date) AS week_number, COUNT(*) AS order_count 
 FROM order_history
 GROUP BY EXTRACT (WEEK FROM order_date)
@@ -6,52 +7,71 @@ ORDER BY week_number;
 
 
 -- Realistic Sales History: select count of orders, sum of order total grouped by hour.
-SELECT EXTRACT (WEEK FROM order_date) AS week_number, COUNT(*) AS order_count 
-FROM order_history
-GROUP BY EXTRACT (WEEK FROM order_date)
-ORDER BY week_number; 
-
--- 2 Peak Days: select top 10 sums of order total grouped by day in descending order.
+(hour.sql)
 SELECT
     EXTRACT(HOUR FROM order_time) AS hour_of_day,
     COUNT(order_id) AS order_count,
     SUM(total_cost) AS total_order_cost
 FROM order_history
 GROUP BY EXTRACT(HOUR FROM order_time)
-ORDER BY EXTRACT(HOUR FROM order_time); 
+ORDER BY EXTRACT(HOUR FROM order_time);
+
+
+-- 2 Peak Days: select top 10 sums of order total grouped by day in descending order.
+(peak.sql)
+SELECT order_date SUM(total_cost) AS total_order_cost FROM sales_table GROUP BY order_date ORDER BY total_order_cost DESC LIMIT 10;
 
 -- 20 Items in Inventory: select row count from inventory.
+(rowcount.sql)
 SELECT Count(productid) 
 FROM inventory; 
 
+
+
+
 -- Get Current amount of a certain product from inventory.
+(currentamount.sql)
 SELECT currentamount from Inventory 
-WHERE productid= '500001';  
+WHERE productid= '500001'; 
 
 -- Get all Items that need to be restocked.
-SELECT productid from Inventory WHERE Restock = 't'; 
+(itemstorestock.sql)
+SELECT productid from Inventory WHERE Restock = 't';
 
 -- Modify current price of a product
-UPDATE drink_dictionary SET price = 5.49 WHERE name = 'Classic Green Milk Tea'; 
+(modifyprice.sql)
+UPDATE drink_dictionary SET price = *new price* WHERE name = 'name of drink';
+Example: UPDATE drink_dictionary SET price = 5.49 WHERE name = 'Classic Milk Tea';
+
 
 -- Find which employee earned the most tips
-SELECT id, tips FROM employees ORDER BY tips DESC LIMIT 1; 
+(maxtips.sql)
+SELECT id, tips FROM employees ORDER BY tips DESC LIMIT 1;
 
 -- Insert new item into inventory
-INSERT INTO inventory (productid, itemname, totalamount, currentamount, restock) VALUES ('600009', 'Ice', 1000, 245, 'f'); 
+(insertitem.sql)
+INSERT INTO inventory (productid, itemname, totalamount, currentamount, restock) VALUES ('600009', 'Ice', 1000, 245, 'f');
 
 -- Add item to Order Sales History
-INSERT INTO order_history VALUES (‘10040000’, ‘2023-10-02’, ‘11:05:39’, 6,31,0005,0040,0045,0042,0029,0017);  
+(additemtosales.sql)
+INSERT INTO order_history VALUES (‘10040000’, ‘2023-10-02’, ‘11:05:39’, 6,31,0005,0040,0045,0042,0029,0017);
+
+
 
 -- Update Inventory Item Current Amount and Restock value
-UPDATE inventory SET currentamount = 300, restock = CASE WHEN 300 > 200 THEN FALSE ELSE TRUE END WHERE productid = 500002; 
+(updateinventory.sql)
+UPDATE inventory SET currentamount = ‘new_quantity’, restock = CASE WHEN ‘new_quantity’ > 200 THEN FALSE ELSE TRUE END WHERE productid = ‘productid_number’; 
+Example: UPDATE inventory SET currentamount = 300, restock = CASE WHEN 300 > 200 THEN FALSE ELSE TRUE END WHERE productid = 500002;
+
 
 -- Calculate the total sales for a specific day
+(totalsalesbyday.sql)
 SELECT SUM(total_cost)
 FROM order_history
 WHERE order_date = '2022-11-07';
 
 -- Get the top-selling drink id.
+(populardrink.sql)
 SELECT drink_id, drink_count
 FROM (
     SELECT drink_id, COUNT(drink_id) AS drink_count
@@ -74,17 +94,19 @@ LIMIT 1;
 
 
 -- Calculate total sales between time periods (start and end date included)
+(totalsalesbtwperiods.sql)
 SELECT SUM(total_cost)
 FROM order_history
 WHERE order_date >= '2022-10-09' AND order_date <= '2022-11-11';
 
 -- Calculate the total drinks sold for a specific day
+(totaldrinksforaday.sql)
 SELECT order_date, SUM(num_drinks) AS total_drinks_sold 
 FROM order_history
 WHERE order_date = '2022-11-11'
 GROUP BY order_date;
 
 -- Retrieve a list of all ingredients and their current quantities in stock.
+(ingredients.sql)
 SELECT itemname, currentamount FROM inventory;
-
 
