@@ -49,7 +49,9 @@ Example: UPDATE inventory SET currentamount = 300, restock = CASE WHEN 300 > 200
 
 
 12. Calculate the total sales for a specific day
-
+SELECT SUM(total_cost)
+FROM order_history
+WHERE order_date = '2022-11-07';
 
 13. Get the top-selling drink id.
 SELECT TOP 1
@@ -73,10 +75,15 @@ ORDER BY drink_count DESC;
 
 
 14. Calculate total sales between time periods (start and end date included)
-
+SELECT SUM(total_cost)
+FROM order_history
+WHERE order_date >= '2022-10-09' AND order_date <= '2022-11-11';
 
 15. Calculate the total drinks sold for a specific day
-SELECT order_date SUM(num_drinks) AS total_drinks_sold FROM sales_table WHERE order_date = ‘2022-07-11’ GROUP BY order_date;
+SELECT order_date, SUM(num_drinks) AS total_drinks_sold 
+FROM order_history
+WHERE order_date = '2022-11-11'
+GROUP BY order_date;
 
 16. Retrieve a list of all ingredients and their current quantities in stock.
 SELECT itemname, currentamount FROM inventory;
