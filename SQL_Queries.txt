@@ -31,3 +31,15 @@
 11. Calculate the total sales for a specific day
 
 
+12. Get the top-selling boba flavor id
+
+
+13. Calculate total sales between time periods (start and end date included)
+
+
+14. Calculate the total drinks sold for a specific day
+
+
+15. Retrieve a list of all ingredients and their current quantities in stock.
+
+
