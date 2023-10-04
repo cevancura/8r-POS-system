@@ -59,7 +59,7 @@ ORDER BY drink_count DESC;
 
 
 14. Calculate the total drinks sold for a specific day
-
+SELECT order_date SUM(num_drinks) AS total_drinks_sold FROM sales_table WHERE order_date = ‘2022-07-11’ GROUP BY order_date;
 
 15. Retrieve a list of all ingredients and their current quantities in stock.
 SELECT itemname, currentamount FROM inventory;
