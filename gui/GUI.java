@@ -37,7 +37,7 @@ public class GUI extends JFrame implements ActionListener {
       JOptionPane.showMessageDialog(null,"Opened database successfully");
 
       String name = "";
-      try{
+      /*try{
         //create a statement object
         Statement stmt = conn.createStatement();
         //create a SQL statement
@@ -50,12 +50,13 @@ public class GUI extends JFrame implements ActionListener {
         }
       } catch (Exception e){
         JOptionPane.showMessageDialog(null,"Error accessing Database.");
-      }
+      }*/
       // create a new frame
       f = new JFrame("DB GUI");
 
       manager_frame = new JFrame("Manager GUI");
       employee_frame = new JFrame("Employee GUI");
+      //test = new JFrame("test");
 
       // create a object
       GUI s = new GUI();
