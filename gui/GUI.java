@@ -56,7 +56,7 @@ public class GUI extends JFrame implements ActionListener {
 
       manager_frame = new JFrame("Manager GUI");
       employee_frame = new JFrame("Employee GUI");
-      test = new JFrame("test");
+      //test = new JFrame("test");
 
       // create a object
       GUI s = new GUI();
