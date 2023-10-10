@@ -16,6 +16,8 @@ import javax.swing.*;
 
 public class GUI extends JFrame implements ActionListener {
     static JFrame f;
+    static JFrame manager_frame;
+    static JFrame employee_frame;
 
     public static void main(String[] args)
     {
@@ -52,6 +54,9 @@ public class GUI extends JFrame implements ActionListener {
       // create a new frame
       f = new JFrame("DB GUI");
 
+      manager_frame = new JFrame("Manager GUI");
+      employee_frame = new JFrame("Employee GUI");
+
       // create a object
       GUI s = new GUI();
 
@@ -60,8 +65,14 @@ public class GUI extends JFrame implements ActionListener {
 
       JButton b = new JButton("Close");
 
+      JButton manager = new JButton("Manager");
+      JButton employee = new JButton("Employee");
+
       // add actionlistener to button
       b.addActionListener(s);
+
+      manager.addActionListener(s);
+      employee.addActionListener(s);
 
       //TODO Step 3 
       JTextArea text = new JTextArea(name);
@@ -71,6 +82,9 @@ public class GUI extends JFrame implements ActionListener {
 
       // add button to panel
       p.add(b);
+
+      p.add(manager);
+      p.add(employee);
 
       // add panel to frame
       f.add(p);
@@ -96,5 +110,12 @@ public class GUI extends JFrame implements ActionListener {
         if (s.equals("Close")) {
             f.dispose();
         }
+        else if (s.equals("Manager")) {
+          manager_frame.setVisible(true);
+        }
+        else if (s.equals("Employee")) {
+          employee_frame.setVisible(true);
+        }
     }
+
 }
