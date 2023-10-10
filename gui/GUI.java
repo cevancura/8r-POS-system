@@ -10,7 +10,7 @@ import javax.swing.*;
   4) Add the new object to the JPanel p
 */
 
-// TO RUN:
+// TO RUN::
 // compile with 'javac *.java'
 // run with 'java -cp ".;postgresql-42.2.8.jar" GUI'
 
