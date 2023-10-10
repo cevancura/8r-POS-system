@@ -16,6 +16,7 @@ public class GUI extends JFrame implements ActionListener {
     static JFrame manager_frame;
     static JFrame employee_frame;
     static JFrame inventory_frame;
+    static JFrame drinks_frame;
     public static void main(String[] args)
     {
       //Building the connection
@@ -89,6 +90,7 @@ public class GUI extends JFrame implements ActionListener {
 
       JButton drinks = new JButton("Menu");
       //JPanel p_man = new JPanel();
+      drinks.addActionListener(s);
       p_man.add(drinks);
       //manager_frame.add(p_man);
 
@@ -99,8 +101,11 @@ public class GUI extends JFrame implements ActionListener {
 
       // inventory window
       inventory_frame = new JFrame("Inventory Window");
+      drinks_frame = new JFrame("Drinks Window");
       JPanel p_inventory = new JPanel();
+      JPanel p_menu = new JPanel();
       String inventory_items = "";
+      String menu_items = "";
       try{
         //create a statement object
         Statement stmt = conn.createStatement();
@@ -116,15 +121,30 @@ public class GUI extends JFrame implements ActionListener {
           inventory_items += result.getString("currentamount")+" ";
           inventory_items += result.getString("restock")+"\n";
         }
+
+        //getting menu items from drinks dictionary
+
+        String menu_command = "SELECT * FROM drink_dictionary;";
+        //send statement to DBMS
+        ResultSet menuresult = stmt.executeQuery(menu_command);
+        while (menuresult.next()) {
+          menu_items += menuresult.getString("drink_id") + " ";
+          menu_items += menuresult.getString("name") + " ";
+          menu_items += menuresult.getString("price") + "\n";
+        }
       } catch (Exception e){
         JOptionPane.showMessageDialog(null,"Error accessing Database.");
       }
       JTextArea text_inventory = new JTextArea(inventory_items);
       p_inventory.add(text_inventory);
 
+      JTextArea text_menu = new JTextArea(menu_items);
+      p_menu.add(text_menu);
+
 
 
       inventory_frame.add(p_inventory);
+      drinks_frame.add(p_menu);
 
       
       manager_frame.add(p_man);
@@ -153,6 +173,9 @@ public class GUI extends JFrame implements ActionListener {
 
         if (s.equals("Inventory")) {
           inventory_frame.setVisible(true);
+        }
+        if (s.equals("Menu")){
+          drinks_frame.setVisible(true);
         }
     }
 
