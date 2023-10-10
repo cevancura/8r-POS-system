@@ -15,6 +15,7 @@ public class GUI extends JFrame implements ActionListener {
     static JFrame f;
     static JFrame manager_frame;
     static JFrame employee_frame;
+    static JFrame inventory_frame;
     public static void main(String[] args)
     {
       //Building the connection
@@ -86,21 +87,44 @@ public class GUI extends JFrame implements ActionListener {
       p_man.add(employee_info);
       manager_frame.add(p_man);
 
-
-
-     
-
-
       JButton drinks = new JButton("Menu");
       //JPanel p_man = new JPanel();
       p_man.add(drinks);
       //manager_frame.add(p_man);
 
       JButton inventory = new JButton("Inventory");
+      inventory.addActionListener(s);
       //JPanel p_man = new JPanel();
       p_man.add(inventory);
 
+      // inventory window
+      inventory_frame = new JFrame("Inventory Window");
+      JPanel p_inventory = new JPanel();
+      String inventory_items = "";
+      try{
+        //create a statement object
+        Statement stmt = conn.createStatement();
+        //create a SQL statement
+        //TODO Step 2
+        String sqlStatement = "SELECT * FROM inventory;";
+        //send statement to DBMS
+        ResultSet result = stmt.executeQuery(sqlStatement);
+        while (result.next()) {
+          inventory_items += result.getString("productid") + " ";
+          inventory_items += result.getString("itemname")+" ";
+          inventory_items += result.getString("totalamount")+" ";
+          inventory_items += result.getString("currentamount")+" ";
+          inventory_items += result.getString("restock")+"\n";
+        }
+      } catch (Exception e){
+        JOptionPane.showMessageDialog(null,"Error accessing Database.");
+      }
+      JTextArea text_inventory = new JTextArea(inventory_items);
+      p_inventory.add(text_inventory);
 
+
+
+      inventory_frame.add(p_inventory);
 
       
       manager_frame.add(p_man);
@@ -125,6 +149,10 @@ public class GUI extends JFrame implements ActionListener {
         }
         else if (s.equals("Employee")) {
           employee_frame.setVisible(true);
+        }
+
+        if (s.equals("Inventory")) {
+          inventory_frame.setVisible(true);
         }
     }
 
