@@ -76,7 +76,7 @@ public class GUI extends JFrame implements ActionListener {
       f.setSize(400, 400);
 
       f.setVisible(true);
-
+      
 
 
       // manager frame
@@ -84,7 +84,11 @@ public class GUI extends JFrame implements ActionListener {
       JButton employee_info = new JButton("Employee Information");
       JPanel p_man = new JPanel();
       p_man.add(employee_info);
-      //manager_frame.add(p_man);
+      manager_frame.add(p_man);
+
+
+
+     
 
 
       JButton drinks = new JButton("Menu");
@@ -124,9 +128,9 @@ public class GUI extends JFrame implements ActionListener {
         }
     }
 
+    
 
-
-
+    
 
 
 }
