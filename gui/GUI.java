@@ -91,6 +91,7 @@ public class GUI extends JFrame implements ActionListener {
 
       // set the size of frame
       f.setSize(400, 400);
+      employee_frame.setSize(800, 800);
 
       f.setVisible(true);
 
