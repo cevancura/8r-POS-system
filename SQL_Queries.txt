@@ -1,45 +1,112 @@
-1. 52 Weeks of Sales History: select count of orders grouped by week. 
+-- 52 Weeks of Sales History: select count of orders grouped by week. 
+(sales_hist.sql)
+SELECT EXTRACT (WEEK FROM order_date) AS week_number, COUNT(*) AS order_count 
+FROM order_history
+GROUP BY EXTRACT (WEEK FROM order_date)
+ORDER BY week_number;
 
 
-2. Realistic Sales History: select count of orders, sum of order total grouped by hour.
+-- Realistic Sales History: select count of orders, sum of order total grouped by hour.
+(hour.sql)
+SELECT
+    EXTRACT(HOUR FROM order_time) AS hour_of_day,
+    COUNT(order_id) AS order_count,
+    SUM(total_cost) AS total_order_cost
+FROM order_history
+GROUP BY EXTRACT(HOUR FROM order_time)
+ORDER BY EXTRACT(HOUR FROM order_time);
 
 
-3. 2 Peak Days: select top 10 sums of order total grouped by day in descending order.
+-- 2 Peak Days: select top 10 sums of order total grouped by day in descending order.
+(peak.sql)
+SELECT order_date SUM(total_cost) AS total_order_cost FROM sales_table GROUP BY order_date ORDER BY total_order_cost DESC LIMIT 10;
+
+-- 20 Items in Inventory: select row count from inventory.
+(rowcount.sql)
+SELECT Count(productid) 
+FROM inventory; 
 
 
-4. 20 Items in Inventory: select row count from inventory.
 
 
-5. Get Current amount of a certain product from inventory.
+-- Get Current amount of a certain product from inventory.
+(currentamount.sql)
+SELECT currentamount from Inventory 
+WHERE productid= '500001'; 
+
+-- Get all Items that need to be restocked.
+(itemstorestock.sql)
+SELECT productid from Inventory WHERE Restock = 't';
+
+-- Modify current price of a product
+(modifyprice.sql)
+UPDATE drink_dictionary SET price = *new price* WHERE name = 'name of drink';
+Example: UPDATE drink_dictionary SET price = 5.49 WHERE name = 'Classic Milk Tea';
 
 
-6. Get all Items that need to be restocked.
+-- Find which employee earned the most tips
+(maxtips.sql)
+SELECT id, tips FROM employees ORDER BY tips DESC LIMIT 1;
+
+-- Insert new item into inventory
+(insertitem.sql)
+INSERT INTO inventory (productid, itemname, totalamount, currentamount, restock) VALUES ('600009', 'Ice', 1000, 245, 'f');
+
+-- Add item to Order Sales History
+(additemtosales.sql)
+INSERT INTO order_history VALUES (‘10040000’, ‘2023-10-02’, ‘11:05:39’, 6,31,0005,0040,0045,0042,0029,0017);
 
 
-7. Modify current amount of a product
+
+-- Update Inventory Item Current Amount and Restock value
+(updateinventory.sql)
+UPDATE inventory SET currentamount = ‘new_quantity’, restock = CASE WHEN ‘new_quantity’ > 200 THEN FALSE ELSE TRUE END WHERE productid = ‘productid_number’; 
+Example: UPDATE inventory SET currentamount = 300, restock = CASE WHEN 300 > 200 THEN FALSE ELSE TRUE END WHERE productid = 500002;
 
 
-8. If current amount is less than 200 then set restock value as true
+-- Calculate the total sales for a specific day
+(totalsalesbyday.sql)
+SELECT SUM(total_cost)
+FROM order_history
+WHERE order_date = '2022-11-07';
+
+-- Get the top-selling drink id.
+(populardrink.sql)
+SELECT drink_id, drink_count
+FROM (
+    SELECT drink_id, COUNT(drink_id) AS drink_count
+    FROM (
+        SELECT drink1 AS drink_id FROM order_history
+        UNION ALL SELECT drink2 FROM order_history
+        UNION ALL SELECT drink3 FROM order_history
+        UNION ALL SELECT drink4 FROM order_history
+        UNION ALL SELECT drink5 FROM order_history
+        UNION ALL SELECT drink6 FROM order_history
+        UNION ALL SELECT drink7 FROM order_history
+        UNION ALL SELECT drink8 FROM order_history
+        UNION ALL SELECT drink9 FROM order_history
+        UNION ALL SELECT drink10 FROM order_history
+    ) AS all_drinks
+    GROUP BY drink_id
+) subquery
+ORDER BY drink_count DESC
+LIMIT 1;
 
 
-9. Add item to Order Sales History
+-- Calculate total sales between time periods (start and end date included)
+(totalsalesbtwperiods.sql)
+SELECT SUM(total_cost)
+FROM order_history
+WHERE order_date >= '2022-10-09' AND order_date <= '2022-11-11';
 
+-- Calculate the total drinks sold for a specific day
+(totaldrinksforaday.sql)
+SELECT order_date, SUM(num_drinks) AS total_drinks_sold 
+FROM order_history
+WHERE order_date = '2022-11-11'
+GROUP BY order_date;
 
-10. Update Inventory Item Current Amount and Restock value
-
-
-11. Calculate the total sales for a specific day
-
-
-12. Get the top-selling boba flavor id
-
-
-13. Calculate total sales between time periods (start and end date included)
-
-
-14. Calculate the total drinks sold for a specific day
-
-
-15. Retrieve a list of all ingredients and their current quantities in stock.
-
+-- Retrieve a list of all ingredients and their current quantities in stock.
+(ingredients.sql)
+SELECT itemname, currentamount FROM inventory;
 
