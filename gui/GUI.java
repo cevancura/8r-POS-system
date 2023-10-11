@@ -36,9 +36,11 @@ public class GUI extends JFrame implements ActionListener {
     static JFrame employee_frame;
     static JFrame inventory_frame;
     static JFrame drinks_frame;
-    public static void main(String[] args)
-    {
-      //Building the connection
+    static JTextField text_input;
+    static JTextArea text_output;
+
+
+    public static Connection createConnection() {
       Connection conn = null;
       //TODO STEP 1
       try {
@@ -51,6 +53,32 @@ public class GUI extends JFrame implements ActionListener {
         System.err.println(e.getClass().getName()+": "+e.getMessage());
         System.exit(0);
       }
+      return conn;
+    }
+    public static void closeConnection(Connection conn) {
+      try {
+        conn.close();
+        JOptionPane.showMessageDialog(null,"Connection Closed.");
+      } catch(Exception e) {
+        JOptionPane.showMessageDialog(null,"Connection NOT Closed.");
+      }
+    }
+    public static void main(String[] args)
+    {
+      //Building the connection
+      // Connection conn = null;
+      // //TODO STEP 1
+      // try {
+      //   conn = DriverManager.getConnection(
+      //     "jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315331_08r_db",
+      //     "csce315_971_cevancura",
+      //     "password");
+      // } catch (Exception e) {
+      //   e.printStackTrace();
+      //   System.err.println(e.getClass().getName()+": "+e.getMessage());
+      //   System.exit(0);
+      // }
+      Connection conn = createConnection();
       JOptionPane.showMessageDialog(null,"Opened database successfully");
       String name = "";
       // create a new frame
@@ -126,7 +154,7 @@ public class GUI extends JFrame implements ActionListener {
         Statement stmt = conn.createStatement();
         //create a SQL statement
         //TODO Step 2
-        String sqlStatement = sqlcommand("SELECT * FROM inventory;");
+        String sqlStatement = "SELECT * FROM inventory;";
         //send statement to DBMS
         ResultSet result = stmt.executeQuery(sqlStatement);
         while (result.next()) {
@@ -150,7 +178,18 @@ public class GUI extends JFrame implements ActionListener {
       } catch (Exception e){
         JOptionPane.showMessageDialog(null,"Error accessing Database.");
       }
+
+
       JTextArea text_inventory = new JTextArea(inventory_items);
+      text_input = new JTextField("enter the text");
+      text_output = new JTextArea("");
+      p_menu.add(text_input);
+
+      
+      
+
+      p_menu.add(text_output);
+
       
       p_inventory.add(text_inventory);
 
@@ -160,19 +199,23 @@ public class GUI extends JFrame implements ActionListener {
 
 
       inventory_frame.add(p_inventory);
+      inventory_frame.setSize(800, 800);
       drinks_frame.add(p_menu);
+      drinks_frame.setSize(800, 800);
 
       
       manager_frame.add(p_man);
 
       //closing the connection
-      try {
-        conn.close();
-        JOptionPane.showMessageDialog(null,"Connection Closed.");
-      } catch(Exception e) {
-        JOptionPane.showMessageDialog(null,"Connection NOT Closed.");
-      }
+      closeConnection(conn);
+      // try {
+      //   conn.close();
+      //   JOptionPane.showMessageDialog(null,"Connection Closed.");
+      // } catch(Exception e) {
+      //   JOptionPane.showMessageDialog(null,"Connection NOT Closed.");
+      // }
     }
+  
 
     /*
     @param e Action event to show button is clicked
@@ -201,14 +244,54 @@ public class GUI extends JFrame implements ActionListener {
           drinks_frame.setVisible(true);
         }
         if (s.equals("Save")){
+            // set the text of the label to the text of the field
+          text_output.setText(text_input.getText());
+          
+          // set the text of field to blank
+          text_input.setText("enter the text");
+
+          if (!text_output.getText().equals("")) {
+            System.out.println("Hello?");
+            Connection conn = null;
+            //TODO STEP 1
+            try {
+              conn = DriverManager.getConnection(
+                "jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315331_08r_db",
+                "csce315_971_navya_0215",
+                "password");
+            } catch (Exception k) {
+              // e.printStackTrace();
+              // System.err.println(e.getClass().getName()+": "+e.getMessage());
+              System.exit(0);
+            }
+            try{
+            //create a statement object
             
+            Statement stmt = conn.createStatement();
+            
+            //create a SQL statement
+            //TODO Step 2
+            //String sqlStatement = sqlcommand("SELECT * FROM inventory;");
+            //send statement to DBMS
+            //ResultSet result = stmt.executeQuery(sqlStatement);
+
+            String[] splitted = text_output.getText().split("\\s+");
+            
+            String menu_update = "INSERT INTO drink_dictionary (drink_id, name, price) VALUES";
+            menu_update += " (\'" + splitted[0] + "\', \'" + splitted[1] + "\', " + Double. parseDouble(splitted[2]) + ");";
+            System.out.println(menu_update);
+            stmt.execute(menu_update);
+            
+            }catch (Exception n){
+              n.printStackTrace();
+              System.err.println(n.getClass().getName()+": "+n.getMessage());
+              JOptionPane.showMessageDialog(null,"Error executing command.");
+            }
+            closeConnection(conn);
+          }
         }
-
     }
-
-    public static String sqlcommand(String arg1) {
-    return arg1;
-}
+  
 
 /*
 @param result, name  A result set, and a column name as a string
@@ -229,7 +312,5 @@ public static String database(ResultSet result, String name) {
         JOptionPane.showMessageDialog(null,"Error accessing Database.");
     }
     return response;
-
-
   }
 }
