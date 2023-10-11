@@ -147,6 +147,7 @@ public class GUI extends JFrame implements ActionListener {
     // if button is pressed
     public void actionPerformed(ActionEvent e)
     {
+        ArrayList<String> selectedItems = new ArrayList<>();
         String s = e.getActionCommand();
         if (s.equals("Close")) {
             f.dispose();
@@ -161,6 +162,30 @@ public class GUI extends JFrame implements ActionListener {
           // DISPLAY SELECTED ITEM LIKE 
           // - drink, custom, custom
           // - drink
+          JFrame orderFrame = new JFrame("Viewing Order");
+          orderFrame.setSize(400,400);
+
+          JTextArea order_text = new JTextArea();
+          order_text.setEditable(false);
+
+          for (String selectedItem : selectedItems) {
+            order_text.append(selectedItem);
+            ArrayList<String> drinkNames = null;
+            try {
+              drinkNames = getDrinkNames("drink_dictionary.csv");
+            }
+            catch (IOException error1) {
+              error1.printStackTrace();
+            }
+            if (drinkNames.contains(selectedItem)) {
+              order_text.append("\n");
+            }
+            else {
+              order_text.append(", ");
+            }
+          }
+          orderFrame.add(order_text);
+          orderFrame.setVisible(true);
         }
         if (s.equals("Milk Tea")) {
           // Create a new frame for Milk Tea options
@@ -176,7 +201,7 @@ public class GUI extends JFrame implements ActionListener {
             error1.printStackTrace();
           }
 
-          ArrayList<String> selectedItems = new ArrayList<>();
+          //ArrayList<String> selectedItems = new ArrayList<>();
 
           for (String drink : drinkNames) {
             if (drink.length() >= 8 && drink.substring(0, 8).equals("Milk Tea")) {
