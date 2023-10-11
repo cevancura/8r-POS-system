@@ -1,6 +1,9 @@
 import java.sql.*;
+import java.util.ArrayList;
 import java.awt.event.*;
 import javax.swing.*;
+import java.util.Arrays;
+import java.util.List;
 
 // TO RUN::
 // compile with 'javac *.java'
@@ -17,6 +20,8 @@ public class GUI extends JFrame implements ActionListener {
     static JTextField text_input_inventory;
     static JTextArea text_output_inventory;
     static JTextArea out;
+    static JTable table_menu;
+    static JTable table_inventory;
 
 
     public static Connection createConnection() {
@@ -130,9 +135,15 @@ public class GUI extends JFrame implements ActionListener {
       p_menu.add(update_menu);
       update_menu.addActionListener(s);
       update_inventory.addActionListener(s);
+
       
-      String inventory_items = "product_id\titemname\ttotal_amount\tcurrent_amount\trestock\n";
-      String menu_items = "drink_id\tname\tprice\n";
+      
+      String[] inventory_cols = {"product_id", "itemname", "total_amount", "current_amount", "restock"};
+      String[] menu_cols = {"drink_id", "name", "price"};
+      String inventory_items="";
+      String menu_items = "";
+      ArrayList<ArrayList<String>> data_inventory = new ArrayList<>();
+      ArrayList<ArrayList<String>> data_menu = new ArrayList<>();
       try{
         //create a statement object
         Statement stmt = conn.createStatement();
@@ -140,41 +151,47 @@ public class GUI extends JFrame implements ActionListener {
         String sqlStatement = "SELECT * FROM inventory;";
         ResultSet result = stmt.executeQuery(sqlStatement);
         while (result.next()) {
-          inventory_items += result.getString("product_id") + " ";
-          inventory_items += result.getString("itemname")+" ";
-          inventory_items += result.getString("total_amount")+" ";
-          inventory_items += result.getString("current_amount")+" ";
-          inventory_items += result.getString("restock")+"\n";
+          ArrayList<String> curr = new ArrayList<>();
+          curr.add(result.getString("product_id"));
+          curr.add(result.getString("itemname"));
+          curr.add(result.getString("total_amount"));
+          curr.add(result.getString("current_amount"));
+          curr.add(result.getString("restock"));
+
+          data_inventory.add(curr);          
         }
+        String[][] arr = data_inventory.stream().map(l -> l.stream().toArray(String[]::new)).toArray(String[][]::new);
+        table_inventory = new JTable(arr, inventory_cols);
+        table_inventory.setBounds(30,40,200,300);
+        JScrollPane sp = new JScrollPane(table_inventory);
+        inventory_frame.getContentPane().add(sp);
+        p_inventory.add(sp);
 
         //getting menu items from drinks dictionary
         String menu_command = "SELECT * FROM drink_dictionary;";
         ResultSet menuresult = stmt.executeQuery(menu_command);
-        while (menuresult.next()) {
-          menu_items += menuresult.getString("drink_id") + " ";
-          menu_items += menuresult.getString("name") + " ";
-          menu_items += menuresult.getString("price") + "\n";
+        while (menuresult.next()) {          
+          ArrayList<String> curr = new ArrayList<>();
+          curr.add(menuresult.getString("drink_id"));
+          curr.add(menuresult.getString("name"));
+          curr.add(menuresult.getString("price"));
+
+          data_menu.add(curr); 
         }
+
+        String[][] arr_menu = data_menu.stream().map(l -> l.stream().toArray(String[]::new)).toArray(String[][]::new);
+        table_menu = new JTable(arr_menu, menu_cols);
+        table_menu.setBounds(30,40,200,300);
+        JScrollPane sp_menu = new JScrollPane(table_menu);
+        drinks_frame.getContentPane().add(sp_menu);
+        p_menu.add(sp_menu);
+
       } catch (Exception e){
         e.printStackTrace();
         System.err.println(e.getClass().getName()+": "+e.getMessage());
         JOptionPane.showMessageDialog(null,"Error accessing drink and inventory.");
       }
-
-
-      //add scroll bar for inventory
-      JTextArea text_inventory = new JTextArea(inventory_items, 40 , 50);
-      JScrollPane scroll_inventory = new JScrollPane(text_inventory);     
-      scroll_inventory.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
-      inventory_frame.getContentPane().add(scroll_inventory);
-      p_inventory.add(scroll_inventory);
       
-      //adding a scroll bar for menu
-      JTextArea text_menu = new JTextArea(menu_items, 40, 50);
-      JScrollPane scroll_menu = new JScrollPane(text_menu);     
-      scroll_menu.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
-      drinks_frame.getContentPane().add(scroll_menu);
-      p_menu.add(scroll_menu);
       //output changes
       out = new JTextArea();
       p_menu.add(out);
