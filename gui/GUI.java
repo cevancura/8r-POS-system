@@ -93,9 +93,24 @@ public class GUI extends JFrame implements ActionListener {
       f.setSize(400, 400);
       employee_frame.setSize(800, 800);
 
-      JButton milk_tea = new JButton("Milk Tea");
       JPanel p_emplo = new JPanel();
+
+      JButton milk_tea = new JButton("Milk Tea");
+      JButton brewed_tea = new JButton("Brewed Tea");
+      JButton fruit_tea = new JButton("Fruit Tea");
+      JButton fresh_milk = new JButton("Fresh Milk");
+      JButton ice_blended = new JButton("Ice Blended");
+      JButton tea_mojito = new JButton("Tea Mojito");
+      JButton creama = new JButton("Creama");
+
       p_emplo.add(milk_tea);
+      p_emplo.add(brewed_tea);
+      p_emplo.add(fruit_tea);
+      p_emplo.add(fresh_milk);
+      p_emplo.add(ice_blended);
+      p_emplo.add(tea_mojito);
+      p_emplo.add(creama);
+
       employee_frame.add(p_emplo);
 
       f.setVisible(true);
