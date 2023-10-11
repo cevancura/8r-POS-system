@@ -121,8 +121,8 @@ public class GUI extends JFrame implements ActionListener {
       p_inventory.add(text_output_inventory);
 
 
-      String inventory_items = "";
-      String menu_items = "";
+      String inventory_items = "product_id\titemname\ttotal_amount\tcurrent_amount\trestock\n";
+      String menu_items = "drink_id\tname\tprice\n";
       try{
         //create a statement object
         Statement stmt = conn.createStatement();
