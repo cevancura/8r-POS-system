@@ -112,7 +112,7 @@ public class GUI extends JFrame implements ActionListener {
       p_emplo.add(tea_mojito);
       p_emplo.add(creama);
 
-      milk.addActionListener(s);
+      milk_tea.addActionListener(s);
       brewed_tea.addActionListener(s);
       fruit_tea.addActionListener(s);
       fresh_milk.addActionListener(s);

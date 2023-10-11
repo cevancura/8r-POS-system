@@ -1,47 +1,63 @@
 drink_id,name,price
-0001,Classic Black Milk Tea,5
-0002,Classic Green Milk Tea,5
-0003,Classic Oolong Milk Tea,5
-0004,Honey Black Milk Tea,5
-0005,Honey Green Milk Tea,5
-0006,Honey Oolong Milk Tea,5
-0007,Honey Black Tea,5
-0008,Honey Green Tea,5
-0009,Classic Coffee,5
-0010,Classic Coffee with Ginger,5
-0011,Classic Coffee with Hokkaido,5
-0012,Classic Coffee with Okinawa,5
-0013,Classic Coffee with Thai,5
-0014,Classic Coffee with Taro,5
-0015,Classic Coffee with Mango Green,5
-0016,Classic Coffee with QQ Happy Family,5
-0017,Classic Coffee with Matcha,5
-0018,Brewed Tea Classic,4
-0019,Brewed Tea Black,4
-0020,Brewed Tea Green,4
-0021,Brewed Tea Oolong,4
-0022,Brewed Tea Wintermelon,4
-0023,Brewed Tea Honey,4
+0001,Milk Tea Classic Black,5
+0002,Milk Tea Classic Green,5
+0003,Milk Tea Classic Oolong,5
+0004,Milk Tea Honey Black,5
+0005,Milk Tea Honey Green,5
+0006,Milk Tea Honey Oolong,5
+0007,Milk Tea Classic Coffee,5
+0008,Milk Tea Ginger,5
+0009,Milk Tea Hokkaido,5
+0010,Milk Tea Okinawa,5
+0011,Milk Tea Thai,5
+0012,Milk Tea Taro,5
+0013,Milk Tea Mango Green,5
+0014,Milk Tea QQ Happy Family,5
+0015,Milk Tea Matcha Red Bean,5
+0016,Brewed Tea Classic Black,4
+0017,Brewed Tea Classic Green,4
+0018,Brewed Tea Classic Oolong,4
+0019,Brewed Tea Wintermelon,4
+0020,Brewed Tea Honey Black,4
+0021,Brewed Tea Honey Green,4
+0022,Brewed Tea Honey Oolong,4
+0023,Brewed Tea Ginger,4
 0024,Fruit Tea Mango Green,5
 0025,Fruit Tea Wintermelon Lemonade,5
 0026,Fruit Tea Strawberry,5
-0027,Fruit Tea Peach Kiwi,5
-0028,Fruit Tea Kiwi Fruit,5
-0029,Fruit Tea Mango & Passion Fruit,5
-0030,Fruit Tea Tropical Fruit,5
-0031,Fruit Tea Hawaii Fruit,5
-0032,Fruit Tea Passion Fruit Orange and Grapefruit,5
-0033,Fresh Milk Fresh Milk,4
-0034,Fresh Milk Black,4
-0035,Fresh Milk Green,4
-0036,Fresh Milk Oolong,4
-0037,Fresh Milk Wintermelon,4
-0038,Fresh Milk Cocoa Lover,5
-0039,Fresh Milk Family,5
-0040,Fresh Milk Pearl,5
-0041,Fresh Milk Pudding,5
-0042,Fresh Milk Herb Jelly,5
-0043,Fresh Milk Matcha,5
-0044,Handmade Taro Ice Blended,6
-0045,Oreo Ice Cream,6
-0046,Milk Tea Ice Cream,6
+0027,Fruit Tea Peach,5
+0028,Fruit Tea Peach Kiwi,5
+0029,Fruit Tea Kiwi Fruit,5
+0030,Fruit Tea Mango & Passion Fruit,5
+0031,Fruit Tea Tropical Fruit,5
+0032,Fruit Tea Hawaii Fruit,5
+0033,Fruit Tea Passion Fruit Orange and Grapefruit,5
+0034,Fresh Milk Fresh Milk,4
+0035,Fresh Milk Black Tea,4
+0036,Fresh Milk Green Tea,4
+0037,Fresh Milk Oolong Tea,4
+0038,Fresh Milk Wintermelon,4
+0039,Fresh Milk Cocoa Lover,5
+0040,Fresh Milk Family,5
+0041,Fresh Milk Matcha,5
+0042,Fresh Milk Taro,6
+0043,Ice Blended Oreo,6
+0044,Ice Blended Milk Tea,6
+0045,Ice Blended Taro,6
+0046,Ice Blended Thai Tea,6
+0047,Ice Blended Matcha with Ice Cream,6
+0048,Ice Blended Coffee with Ice Cream,6
+0049,Ice Blended Strawberry with Ice Cream,6
+0050,Ice Blended Peach Tea with Ice Cream,6
+0051,Mojito Lime,5
+0052,Mojito Mango,5
+0053,Mojito Peach,5
+0054,Mojito Strawberry,5
+0055,Creama Black Tea,6
+0056,Creama Green Tea,6
+0057,Creama Oolong Tea,6
+0058,Creama Wintermelon,6
+0059,Creama Coffee,6
+0060,Creama Cocoa,6
+0061,Creama Mango,6
+0062,Creama Matcha,6
