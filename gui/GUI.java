@@ -110,6 +110,7 @@ public class GUI extends JFrame implements ActionListener {
       JButton ice_blended = new JButton("Ice Blended");
       JButton tea_mojito = new JButton("Tea Mojito");
       JButton creama = new JButton("Creama");
+      JButton order = new JButton("View Order");
 
       p_emplo.add(milk_tea);
       p_emplo.add(brewed_tea);
@@ -118,6 +119,7 @@ public class GUI extends JFrame implements ActionListener {
       p_emplo.add(ice_blended);
       p_emplo.add(tea_mojito);
       p_emplo.add(creama);
+      p_emplo.add(order);
 
       milk_tea.addActionListener(s);
       brewed_tea.addActionListener(s);
@@ -126,6 +128,7 @@ public class GUI extends JFrame implements ActionListener {
       ice_blended.addActionListener(s);
       tea_mojito.addActionListener(s);
       creama.addActionListener(s);
+      order.addActionListener(s);
 
       employee_frame.add(p_emplo);
 
@@ -152,6 +155,11 @@ public class GUI extends JFrame implements ActionListener {
         else if (s.equals("Employee")) {
           employee_frame.setVisible(true);
         }
+        if (s.equals("View Order")) {
+          // DISPLAY SELECTED ITEM LIKE 
+          // - drink, custom, custom
+          // - drink
+        }
         if (s.equals("Milk Tea")) {
           // Create a new frame for Milk Tea options
           JFrame milkTeaFrame = new JFrame("Milk Tea Options");
@@ -159,6 +167,7 @@ public class GUI extends JFrame implements ActionListener {
           JPanel milkSubMenu = new JPanel(new GridLayout(4, 4));
 
           ArrayList<String> drinkNames = null;
+
           try {
             drinkNames = getDrinkNames("drink_dictionary.csv");
           }
@@ -166,9 +175,32 @@ public class GUI extends JFrame implements ActionListener {
             error1.printStackTrace();
           }
 
+          ArrayList<String> selectedItems = new ArrayList<>();
+
           for (String drink : drinkNames) {
             if (drink.length() >= 8 && drink.substring(0, 8).equals("Milk Tea")) {
               JButton mt = new JButton(drink);
+
+              mt.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Extract the text from the clicked button
+                    String selectedItem = mt.getText();
+                    // Add it to the ArrayList
+                    selectedItems.add(selectedItem);
+                    // Close the milkTeaFrame
+                    milkTeaFrame.dispose();
+
+
+                    // Open the new frame here (e.g., a new options frame)
+                    JFrame customsFrame = new JFrame("Customizations");
+                    customsFrame.setSize(500, 500);
+                    customsFrame.setVisible(true);
+
+                    // NOTE: ADD CUSTOMIZATIONS IN A CHECKBOX, FOR EVERY BOX THAT IS CHECKED, 
+                    // ADD THAT TO selectedItems AND ADD THAT TO THE ORDER
+                }
+            });
               milkSubMenu.add(mt);
             }
           }
