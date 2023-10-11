@@ -11,6 +11,25 @@ import javax.swing.*;
 // TO RUN::
 // compile with 'javac *.java'
 // run with 'java -cp ".;postgresql-42.2.8.jar" GUI'
+
+/*
+@param arg1 An SQL command as a string
+@return arg1 SQL command as string
+*/
+// public static String sqlcommand(String arg1) {
+//     return arg1;
+// }
+
+// /*
+// @param result, name  A result set, and a column name as a string
+// @return string result from query
+// */
+// public static String database(ResultSet result, String name) {
+//     return result.getString(name) + " ";
+// }
+
+
+
 public class GUI extends JFrame implements ActionListener {
     static JFrame f;
     static JFrame manager_frame;
@@ -111,7 +130,7 @@ public class GUI extends JFrame implements ActionListener {
         Statement stmt = conn.createStatement();
         //create a SQL statement
         //TODO Step 2
-        String sqlStatement = "SELECT * FROM inventory;";
+        String sqlStatement = sqlcommand("SELECT * FROM inventory;");
         //send statement to DBMS
         ResultSet result = stmt.executeQuery(sqlStatement);
         while (result.next()) {
@@ -136,6 +155,7 @@ public class GUI extends JFrame implements ActionListener {
         JOptionPane.showMessageDialog(null,"Error accessing Database.");
       }
       JTextArea text_inventory = new JTextArea(inventory_items);
+      
       p_inventory.add(text_inventory);
 
       JTextArea text_menu = new JTextArea(menu_items);
@@ -157,6 +177,13 @@ public class GUI extends JFrame implements ActionListener {
         JOptionPane.showMessageDialog(null,"Connection NOT Closed.");
       }
     }
+
+    /*
+    @param e Action event to show button is clicked
+    @param s String comparing to specific action performed
+    @return None, void function
+    */
+  
     // if button is pressed
     public void actionPerformed(ActionEvent e)
     {
@@ -178,6 +205,34 @@ public class GUI extends JFrame implements ActionListener {
           drinks_frame.setVisible(true);
         }
     }
+
+    public static String sqlcommand(String arg1) {
+    return arg1;
+}
+
+/*
+@param result, name  A result set, and a column name as a string
+@return string result from query
+*/
+public static String database(ResultSet result, String name) {
+    String response = "";
+    try{
+    
+    while (result.next()) {
+      response += result.getString("name")+"\n";
+    }
+    //return response;
+
+    }
+    
+    catch (Exception e){
+        JOptionPane.showMessageDialog(null,"Error accessing Database.");
+    }
+    return response;
+
+
+  }
+  
 
     
 
