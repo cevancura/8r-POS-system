@@ -180,7 +180,7 @@ public class GUI extends JFrame implements ActionListener {
           milkTeaFrame.setVisible(true);
         }
         if (s.equals("Brewed Tea")) {
-          // Create a new frame for Milk Tea options
+          // Create a new frame for Brewed Tea options
           JFrame brewedTeaFrame = new JFrame("Brewed Tea Options");
           brewedTeaFrame.setSize(800, 800);
           JPanel brewedSubMenu = new JPanel(new GridLayout(2, 4));
@@ -207,7 +207,7 @@ public class GUI extends JFrame implements ActionListener {
           brewedTeaFrame.setVisible(true);
         }
         if (s.equals("Fruit Tea")) {
-          // Create a new frame for Milk Tea options
+          // Create a new frame for Fruit Tea options
           JFrame fruitTeaFrame = new JFrame("Fruit Tea Options");
           fruitTeaFrame.setSize(800, 800);
           JPanel fruitSubMenu = new JPanel(new GridLayout(3, 4));
@@ -234,7 +234,7 @@ public class GUI extends JFrame implements ActionListener {
           fruitTeaFrame.setVisible(true);
         }
         if (s.equals("Fresh Milk")) {
-          // Create a new frame for Milk Tea options
+          // Create a new frame for Fresh Milk options
           JFrame freshMilkFrame = new JFrame("Fresh Milk Options");
           freshMilkFrame.setSize(800, 800);
           JPanel freshMilkSubMenu = new JPanel(new GridLayout(3, 3));
@@ -260,6 +260,89 @@ public class GUI extends JFrame implements ActionListener {
           // Make the new frame visible
           freshMilkFrame.setVisible(true);
         }
+        if (s.equals("Ice Blended")) {
+          // Create a new frame for Ice Blended options
+          JFrame blendedFrame = new JFrame("Ice Blended Options");
+          blendedFrame.setSize(800, 800);
+          JPanel blendedSubMenu = new JPanel(new GridLayout(3, 3));
+
+          ArrayList<String> drinkNames = null;
+          try {
+            drinkNames = getDrinkNames("drink_dictionary.csv");
+          }
+          catch (IOException error1) {
+            error1.printStackTrace();
+          }
+
+          for (String drink : drinkNames) {
+            if (drink.contains("Ice Blended")) {
+              JButton ib = new JButton(drink);
+              blendedSubMenu.add(ib);
+            }
+          }
+
+          // Add the submenu panel to the employee_frame
+          blendedFrame.add(blendedSubMenu);
+
+          // Make the new frame visible
+          blendedFrame.setVisible(true);
+        }
+        if (s.equals("Tea Mojito")) {
+          // Create a new frame for Mojito options
+          JFrame mojitoFrame = new JFrame("Tea Mojito Options");
+          mojitoFrame.setSize(800, 800);
+          JPanel mojitoSubMenu = new JPanel(new GridLayout(2, 2));
+
+          ArrayList<String> drinkNames = null;
+          try {
+            drinkNames = getDrinkNames("drink_dictionary.csv");
+          }
+          catch (IOException error1) {
+            error1.printStackTrace();
+          }
+
+          for (String drink : drinkNames) {
+            if (drink.contains("Mojito")) {
+              JButton mj = new JButton(drink);
+              mojitoSubMenu.add(mj);
+            }
+          }
+
+          // Add the submenu panel to the employee_frame
+          mojitoFrame.add(mojitoSubMenu);
+
+          // Make the new frame visible
+          mojitoFrame.setVisible(true);
+        }
+        if (s.equals("Creama")) {
+          // Create a new frame for Creama options
+          JFrame creamaFrame = new JFrame("Creama Options");
+          creamaFrame.setSize(800, 800);
+          JPanel creamaSubMenu = new JPanel(new GridLayout(2, 4));
+
+          ArrayList<String> drinkNames = null;
+          try {
+            drinkNames = getDrinkNames("drink_dictionary.csv");
+          }
+          catch (IOException error1) {
+            error1.printStackTrace();
+          }
+
+          for (String drink : drinkNames) {
+            if (drink.contains("Creama")) {
+              JButton cr = new JButton(drink);
+              creamaSubMenu.add(cr);
+            }
+          }
+
+          // Add the submenu panel to the employee_frame
+          creamaFrame.add(creamaSubMenu);
+
+          // Make the new frame visible
+          creamaFrame.setVisible(true);
+        }
+ 
+ 
       }
 
     public static ArrayList<String> getDrinkNames(String filePath) throws IOException {
