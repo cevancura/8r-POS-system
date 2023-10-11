@@ -38,6 +38,8 @@ public class GUI extends JFrame implements ActionListener {
     static JFrame drinks_frame;
     static JTextField text_input;
     static JTextArea text_output;
+    static JTextField text_input_inventory;
+    static JTextArea text_output_inventory;
 
 
     public static Connection createConnection() {
@@ -139,13 +141,26 @@ public class GUI extends JFrame implements ActionListener {
 
       //adding a save button 
       JButton save_btn = new JButton("Save");
+      JButton save_btn_inventory= new JButton("Save Inventory");
      
       JPanel p_inventory = new JPanel();
       JPanel p_menu = new JPanel();
 
-      p_inventory.add(save_btn);
+      p_inventory.add(save_btn_inventory);
       p_menu.add(save_btn);
       save_btn.addActionListener(s);
+      save_btn_inventory.addActionListener(s);
+      
+      text_input = new JTextField("enter the text");
+      text_output = new JTextArea("");
+      p_menu.add(text_input);
+      p_menu.add(text_output);
+
+      text_input_inventory = new JTextField("enter the text");
+      text_output_inventory = new JTextArea("");
+      p_inventory.add(text_input_inventory);
+      p_inventory.add(text_output_inventory);
+
 
       String inventory_items = "";
       String menu_items = "";
@@ -181,10 +196,6 @@ public class GUI extends JFrame implements ActionListener {
         JOptionPane.showMessageDialog(null,"Error accessing drink and inventory.");
       }
 
-      text_input = new JTextField("enter the text");
-      text_output = new JTextArea("");
-      p_menu.add(text_input);
-      p_menu.add(text_output);
 
       //add scroll bar for inventory
       JTextArea text_inventory = new JTextArea(inventory_items, 40 , 50);
@@ -253,7 +264,6 @@ public class GUI extends JFrame implements ActionListener {
           text_input.setText("enter the text");
 
           if (!text_output.getText().equals("")) {
-            System.out.println("Hello?");
             Connection conn = null;
             //TODO STEP 1
             try {
@@ -283,6 +293,55 @@ public class GUI extends JFrame implements ActionListener {
             menu_update += " (\'" + splitted[0] + "\', \'" + splitted[1] + "\', " + Double. parseDouble(splitted[2]) + ");";
             System.out.println(menu_update);
             stmt.execute(menu_update);
+            
+            }catch (Exception n){
+              n.printStackTrace();
+              System.err.println(n.getClass().getName()+": "+n.getMessage());
+              JOptionPane.showMessageDialog(null,"Error executing command.");
+            }
+            closeConnection(conn);
+          }
+        }
+        if (s.equals("Save Inventory")){
+            // set the text of the label to the text of the field
+          text_output_inventory.setText(text_input_inventory.getText());
+          
+          // set the text of field to blank
+          text_input_inventory.setText("enter the text");
+
+          if (!text_output_inventory.getText().equals("")) {
+            Connection conn = null;
+            //TODO STEP 1
+            try {
+              conn = DriverManager.getConnection(
+                "jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315331_08r_db",
+                "csce315_971_navya_0215",
+                "password");
+            } catch (Exception k) {
+              // e.printStackTrace();
+              // System.err.println(e.getClass().getName()+": "+e.getMessage());
+              System.exit(0);
+            }
+            try{
+            //create a statement object
+            
+            Statement stmt = conn.createStatement();
+            
+            //create a SQL statement
+            //TODO Step 2
+            //String sqlStatement = sqlcommand("SELECT * FROM inventory;");
+            //send statement to DBMS
+            //ResultSet result = stmt.executeQuery(sqlStatement);
+            System.out.println("-----------------------------");
+            System.out.println(text_output_inventory.getText());
+            System.out.println("-----------------------------");
+
+            String[] splitted = text_output_inventory.getText().split("\\s+");
+            
+            String inventory_update = "INSERT INTO inventory (product_id, itemname, total_amount, current_amount, restock) VALUES";
+            inventory_update += " (" + splitted[0] + ", \'" + splitted[1] + "\', " + splitted[2] + ", " + splitted[3] + ", \'" + splitted[4] + "\');";
+            System.out.println(inventory_update);
+            stmt.execute(inventory_update);
             
             }catch (Exception n){
               n.printStackTrace();
