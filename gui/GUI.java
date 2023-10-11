@@ -144,10 +144,41 @@ public class GUI extends JFrame implements ActionListener {
       }
     }
 
+
+    public static JFrame customizationWindow() throws IOException {
+      // Create a new frame for Customization options
+      JFrame customizationsFrame = new JFrame("Customization Options");
+      customizationsFrame.setSize(800, 800);
+      JPanel customizationSubMenu = new JPanel(new GridLayout(4, 4));
+  
+      ArrayList<String> customizationNames = null;
+      try {
+          customizationNames = getCustomizationNames("customs.csv");
+      } catch (IOException error1) {
+          error1.printStackTrace();
+      }
+  
+      for (int i = 1; i < customizationNames.size(); i++) {
+          String customization = customizationNames.get(i);
+          JButton custom = new JButton(customization);
+          customizationSubMenu.add(custom);
+      }
+  
+      // Add the submenu panel to the customizationsFrame
+      customizationsFrame.add(customizationSubMenu);
+  
+      // // Make the new frame visible
+      // customizationsFrame.setVisible(true);
+
+      return customizationsFrame;
+    }
+
+
     // if button is pressed
     public void actionPerformed(ActionEvent e)
     {
         ArrayList<String> selectedItems = new ArrayList<>();
+
         String s = e.getActionCommand();
         if (s.equals("Close")) {
             f.dispose();
@@ -219,6 +250,11 @@ public class GUI extends JFrame implements ActionListener {
 
                     // Open the new frame here (e.g., a new options frame)
                     JFrame customsFrame = new JFrame("Customizations");
+                    try {
+                      customsFrame = customizationWindow();
+                    } catch (IOException error1) {
+                        error1.printStackTrace();
+                    }
                     customsFrame.setSize(500, 500);
                     customsFrame.setVisible(true);
 
@@ -467,5 +503,6 @@ public class GUI extends JFrame implements ActionListener {
   
       return customizationNames;
   }
-      
+
+  
 }
