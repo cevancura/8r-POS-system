@@ -53,20 +53,6 @@ public class GUI extends JFrame implements ActionListener {
       }
       JOptionPane.showMessageDialog(null,"Opened database successfully");
       String name = "";
-      /*try{
-        //create a statement object
-        Statement stmt = conn.createStatement();
-        //create a SQL statement
-        //TODO Step 2
-        String sqlStatement = "SELECT * FROM drink_dictionary;";
-        //send statement to DBMS
-        ResultSet result = stmt.executeQuery(sqlStatement);
-        while (result.next()) {
-          name += result.getString("name")+"\n";
-        }
-      } catch (Exception e){
-        JOptionPane.showMessageDialog(null,"Error accessing Database.");
-      }*/
       // create a new frame
       f = new JFrame("DB GUI");
       manager_frame = new JFrame("Manager GUI");
@@ -98,6 +84,7 @@ public class GUI extends JFrame implements ActionListener {
 
       f.setVisible(true);
       
+      
 
 
       // manager frame
@@ -121,8 +108,17 @@ public class GUI extends JFrame implements ActionListener {
       // inventory window
       inventory_frame = new JFrame("Inventory Window");
       drinks_frame = new JFrame("Drinks Window");
+
+      //adding a save button 
+      JButton save_btn = new JButton("Save");
+     
       JPanel p_inventory = new JPanel();
       JPanel p_menu = new JPanel();
+
+      p_inventory.add(save_btn);
+      p_menu.add(save_btn);
+      save_btn.addActionListener(s);
+
       String inventory_items = "";
       String menu_items = "";
       try{
@@ -204,6 +200,10 @@ public class GUI extends JFrame implements ActionListener {
         if (s.equals("Menu")){
           drinks_frame.setVisible(true);
         }
+        if (s.equals("Save")){
+            
+        }
+
     }
 
     public static String sqlcommand(String arg1) {
@@ -232,11 +232,4 @@ public static String database(ResultSet result, String name) {
 
 
   }
-  
-
-    
-
-    
-
-
 }
