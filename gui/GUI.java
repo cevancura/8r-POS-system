@@ -158,10 +158,10 @@ public class GUI extends JFrame implements ActionListener {
         //send statement to DBMS
         ResultSet result = stmt.executeQuery(sqlStatement);
         while (result.next()) {
-          inventory_items += result.getString("productid") + " ";
+          inventory_items += result.getString("product_id") + " ";
           inventory_items += result.getString("itemname")+" ";
-          inventory_items += result.getString("totalamount")+" ";
-          inventory_items += result.getString("currentamount")+" ";
+          inventory_items += result.getString("total_amount")+" ";
+          inventory_items += result.getString("current_amount")+" ";
           inventory_items += result.getString("restock")+"\n";
         }
 
@@ -176,35 +176,29 @@ public class GUI extends JFrame implements ActionListener {
           menu_items += menuresult.getString("price") + "\n";
         }
       } catch (Exception e){
-        JOptionPane.showMessageDialog(null,"Error accessing Database.");
+        e.printStackTrace();
+        System.err.println(e.getClass().getName()+": "+e.getMessage());
+        JOptionPane.showMessageDialog(null,"Error accessing drink and inventory.");
       }
 
-
-      JTextArea text_inventory = new JTextArea(inventory_items);
       text_input = new JTextField("enter the text");
       text_output = new JTextArea("");
-      
-      
-      
       p_menu.add(text_input);
       p_menu.add(text_output);
 
+      //add scroll bar for inventory
+      JTextArea text_inventory = new JTextArea(inventory_items, 40 , 50);
+      JScrollPane scroll_inventory = new JScrollPane(text_inventory);     
+      scroll_inventory.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
+      inventory_frame.getContentPane().add(scroll_inventory);
+      p_inventory.add(scroll_inventory);
       
-      p_inventory.add(text_inventory);
-
+      //adding a scroll bar for menu
       JTextArea text_menu = new JTextArea(menu_items, 40, 50);
-      //p_menu.add(text_menu);
-
-      //adding a scroll bar
-      JScrollPane scroll = new JScrollPane(text_menu);
-      //drinks_frame.add(scroll);
-     
-      scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
-      //scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);  
-      
-      drinks_frame.getContentPane().add(scroll);
-      p_menu.add(scroll);
-
+      JScrollPane scroll_menu = new JScrollPane(text_menu);     
+      scroll_menu.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
+      drinks_frame.getContentPane().add(scroll_menu);
+      p_menu.add(scroll_menu);
 
       inventory_frame.add(p_inventory);
       inventory_frame.setSize(800, 800);
