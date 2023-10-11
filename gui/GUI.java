@@ -183,19 +183,26 @@ public class GUI extends JFrame implements ActionListener {
       JTextArea text_inventory = new JTextArea(inventory_items);
       text_input = new JTextField("enter the text");
       text_output = new JTextArea("");
+      
+      
+      
       p_menu.add(text_input);
-
-      
-      
-
       p_menu.add(text_output);
 
       
       p_inventory.add(text_inventory);
 
       JTextArea text_menu = new JTextArea(menu_items);
-      p_menu.add(text_menu);
+      //p_menu.add(text_menu);
 
+      //adding a scroll bar
+      JScrollPane scroll = new JScrollPane(text_menu);
+      //drinks_frame.add(scroll);
+     
+      scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
+      
+      drinks_frame.getContentPane().add(scroll);
+      p_menu.add(scroll);
 
 
       inventory_frame.add(p_inventory);
