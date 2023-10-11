@@ -197,6 +197,16 @@ public class GUI extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e)
     {
         String s = e.getActionCommand();
+        Connection conn = null;
+        try {
+              conn = DriverManager.getConnection(
+                "jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315331_08r_db",
+                "csce315_971_navya_0215",
+                "password");
+            } catch (Exception k) {
+              System.exit(0);
+            }
+
         if (s.equals("Close")) {
             f.dispose();
         }
@@ -221,30 +231,21 @@ public class GUI extends JFrame implements ActionListener {
           text_input.setText("enter the text");
 
           if (!text_output.getText().equals("")) {
-            Connection conn = null;
-            
-            try {
-              conn = DriverManager.getConnection(
-                "jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315331_08r_db",
-                "csce315_971_navya_0215",
-                "password");
-            } catch (Exception k) {
-              System.exit(0);
-            }
+    
             try{
             
-            Statement stmt = conn.createStatement();
-            String[] splitted = text_output.getText().split("\\s+");
-            
-            String menu_update = "INSERT INTO drink_dictionary (drink_id, name, price) VALUES";
-            menu_update += " (\'" + splitted[0] + "\', \'" + splitted[1] + "\', " + Double. parseDouble(splitted[2]) + ");";
-            System.out.println(menu_update);
-            stmt.execute(menu_update);
+                Statement stmt = conn.createStatement();
+                String[] splitted = text_output.getText().split("\\s+");
+                
+                String menu_update = "INSERT INTO drink_dictionary (drink_id, name, price) VALUES";
+                menu_update += " (\'" + splitted[0] + "\', \'" + splitted[1] + "\', " + Double. parseDouble(splitted[2]) + ");";
+                System.out.println(menu_update);
+                stmt.execute(menu_update);
             
             }catch (Exception n){
-              n.printStackTrace();
-              System.err.println(n.getClass().getName()+": "+n.getMessage());
-              JOptionPane.showMessageDialog(null,"Error executing command.");
+                n.printStackTrace();
+                System.err.println(n.getClass().getName()+": "+n.getMessage());
+                JOptionPane.showMessageDialog(null,"Error executing command.");
             }
             closeConnection(conn);
           }
@@ -257,17 +258,7 @@ public class GUI extends JFrame implements ActionListener {
           text_input_inventory.setText("enter the text");
 
           if (!text_output_inventory.getText().equals("")) {
-            Connection conn = null;
             
-            try {
-              conn = DriverManager.getConnection(
-                "jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315331_08r_db",
-                "csce315_971_navya_0215",
-                "password");
-            } catch (Exception k) {
-
-              System.exit(0);
-            }
             try{
             //create a statement object
             Statement stmt = conn.createStatement();
@@ -295,16 +286,7 @@ public class GUI extends JFrame implements ActionListener {
           text_input.setText("enter the text");
 
           if (!(text_output.getText().equals("") || text_output.getText().equals("enter the text"))) {
-            Connection conn = null;
             
-            try {
-              conn = DriverManager.getConnection(
-                "jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315331_08r_db",
-                "csce315_971_navya_0215",
-                "password");
-            } catch (Exception k) {
-              System.exit(0);
-            }
             try{
             
             Statement stmt = conn.createStatement();
@@ -342,16 +324,7 @@ public class GUI extends JFrame implements ActionListener {
           text_input_inventory.setText("enter the text");
 
           if (!(text_output_inventory.getText().equals("") || text_output_inventory.getText().equals("enter the text"))) {
-            Connection conn = null;
             
-            try {
-              conn = DriverManager.getConnection(
-                "jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315331_08r_db",
-                "csce315_971_navya_0215",
-                "password");
-            } catch (Exception k) {
-              System.exit(0);
-            }
             try{
             
             Statement stmt = conn.createStatement();
