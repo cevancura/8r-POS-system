@@ -241,7 +241,7 @@ public class GUI extends JFrame implements ActionListener {
           }
         }
         if (s.equals("Save Inventory")){
-            // set the text of the label to the text of the field
+          // set the text of the label to the text of the field
           text_output_inventory.setText(text_input_inventory.getText());
           
           // set the text of field to blank
@@ -262,23 +262,13 @@ public class GUI extends JFrame implements ActionListener {
             }
             try{
             //create a statement object
-            
             Statement stmt = conn.createStatement();
-            
-            //create a SQL statement
-            //TODO Step 2
-            //String sqlStatement = sqlcommand("SELECT * FROM inventory;");
-            //send statement to DBMS
-            //ResultSet result = stmt.executeQuery(sqlStatement);
-            System.out.println("-----------------------------");
-            System.out.println(text_output_inventory.getText());
-            System.out.println("-----------------------------");
 
             String[] splitted = text_output_inventory.getText().split("\\s+");
             
             String inventory_update = "INSERT INTO inventory (product_id, itemname, total_amount, current_amount, restock) VALUES";
             inventory_update += " (" + splitted[0] + ", \'" + splitted[1] + "\', " + splitted[2] + ", " + splitted[3] + ", \'" + splitted[4] + "\');";
-            System.out.println(inventory_update);
+            //System.out.println(inventory_update);
             stmt.execute(inventory_update);
             
             }catch (Exception n){
