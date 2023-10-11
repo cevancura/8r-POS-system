@@ -112,6 +112,14 @@ public class GUI extends JFrame implements ActionListener {
       p_emplo.add(tea_mojito);
       p_emplo.add(creama);
 
+      milk.addActionListener(s);
+      brewed_tea.addActionListener(s);
+      fruit_tea.addActionListener(s);
+      fresh_milk.addActionListener(s);
+      ice_blended.addActionListener(s);
+      tea_mojito.addActionListener(s);
+      creama.addActionListener(s);
+
       employee_frame.add(p_emplo);
 
       f.setVisible(true);
@@ -137,6 +145,51 @@ public class GUI extends JFrame implements ActionListener {
         }
         else if (s.equals("Employee")) {
           employee_frame.setVisible(true);
+        }
+        if (s.equals("Milk Tea")) {
+          // Create a new frame for Milk Tea options
+          JFrame milkTeaFrame = new JFrame("Milk Tea Options");
+          milkTeaFrame.setSize(400, 400);
+          JPanel milkSubMenu = new JPanel(new GridLayout(2, 4));
+          milkSubMenu.setLayout(new BoxLayout(milkSubMenu, BoxLayout.Y_AXIS));
+
+          // Create new buttons for the milk tea submenu
+          JButton classic_mt = new JButton("Classic Milk Tea");
+          JButton honey_mt = new JButton("Honey Milk Tea");
+          JButton classic_coffee = new JButton("Classic Coffee");
+
+          // Add the new buttons to the submenu panel
+          milkSubMenu.add(classic_mt);
+          milkSubMenu.add(honey_mt);
+          milkSubMenu.add(classic_coffee);
+
+          // Add the submenu panel to the employee_frame
+          milkTeaFrame.add(milkSubMenu);
+
+          // Make the new frame visible
+          milkTeaFrame.setVisible(true);
+        }
+        if (s.equals("Brewed Tea")) {
+          // Create a new frame for Milk Tea options
+          JFrame brewedTeaFrame = new JFrame("Brewed Tea Options");
+          brewedTeaFrame.setSize(400, 400);
+          JPanel brewedSubMenu = new JPanel(new GridLayout(2, 4));
+
+          // Create new buttons for the milk tea submenu
+          JButton classic_t = new JButton("Classic Tea");
+          JButton winter_t = new JButton("Wintermelon Tea");
+          JButton honey_t = new JButton("Honey Tea");
+
+          // Add the new buttons to the submenu panel
+          brewedSubMenu.add(classic_t);
+          brewedSubMenu.add(winter_t);
+          brewedSubMenu.add(honey_t);
+
+          // Add the submenu panel to the employee_frame
+          brewedTeaFrame.add(brewedSubMenu);
+
+          // Make the new frame visible
+          brewedTeaFrame.setVisible(true);
         }
     }
 
