@@ -382,7 +382,7 @@ public class GUI extends JFrame implements ActionListener {
       
           ArrayList<String> customizationNames = null;
           try {
-              customizationNames = getCustomizationNames("customizations.csv");
+              customizationNames = getCustomizationNames("customs.csv");
           } catch (IOException error1) {
               error1.printStackTrace();
           }
