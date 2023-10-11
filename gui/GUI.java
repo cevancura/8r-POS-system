@@ -357,19 +357,19 @@ public class GUI extends JFrame implements ActionListener {
             Statement stmt = conn.createStatement();
             String[] splitted = text_output_inventory.getText().split("\\s+");
             
-            String inventory_update = "UPDATE drink_dictionary SET name = \'";
+            String inventory_update = "UPDATE inventory SET itemname = \'";
             int splitted_length = splitted.length;
             String item_name = "";
-            for (int i = 1; i < splitted_length - 1; ++i) {
+            for (int i = 1; i < splitted_length - 3; ++i) {
                 item_name += splitted[i];
     
-                if (i != splitted_length-2){
+                if (i != splitted_length-4){
 
                     item_name+= " ";
 
                 }
             }
-            inventory_update += item_name + "\', price = " + splitted[splitted_length -1] + "WHERE drink_id = \'" + splitted[0] + "\';";
+            inventory_update += item_name + "\', total_amount = " + splitted[splitted_length -3] + ", current_amount = " + splitted[splitted_length -2] +  ", restock = \'" + splitted[splitted_length-1]+ "\' WHERE product_id = " + splitted[0] + ";";
             stmt.execute(inventory_update);
             
             }catch (Exception n){
