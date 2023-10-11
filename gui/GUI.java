@@ -2,6 +2,10 @@ import java.sql.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Scanner;
+
 
 /*
   TODO:
@@ -38,7 +42,7 @@ public class GUI extends JFrame implements ActionListener {
       JOptionPane.showMessageDialog(null,"Opened database successfully");
 
       String name = "";
-      try{
+      /*try{
         //create a statement object
         Statement stmt = conn.createStatement();
         //create a SQL statement
@@ -51,7 +55,7 @@ public class GUI extends JFrame implements ActionListener {
         }
       } catch (Exception e){
         JOptionPane.showMessageDialog(null,"Error accessing Database.");
-      }
+      }*/
       // create a new frame
       f = new JFrame("DB GUI");
 
@@ -92,6 +96,9 @@ public class GUI extends JFrame implements ActionListener {
 
       // set the size of frame
       f.setSize(400, 400);
+
+      f.setVisible(true);
+
       employee_frame.setSize(800, 800);
 
       JPanel p_emplo = new JPanel(new GridLayout(2, 4));
@@ -122,7 +129,6 @@ public class GUI extends JFrame implements ActionListener {
 
       employee_frame.add(p_emplo);
 
-      f.setVisible(true);
 
       //closing the connection
       try {
@@ -149,18 +155,23 @@ public class GUI extends JFrame implements ActionListener {
         if (s.equals("Milk Tea")) {
           // Create a new frame for Milk Tea options
           JFrame milkTeaFrame = new JFrame("Milk Tea Options");
-          milkTeaFrame.setSize(400, 400);
-          JPanel milkSubMenu = new JPanel(new GridLayout(2, 4));
+          milkTeaFrame.setSize(800, 800);
+          JPanel milkSubMenu = new JPanel(new GridLayout(4, 4));
 
-          // Create new buttons for the milk tea submenu
-          JButton classic_mt = new JButton("Classic Milk Tea");
-          JButton honey_mt = new JButton("Honey Milk Tea");
-          JButton classic_coffee = new JButton("Classic Coffee");
+          ArrayList<String> drinkNames = null;
+          try {
+            drinkNames = getDrinkNames("drink_dictionary.csv");
+          }
+          catch (IOException error1) {
+            error1.printStackTrace();
+          }
 
-          // Add the new buttons to the submenu panel
-          milkSubMenu.add(classic_mt);
-          milkSubMenu.add(honey_mt);
-          milkSubMenu.add(classic_coffee);
+          for (String drink : drinkNames) {
+            if (drink.length() >= 8 && drink.substring(0, 8).equals("Milk Tea")) {
+              JButton mt = new JButton(drink);
+              milkSubMenu.add(mt);
+            }
+          }
 
           // Add the submenu panel to the employee_frame
           milkTeaFrame.add(milkSubMenu);
@@ -171,18 +182,23 @@ public class GUI extends JFrame implements ActionListener {
         if (s.equals("Brewed Tea")) {
           // Create a new frame for Milk Tea options
           JFrame brewedTeaFrame = new JFrame("Brewed Tea Options");
-          brewedTeaFrame.setSize(400, 400);
+          brewedTeaFrame.setSize(800, 800);
           JPanel brewedSubMenu = new JPanel(new GridLayout(2, 4));
 
-          // Create new buttons for the milk tea submenu
-          JButton classic_t = new JButton("Classic Tea");
-          JButton winter_t = new JButton("Wintermelon Tea");
-          JButton honey_t = new JButton("Honey Tea");
+          ArrayList<String> drinkNames = null;
+          try {
+            drinkNames = getDrinkNames("drink_dictionary.csv");
+          }
+          catch (IOException error1) {
+            error1.printStackTrace();
+          }
 
-          // Add the new buttons to the submenu panel
-          brewedSubMenu.add(classic_t);
-          brewedSubMenu.add(winter_t);
-          brewedSubMenu.add(honey_t);
+          for (String drink : drinkNames) {
+            if (drink.contains("Brewed Tea")) {
+              JButton bt = new JButton(drink);
+              brewedSubMenu.add(bt);
+            }
+          }
 
           // Add the submenu panel to the employee_frame
           brewedTeaFrame.add(brewedSubMenu);
@@ -193,18 +209,23 @@ public class GUI extends JFrame implements ActionListener {
         if (s.equals("Fruit Tea")) {
           // Create a new frame for Milk Tea options
           JFrame fruitTeaFrame = new JFrame("Fruit Tea Options");
-          fruitTeaFrame.setSize(400, 400);
-          JPanel fruitSubMenu = new JPanel(new GridLayout(2, 4));
+          fruitTeaFrame.setSize(800, 800);
+          JPanel fruitSubMenu = new JPanel(new GridLayout(3, 4));
 
-          // Create new buttons for the milk tea submenu
-          JButton mango_gt = new JButton("Mango Green Tea");
-          JButton winter_lem = new JButton("Wintermelon Lemonade");
-          JButton strawb_t = new JButton("Strawberry Tea");
+          ArrayList<String> drinkNames = null;
+          try {
+            drinkNames = getDrinkNames("drink_dictionary.csv");
+          }
+          catch (IOException error1) {
+            error1.printStackTrace();
+          }
 
-          // Add the new buttons to the submenu panel
-          fruitSubMenu.add(mango_gt);
-          fruitSubMenu.add(winter_lem);
-          fruitSubMenu.add(strawb_t);
+          for (String drink : drinkNames) {
+            if (drink.contains("Fruit Tea")) {
+              JButton ft = new JButton(drink);
+              fruitSubMenu.add(ft);
+            }
+          }
 
           // Add the submenu panel to the employee_frame
           fruitTeaFrame.add(fruitSubMenu);
@@ -215,18 +236,23 @@ public class GUI extends JFrame implements ActionListener {
         if (s.equals("Fresh Milk")) {
           // Create a new frame for Milk Tea options
           JFrame freshMilkFrame = new JFrame("Fresh Milk Options");
-          freshMilkFrame.setSize(400, 400);
-          JPanel freshMilkSubMenu = new JPanel(new GridLayout(2, 4));
+          freshMilkFrame.setSize(800, 800);
+          JPanel freshMilkSubMenu = new JPanel(new GridLayout(3, 3));
 
-          // Create new buttons for the milk tea submenu
-          JButton fresh_mt = new JButton("Fresh Milk Tea");
-          JButton winter_fresh = new JButton("Wintermelon with Fresh Milk");
-          JButton cocoa_fresh = new JButton("Cocoa Lover with Fresh Milk");
+          ArrayList<String> drinkNames = null;
+          try {
+            drinkNames = getDrinkNames("drink_dictionary.csv");
+          }
+          catch (IOException error1) {
+            error1.printStackTrace();
+          }
 
-          // Add the new buttons to the submenu panel
-          freshMilkSubMenu.add(fresh_mt);
-          freshMilkSubMenu.add(winter_fresh);
-          freshMilkSubMenu.add(cocoa_fresh);
+          for (String drink : drinkNames) {
+            if (drink.contains("Fresh Milk")) {
+              JButton fm = new JButton(drink);
+              freshMilkSubMenu.add(fm);
+            }
+          }
 
           // Add the submenu panel to the employee_frame
           freshMilkFrame.add(freshMilkSubMenu);
@@ -234,6 +260,26 @@ public class GUI extends JFrame implements ActionListener {
           // Make the new frame visible
           freshMilkFrame.setVisible(true);
         }
-    }
+      }
 
+    public static ArrayList<String> getDrinkNames(String filePath) throws IOException {
+      ArrayList<String> drinkNames = new ArrayList<>();
+      File file = new File(filePath);
+
+      Scanner scanner = new Scanner(file);
+
+      while (scanner.hasNextLine()) {
+        String line = scanner.nextLine();
+        String[] parts = line.split(",");
+        if (parts.length >= 2) {
+          String drinkName = parts[1].trim();
+          drinkNames.add(drinkName);
+        }
+      }
+
+      scanner.close(); // Close the scanner explicitly.
+
+      return drinkNames;
+    }
+      
 }
