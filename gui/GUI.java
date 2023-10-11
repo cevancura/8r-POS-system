@@ -192,7 +192,7 @@ public class GUI extends JFrame implements ActionListener {
       
       p_inventory.add(text_inventory);
 
-      JTextArea text_menu = new JTextArea(menu_items);
+      JTextArea text_menu = new JTextArea(menu_items, 40, 50);
       //p_menu.add(text_menu);
 
       //adding a scroll bar
@@ -200,6 +200,7 @@ public class GUI extends JFrame implements ActionListener {
       //drinks_frame.add(scroll);
      
       scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
+      //scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);  
       
       drinks_frame.getContentPane().add(scroll);
       p_menu.add(scroll);
