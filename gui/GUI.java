@@ -16,6 +16,7 @@ public class GUI extends JFrame implements ActionListener {
     static JTextArea text_output;
     static JTextField text_input_inventory;
     static JTextArea text_output_inventory;
+    static JTextArea out;
 
 
     public static Connection createConnection() {
@@ -174,6 +175,9 @@ public class GUI extends JFrame implements ActionListener {
       scroll_menu.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
       drinks_frame.getContentPane().add(scroll_menu);
       p_menu.add(scroll_menu);
+      //output changes
+      out = new JTextArea();
+      p_menu.add(out);
 
       inventory_frame.add(p_inventory);
       inventory_frame.setSize(800, 800);
@@ -181,6 +185,8 @@ public class GUI extends JFrame implements ActionListener {
       drinks_frame.setSize(800, 800);
 
       manager_frame.add(p_man);
+
+      
 
       //closing the connection
       closeConnection(conn);
@@ -195,7 +201,8 @@ public class GUI extends JFrame implements ActionListener {
   
     // if button is pressed
     public void actionPerformed(ActionEvent e)
-    {
+    {   
+        
         String s = e.getActionCommand();
         Connection conn = null;
         try {
@@ -306,6 +313,7 @@ public class GUI extends JFrame implements ActionListener {
             }
             menu_update += drink_name + "\', price = " + splitted[splitted_length -1] + "WHERE drink_id = \'" + splitted[0] + "\';";
             stmt.execute(menu_update);
+            out.setText("The menu has been updated to " + text_output.getText());
             
             }catch (Exception n){
               n.printStackTrace();
@@ -342,8 +350,10 @@ public class GUI extends JFrame implements ActionListener {
 
                 }
             }
+
             inventory_update += item_name + "\', total_amount = " + splitted[splitted_length -3] + ", current_amount = " + splitted[splitted_length -2] +  ", restock = \'" + splitted[splitted_length-1]+ "\' WHERE product_id = " + splitted[0] + ";";
             stmt.execute(inventory_update);
+            out.setText("The inventory item has been updated to " + text_output_inventory.getText());
             
             }catch (Exception n){
               n.printStackTrace();
