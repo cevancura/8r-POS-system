@@ -1,6 +1,7 @@
 import java.sql.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.awt.*;
 
 /*
   TODO:
@@ -93,7 +94,7 @@ public class GUI extends JFrame implements ActionListener {
       f.setSize(400, 400);
       employee_frame.setSize(800, 800);
 
-      JPanel p_emplo = new JPanel();
+      JPanel p_emplo = new JPanel(new GridLayout(2, 4));
 
       JButton milk_tea = new JButton("Milk Tea");
       JButton brewed_tea = new JButton("Brewed Tea");
