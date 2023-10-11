@@ -94,22 +94,23 @@ public class GUI extends JFrame implements ActionListener {
       //JPanel p_man = new JPanel();
       p_man.add(inventory);
 
-      // inventory window
       inventory_frame = new JFrame("Inventory Window");
       drinks_frame = new JFrame("Drinks Window");
+      JPanel p_inventory = new JPanel();
+      JPanel p_menu = new JPanel();
+
 
       //adding a save button 
       JButton save_btn = new JButton("Save");
       JButton save_btn_inventory= new JButton("Save Inventory");
-     
-      JPanel p_inventory = new JPanel();
-      JPanel p_menu = new JPanel();
 
+      
       p_inventory.add(save_btn_inventory);
       p_menu.add(save_btn);
       save_btn.addActionListener(s);
       save_btn_inventory.addActionListener(s);
       
+      //inserting into the database
       text_input = new JTextField("enter the text");
       text_output = new JTextArea("");
       p_menu.add(text_input);
@@ -120,7 +121,15 @@ public class GUI extends JFrame implements ActionListener {
       p_inventory.add(text_input_inventory);
       p_inventory.add(text_output_inventory);
 
+      //updating the database
+      JButton update_menu = new JButton("Update Menu");
+      JButton update_inventory = new JButton("Update Inventory");
 
+      p_inventory.add(update_inventory);
+      p_menu.add(update_menu);
+      update_menu.addActionListener(s);
+      update_inventory.addActionListener(s);
+      
       String inventory_items = "product_id\titemname\ttotal_amount\tcurrent_amount\trestock\n";
       String menu_items = "drink_id\tname\tprice\n";
       try{
@@ -249,15 +258,14 @@ public class GUI extends JFrame implements ActionListener {
 
           if (!text_output_inventory.getText().equals("")) {
             Connection conn = null;
-            //TODO STEP 1
+            
             try {
               conn = DriverManager.getConnection(
                 "jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315331_08r_db",
                 "csce315_971_navya_0215",
                 "password");
             } catch (Exception k) {
-              // e.printStackTrace();
-              // System.err.println(e.getClass().getName()+": "+e.getMessage());
+
               System.exit(0);
             }
             try{
@@ -268,7 +276,100 @@ public class GUI extends JFrame implements ActionListener {
             
             String inventory_update = "INSERT INTO inventory (product_id, itemname, total_amount, current_amount, restock) VALUES";
             inventory_update += " (" + splitted[0] + ", \'" + splitted[1] + "\', " + splitted[2] + ", " + splitted[3] + ", \'" + splitted[4] + "\');";
-            //System.out.println(inventory_update);
+            stmt.execute(inventory_update);
+            
+            }catch (Exception n){
+              n.printStackTrace();
+              System.err.println(n.getClass().getName()+": "+n.getMessage());
+              JOptionPane.showMessageDialog(null,"Error executing command.");
+            }
+            closeConnection(conn);
+          }
+        }
+        //update menu 
+        if (s.equals("Update Menu")){
+            // set the text of the label to the text of the field
+          text_output.setText(text_input.getText());
+          
+          // set the text of field to blank
+          text_input.setText("enter the text");
+
+          if (!(text_output.getText().equals("") || text_output.getText().equals("enter the text"))) {
+            Connection conn = null;
+            
+            try {
+              conn = DriverManager.getConnection(
+                "jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315331_08r_db",
+                "csce315_971_navya_0215",
+                "password");
+            } catch (Exception k) {
+              System.exit(0);
+            }
+            try{
+            
+            Statement stmt = conn.createStatement();
+            String[] splitted = text_output.getText().split("\\s+");
+            
+            String menu_update = "UPDATE drink_dictionary SET name = \'";
+            int splitted_length = splitted.length;
+            String drink_name = "";
+            for (int i = 1; i < splitted_length - 1; ++i) {
+                drink_name += splitted[i];
+    
+                if (i != splitted_length-2){
+
+                    drink_name+= " ";
+
+                }
+            }
+            menu_update += drink_name + "\', price = " + splitted[splitted_length -1] + "WHERE drink_id = \'" + splitted[0] + "\';";
+            stmt.execute(menu_update);
+            
+            }catch (Exception n){
+              n.printStackTrace();
+              System.err.println(n.getClass().getName()+": "+n.getMessage());
+              JOptionPane.showMessageDialog(null,"Error executing command.");
+            }
+            closeConnection(conn);
+          }
+        }
+
+        if (s.equals("Update Inventory")){
+            // set the text of the label to the text of the field
+          text_output_inventory.setText(text_input_inventory.getText());
+          
+          // set the text of field to blank
+          text_input_inventory.setText("enter the text");
+
+          if (!(text_output_inventory.getText().equals("") || text_output_inventory.getText().equals("enter the text"))) {
+            Connection conn = null;
+            
+            try {
+              conn = DriverManager.getConnection(
+                "jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315331_08r_db",
+                "csce315_971_navya_0215",
+                "password");
+            } catch (Exception k) {
+              System.exit(0);
+            }
+            try{
+            
+            Statement stmt = conn.createStatement();
+            String[] splitted = text_output_inventory.getText().split("\\s+");
+            
+            String inventory_update = "UPDATE drink_dictionary SET name = \'";
+            int splitted_length = splitted.length;
+            String item_name = "";
+            for (int i = 1; i < splitted_length - 1; ++i) {
+                item_name += splitted[i];
+    
+                if (i != splitted_length-2){
+
+                    item_name+= " ";
+
+                }
+            }
+            inventory_update += item_name + "\', price = " + splitted[splitted_length -1] + "WHERE drink_id = \'" + splitted[0] + "\';";
             stmt.execute(inventory_update);
             
             }catch (Exception n){
