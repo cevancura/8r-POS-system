@@ -151,7 +151,6 @@ public class GUI extends JFrame implements ActionListener {
           JFrame milkTeaFrame = new JFrame("Milk Tea Options");
           milkTeaFrame.setSize(400, 400);
           JPanel milkSubMenu = new JPanel(new GridLayout(2, 4));
-          milkSubMenu.setLayout(new BoxLayout(milkSubMenu, BoxLayout.Y_AXIS));
 
           // Create new buttons for the milk tea submenu
           JButton classic_mt = new JButton("Classic Milk Tea");
@@ -190,6 +189,50 @@ public class GUI extends JFrame implements ActionListener {
 
           // Make the new frame visible
           brewedTeaFrame.setVisible(true);
+        }
+        if (s.equals("Fruit Tea")) {
+          // Create a new frame for Milk Tea options
+          JFrame fruitTeaFrame = new JFrame("Fruit Tea Options");
+          fruitTeaFrame.setSize(400, 400);
+          JPanel fruitSubMenu = new JPanel(new GridLayout(2, 4));
+
+          // Create new buttons for the milk tea submenu
+          JButton mango_gt = new JButton("Mango Green Tea");
+          JButton winter_lem = new JButton("Wintermelon Lemonade");
+          JButton strawb_t = new JButton("Strawberry Tea");
+
+          // Add the new buttons to the submenu panel
+          fruitSubMenu.add(mango_gt);
+          fruitSubMenu.add(winter_lem);
+          fruitSubMenu.add(strawb_t);
+
+          // Add the submenu panel to the employee_frame
+          fruitTeaFrame.add(fruitSubMenu);
+
+          // Make the new frame visible
+          fruitTeaFrame.setVisible(true);
+        }
+        if (s.equals("Fresh Milk")) {
+          // Create a new frame for Milk Tea options
+          JFrame freshMilkFrame = new JFrame("Fresh Milk Options");
+          freshMilkFrame.setSize(400, 400);
+          JPanel freshMilkSubMenu = new JPanel(new GridLayout(2, 4));
+
+          // Create new buttons for the milk tea submenu
+          JButton fresh_mt = new JButton("Fresh Milk Tea");
+          JButton winter_fresh = new JButton("Wintermelon with Fresh Milk");
+          JButton cocoa_fresh = new JButton("Cocoa Lover with Fresh Milk");
+
+          // Add the new buttons to the submenu panel
+          freshMilkSubMenu.add(fresh_mt);
+          freshMilkSubMenu.add(winter_fresh);
+          freshMilkSubMenu.add(cocoa_fresh);
+
+          // Add the submenu panel to the employee_frame
+          freshMilkFrame.add(freshMilkSubMenu);
+
+          // Make the new frame visible
+          freshMilkFrame.setVisible(true);
         }
     }
 
