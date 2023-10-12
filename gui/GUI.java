@@ -22,6 +22,10 @@ public class GUI extends JFrame implements ActionListener {
     static JTextArea out;
     static JTable table_menu;
     static JTable table_inventory;
+    static JFrame add_menu;
+    static JFrame add_inventory;
+    static JFrame update_menu;
+    static JFrame update_inventory;
 
 
     public static Connection createConnection() {
@@ -108,7 +112,33 @@ public class GUI extends JFrame implements ActionListener {
 
       //adding a save button 
       JButton save_btn = new JButton("Add Menu Item");
-      JButton save_btn_inventory= new JButton("Add Item");
+      JButton save_btn_inventory= new JButton("Add Inventory Item");
+
+      //creating a pop up for when the user wants to add or update iteam 
+      add_menu = new JFrame("Add Item Frame");
+      JPanel p_add_menu = new JPanel();
+      add_inventory = new JFrame("Add Item Inventory Frame");
+      JPanel p_add_inventory = new JPanel();
+      update_menu = new JFrame("Update Menu Item");
+      JPanel p_update_menu = new JPanel();
+      update_inventory= new JFrame("Update Inventory Item");
+      JPanel p_updte_inventory = new JPanel();
+
+
+      add_menu.setSize(200, 200);
+      add_menu.add(p_add_menu);
+      add_inventory.setSize(200, 200);
+      add_inventory.add(p_add_inventory);
+      update_menu.setSize(200, 200);
+      update_inventory.setSize(200, 200);
+
+      JButton add_menu_btn = new JButton("Save Menu Item");
+      p_add_menu.add(add_menu_btn);
+      JButton add_inventory_btn = new JButton("Save Inventory Item");
+      p_add_inventory.add(add_inventory_btn);
+
+      add_menu_btn.addActionListener(s);
+      add_inventory_btn.addActionListener(s);
 
       
       p_inventory.add(save_btn_inventory);
@@ -119,24 +149,25 @@ public class GUI extends JFrame implements ActionListener {
       //inserting into the database
       text_input = new JTextField("enter the text");
       text_output = new JTextArea("");
-      p_menu.add(text_input);
-      p_menu.add(text_output);
+      p_add_menu.add(text_input);
+      p_add_menu.add(text_output);
+
 
       text_input_inventory = new JTextField("enter the text");
       text_output_inventory = new JTextArea("");
-      p_inventory.add(text_input_inventory);
-      p_inventory.add(text_output_inventory);
+      p_add_inventory.add(text_input_inventory);
+      p_add_inventory.add(text_output_inventory);
 
       //updating the database
       JButton update_menu = new JButton("Update Menu");
       JButton update_inventory = new JButton("Update Inventory");
+
 
       p_inventory.add(update_inventory);
       p_menu.add(update_menu);
       update_menu.addActionListener(s);
       update_inventory.addActionListener(s);
 
-      
       
       String[] inventory_cols = {"product_id", "itemname", "total_amount", "current_amount", "restock"};
       String[] menu_cols = {"drink_id", "name", "price"};
@@ -249,6 +280,14 @@ public class GUI extends JFrame implements ActionListener {
         }
         if (s.equals("Add Menu Item")){
             // set the text of the label to the text of the field
+          add_menu.setVisible(true);
+        }
+        if (s.equals("Add Inventory Item")){
+          add_inventory.setVisible(true);
+        }
+
+        if(s.equals("Save Menu Item")){
+        
           text_output.setText(text_input.getText());
           
           // set the text of field to blank
@@ -274,7 +313,8 @@ public class GUI extends JFrame implements ActionListener {
             closeConnection(conn);
           }
         }
-        if (s.equals("Add Item")){
+      
+        if (s.equals("Save Inventory Item")){
           // set the text of the label to the text of the field
           text_output_inventory.setText(text_input_inventory.getText());
           
