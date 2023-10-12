@@ -125,6 +125,8 @@ public class GUI extends JFrame implements ActionListener {
       JButton customizations = new JButton("Customizations");
       JButton order = new JButton("View Order");
       order.setBackground(Color.GREEN);
+      order.setOpaque(true);
+      order.setBorderPainted(false);
 
       p_emplo.add(milk_tea);
       p_emplo.add(brewed_tea);
@@ -246,6 +248,8 @@ public class GUI extends JFrame implements ActionListener {
                   else {
                     currentCustomizations.add(selectedItem);
                     custom.setBackground(Color.BLUE);
+                    custom.setOpaque(true);
+                    custom.setBorderPainted(false);
                   }
 
                   // Add it to the ArrayList
@@ -263,6 +267,8 @@ public class GUI extends JFrame implements ActionListener {
       // JPanel continueSubMenu = new JPanel();
       JButton continueButton = new JButton("Continue");
       continueButton.setBackground(Color.RED);
+      continueButton.setOpaque(true);
+      continueButton.setBorderPainted(false);
       // continueSubMenu.add(continueButton);
       customizationSubMenu.add(continueButton);
 
