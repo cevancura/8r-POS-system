@@ -202,16 +202,34 @@ public class GUI extends JFrame implements ActionListener {
           fillIDList(10);
 
           // full order string
-          String order_str = current_order_id_str + "," + formatted_date + "," + formatted_time + "," + String.valueOf(num_drinks) + "," + String.valueOf(total_cost);
+          String order_str = "('" + current_order_id_str + "', '" + formatted_date + "', '" + formatted_time + "', '" + String.valueOf(num_drinks) + "', '" + String.valueOf(total_cost);
           for (String id : order_drinks) {
-            order_str += "," + id;
+            order_str += "', '" + id;
           }
+          order_str += "');";
 
           // write order
           System.out.println(order_str);
 
+          try{
+            //create a statement object
+            Statement stmt = conn.createStatement();
+            //create a SQL statement
+            String sqlStatement = "INSERT INTO order_history VALUES " + order_str;
+            //send statement to DBMS
+            stmt.execute(sqlStatement);
+          } catch (Exception e){
+            System.out.println(e.toString());
+            JOptionPane.showMessageDialog(null,"Error accessing Database after Write.");
+          }
+
           // update paid
           paid = false;
+          // reset values
+          num_drinks = 0;
+          total_cost = 0.0;
+          order_drinks.clear();
+          selectedItems.clear();
         }
       }
 
@@ -556,11 +574,6 @@ public class GUI extends JFrame implements ActionListener {
             public void actionPerformed(ActionEvent e) {
               String s = e.getActionCommand();
               if (s == "Finish and Pay") {
-                // reset values
-                num_drinks = 0;
-                total_cost = 0.0;
-                order_drinks.clear();
-                selectedItems.clear();
                 // close order frame
                 paid = true;
                 orderFrame.dispose();
