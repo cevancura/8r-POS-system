@@ -29,6 +29,7 @@ public class GUI extends JFrame implements ActionListener {
     static JFrame employee_frame;
     static Integer num_drinks = 0;
     static double total_cost = 0.0;
+    static boolean paid = false;
 
     // drink list per order
     static ArrayList<String> order_drinks = new ArrayList<>();
@@ -151,53 +152,54 @@ public class GUI extends JFrame implements ActionListener {
       // do not close connection until done with all orders
       // FIX ME (currently set to after close is clicked)
       while (f.isDisplayable()) {
-        continue;
-      }
+        if (paid) {
+          // get current order number (next after max)
+          String prev_order_id_str = "";
+          Integer current_order_id_int = 0;
+          String current_order_id_str = "";
+          try{
+            //create a statement object
+            Statement stmt = conn.createStatement();
+            //create a SQL statement
+            String sqlStatement = "SELECT MAX(order_id) FROM order_history;";
+            //send statement to DBMS
+            ResultSet result = stmt.executeQuery(sqlStatement);
+            if (result.next()) {
+              prev_order_id_str += result.getString("max");
+            }
+            try {
+              current_order_id_int = Integer.parseInt(prev_order_id_str) + 1;
+              current_order_id_str = String.valueOf(current_order_id_int);
+            }
+            catch (NumberFormatException e) {}
+          } catch (Exception e){
+            JOptionPane.showMessageDialog(null,"Error accessing Database.");
+          }
 
+          // get and format date and time
+          LocalDate current_date = LocalDate.now();
+          LocalTime current_time = LocalTime.now();
+          DateTimeFormatter date_format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+          DateTimeFormatter time_format = DateTimeFormatter.ofPattern("HH:mm:ss");
+          String formatted_date = current_date.format(date_format);
+          String formatted_time = current_time.format(time_format);
 
-      // get current order number (next after max)
-      String prev_order_id_str = "";
-      Integer current_order_id_int = 0;
-      String current_order_id_str = "";
-      try{
-        //create a statement object
-        Statement stmt = conn.createStatement();
-        //create a SQL statement
-        String sqlStatement = "SELECT MAX(order_id) FROM order_history;";
-        //send statement to DBMS
-        ResultSet result = stmt.executeQuery(sqlStatement);
-        if (result.next()) {
-          prev_order_id_str += result.getString("max");
+          // drink codes for drinks 1-10 (0000 if none)
+          fillIDList(10);
+
+          // full order string
+          String order_str = current_order_id_str + "," + formatted_date + "," + formatted_time + "," + String.valueOf(num_drinks) + "," + String.valueOf(total_cost);
+          for (String id : order_drinks) {
+            order_str += "," + id;
+          }
+
+          // write order
+          System.out.println(order_str);
+
+          // update paid
+          paid = false;
         }
-        try {
-          current_order_id_int = Integer.parseInt(prev_order_id_str) + 1;
-          current_order_id_str = String.valueOf(current_order_id_int);
-        }
-        catch (NumberFormatException e) {}
-      } catch (Exception e){
-        JOptionPane.showMessageDialog(null,"Error accessing Database.");
       }
-      System.out.println(current_order_id_str);
-
-      // get and format date and time
-      LocalDate current_date = LocalDate.now();
-      LocalTime current_time = LocalTime.now();
-      DateTimeFormatter date_format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-      DateTimeFormatter time_format = DateTimeFormatter.ofPattern("HH:mm:ss");
-      String formatted_date = current_date.format(date_format);
-      String formatted_time = current_time.format(time_format);
-
-      // drink codes for drinks 1-10 (0000 if none)
-      fillIDList(10);
-
-      // full order string
-      String order_str = current_order_id_str + "," + formatted_date + "," + formatted_time + "," + String.valueOf(num_drinks) + "," + String.valueOf(total_cost);
-      for (String id : order_drinks) {
-        order_str += "," + id;
-      }
-
-      // write order
-      System.out.println(order_str);
 
       //closing the connection
       try {
@@ -299,11 +301,75 @@ public class GUI extends JFrame implements ActionListener {
       return customizationsFrame;
     }
 
+    public static void typeWindow(String drinkType, int size_x, int size_y) throws IOException {
+      // Create a new frame for type options
+      JFrame outsideFrame = new JFrame(drinkType + " Options");
+      outsideFrame.setSize(800, 800);
+      JPanel subMenu = new JPanel(new GridLayout(size_x, size_y));
+
+      // go through drink names
+      ArrayList<String> drinkNames = null;
+      try {
+        drinkNames = getDrinkNames("drink_dictionary.csv");
+      }
+      catch (IOException error1) {
+        error1.printStackTrace();
+      }
+
+      for (String drink : drinkNames) {
+        // if the right type
+        if (drink.length() >= drinkType.length() && drink.substring(0, drinkType.length()).equals(drinkType)) {
+          JButton mt = new JButton(drink);
+          mt.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+              // Extract the text from the clicked button
+              String selectedItem = mt.getText();
+              // Add it to the ArrayList
+              selectedItems.add(selectedItem);
+
+              // add to number of drinks and total cost
+              num_drinks += 1;
+              try {
+                  total_cost += getDrinkCost("drink_dictionary.csv", drink);
+              }
+              catch (IOException error1) {
+                error1.printStackTrace();
+              }
+              try {
+                order_drinks.add(getDrinkID("drink_dictionary.csv", drink));
+              }
+              catch (IOException error1) {
+                error1.printStackTrace();
+              }
+              
+
+              // Close the outsideFrame
+              outsideFrame.dispose();
+
+              // Open the new frame here (e.g., a new options frame)
+              JFrame customsFrame = new JFrame("Customizations");
+              try {
+                customsFrame = customizationWindow();
+              } catch (IOException error1) {
+                  error1.printStackTrace();
+              }
+
+              customsFrame.setSize(800, 800);
+              customsFrame.setVisible(true);
+            }
+          });
+          subMenu.add(mt);
+        }
+      }
+
+      // add submenu to frame and make visible
+      outsideFrame.add(subMenu);
+      outsideFrame.setVisible(true);
+    }
 
     // if button is pressed
-    public void actionPerformed(ActionEvent e)
-    {
-
+    public void actionPerformed(ActionEvent e) {
         String s = e.getActionCommand();
         if (s.equals("Close")) {
             f.dispose();
@@ -317,9 +383,17 @@ public class GUI extends JFrame implements ActionListener {
         if (s.equals("View Order")) {
           JFrame orderFrame = new JFrame("Viewing Order");
           orderFrame.setSize(400,400);
+          
+          JPanel totalSubMenu = new JPanel(new BorderLayout());
+          JPanel buttonSubMenu = new JPanel(new GridLayout(0,2));
+          JPanel orderSubMenu = new JPanel(new GridLayout(0, 2));
 
+          
           JTextArea order_text = new JTextArea();
           order_text.setEditable(false);
+
+          JTextArea prices_text = new JTextArea();
+          prices_text.setEditable(false);
 
           ArrayList<String> drinkNames = null;
           try {
@@ -332,256 +406,144 @@ public class GUI extends JFrame implements ActionListener {
           for (String selectedItem : selectedItems) {
             if (index == 0) {
               order_text.append(selectedItem);
+              try {
+                prices_text.append(String.valueOf(getDrinkCost("drink_dictionary.csv", selectedItem)));
+              }
+              catch (IOException error1) {
+                error1.printStackTrace();
+              }
             }
             else {
               if (drinkNames.contains(selectedItem)) {
                 order_text.append("\n\n");
+                prices_text.append("\n\n");
               }
               else {
                 order_text.append("\n");
+                prices_text.append("\n");
               }
               order_text.append(selectedItem);
+              try {
+                prices_text.append(String.valueOf(getCustomizationCost("customs.csv", selectedItem)));
+              }
+              catch (IOException error1) {
+                error1.printStackTrace();
+              }
             }
             index++;
           }
+
+          order_text.append("\n\n\n\tTotal Price");
+          prices_text.append("\n\n\n" + String.valueOf(total_cost));
+
+          // add buttons
+          JButton more_drinks = new JButton("Add More Drinks");
+          JButton finish_and_pay = new JButton("Finish and Pay");
+
+          // check if clicked
+          more_drinks.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+              String s = e.getActionCommand();
+              if (s == "Add More Drinks") {
+                orderFrame.dispose();
+              }
+            }
+          }); 
+          finish_and_pay.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+              String s = e.getActionCommand();
+              if (s == "Finish and Pay") {
+                // reset values
+                num_drinks = 0;
+                total_cost = 0.0;
+                order_drinks.clear();
+                selectedItems.clear();
+                // close order frame
+                paid = true;
+                orderFrame.dispose();
+              }
+            }
+          }); 
           
-          orderFrame.add(order_text);
+          orderSubMenu.add(order_text);
+          orderSubMenu.add(prices_text);
+
+          buttonSubMenu.add(more_drinks);
+          buttonSubMenu.add(finish_and_pay);
+
+          totalSubMenu.add(orderSubMenu);
+          totalSubMenu.add(buttonSubMenu, BorderLayout.PAGE_END);
+
+          // orderFrame.add(orderSubMenu);
+
+          orderFrame.add(totalSubMenu);
+
           orderFrame.setVisible(true);
         }
         if (s.equals("Milk Tea")) {
           // Create a new frame for Milk Tea options
-          JFrame milkTeaFrame = new JFrame("Milk Tea Options");
-          milkTeaFrame.setSize(800, 800);
-          JPanel milkSubMenu = new JPanel(new GridLayout(4, 4));
-
-          ArrayList<String> drinkNames = null;
           try {
-            drinkNames = getDrinkNames("drink_dictionary.csv");
+            typeWindow("Milk Tea", 4, 4);
           }
           catch (IOException error1) {
             error1.printStackTrace();
           }
-
-          //ArrayList<String> selectedItems = new ArrayList<>();
-
-          for (String drink : drinkNames) {
-            if (drink.length() >= 8 && drink.substring(0, 8).equals("Milk Tea")) {
-              JButton mt = new JButton(drink);
-              mt.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // Extract the text from the clicked button
-                    String selectedItem = mt.getText();
-                    // Add it to the ArrayList
-                    selectedItems.add(selectedItem);
-
-                    // add to number of drinks and total cost
-                    num_drinks += 1;
-                    try {
-                       total_cost += getDrinkCost("drink_dictionary.csv", drink);
-                    }
-                    catch (IOException error1) {
-                      error1.printStackTrace();
-                    }
-                    try {
-                      order_drinks.add(getDrinkID("drink_dictionary.csv", drink));
-                    }
-                    catch (IOException error1) {
-                      error1.printStackTrace();
-                    }
-                   
-
-                    // Close the milkTeaFrame
-                    milkTeaFrame.dispose();
-
-
-                    // Open the new frame here (e.g., a new options frame)
-                    JFrame customsFrame = new JFrame("Customizations");
-                    try {
-                      customsFrame = customizationWindow();
-                    } catch (IOException error1) {
-                        error1.printStackTrace();
-                    }
-
-                    customsFrame.setSize(800, 800);
-                    customsFrame.setVisible(true);
-
-
-                    // NOTE: ADD CUSTOMIZATIONS IN A CHECKBOX, FOR EVERY BOX THAT IS CHECKED, 
-                    // ADD THAT TO selectedItems AND ADD THAT TO THE ORDER
-                }
-            });
-              milkSubMenu.add(mt);
-            }
-          }
-
-          // Add the submenu panel to the employee_frame
-          milkTeaFrame.add(milkSubMenu);
-
-          // Make the new frame visible
-          milkTeaFrame.setVisible(true);
         }
         if (s.equals("Brewed Tea")) {
           // Create a new frame for Brewed Tea options
-          JFrame brewedTeaFrame = new JFrame("Brewed Tea Options");
-          brewedTeaFrame.setSize(800, 800);
-          JPanel brewedSubMenu = new JPanel(new GridLayout(2, 4));
-
-          ArrayList<String> drinkNames = null;
           try {
-            drinkNames = getDrinkNames("drink_dictionary.csv");
+            typeWindow("Brewed Tea", 2, 4);
           }
           catch (IOException error1) {
             error1.printStackTrace();
           }
-
-          for (String drink : drinkNames) {
-            if (drink.contains("Brewed Tea")) {
-              JButton bt = new JButton(drink);
-              brewedSubMenu.add(bt);
-            }
-          }
-
-          // Add the submenu panel to the employee_frame
-          brewedTeaFrame.add(brewedSubMenu);
-
-          // Make the new frame visible
-          brewedTeaFrame.setVisible(true);
         }
         if (s.equals("Fruit Tea")) {
           // Create a new frame for Fruit Tea options
-          JFrame fruitTeaFrame = new JFrame("Fruit Tea Options");
-          fruitTeaFrame.setSize(800, 800);
-          JPanel fruitSubMenu = new JPanel(new GridLayout(3, 4));
-
-          ArrayList<String> drinkNames = null;
           try {
-            drinkNames = getDrinkNames("drink_dictionary.csv");
+            typeWindow("Fruit Tea", 3, 4);
           }
           catch (IOException error1) {
             error1.printStackTrace();
           }
-
-          for (String drink : drinkNames) {
-            if (drink.contains("Fruit Tea")) {
-              JButton ft = new JButton(drink);
-              fruitSubMenu.add(ft);
-            }
-          }
-
-          // Add the submenu panel to the employee_frame
-          fruitTeaFrame.add(fruitSubMenu);
-
-          // Make the new frame visible
-          fruitTeaFrame.setVisible(true);
         }
         if (s.equals("Fresh Milk")) {
           // Create a new frame for Fresh Milk options
-          JFrame freshMilkFrame = new JFrame("Fresh Milk Options");
-          freshMilkFrame.setSize(800, 800);
-          JPanel freshMilkSubMenu = new JPanel(new GridLayout(3, 3));
-
-          ArrayList<String> drinkNames = null;
           try {
-            drinkNames = getDrinkNames("drink_dictionary.csv");
+            typeWindow("Fresh Milk", 3, 3);
           }
           catch (IOException error1) {
             error1.printStackTrace();
           }
-
-          for (String drink : drinkNames) {
-            if (drink.contains("Fresh Milk")) {
-              JButton fm = new JButton(drink);
-              freshMilkSubMenu.add(fm);
-            }
-          }
-
-          // Add the submenu panel to the employee_frame
-          freshMilkFrame.add(freshMilkSubMenu);
-
-          // Make the new frame visible
-          freshMilkFrame.setVisible(true);
         }
         if (s.equals("Ice Blended")) {
           // Create a new frame for Ice Blended options
-          JFrame blendedFrame = new JFrame("Ice Blended Options");
-          blendedFrame.setSize(800, 800);
-          JPanel blendedSubMenu = new JPanel(new GridLayout(3, 3));
-
-          ArrayList<String> drinkNames = null;
           try {
-            drinkNames = getDrinkNames("drink_dictionary.csv");
+            typeWindow("Ice Blended", 3, 3);
           }
           catch (IOException error1) {
             error1.printStackTrace();
           }
-
-          for (String drink : drinkNames) {
-            if (drink.contains("Ice Blended")) {
-              JButton ib = new JButton(drink);
-              blendedSubMenu.add(ib);
-            }
-          }
-
-          // Add the submenu panel to the employee_frame
-          blendedFrame.add(blendedSubMenu);
-
-          // Make the new frame visible
-          blendedFrame.setVisible(true);
         }
         if (s.equals("Tea Mojito")) {
           // Create a new frame for Mojito options
-          JFrame mojitoFrame = new JFrame("Tea Mojito Options");
-          mojitoFrame.setSize(800, 800);
-          JPanel mojitoSubMenu = new JPanel(new GridLayout(2, 2));
-
-          ArrayList<String> drinkNames = null;
           try {
-            drinkNames = getDrinkNames("drink_dictionary.csv");
+            typeWindow("Mojito", 2, 2);
           }
           catch (IOException error1) {
             error1.printStackTrace();
           }
-
-          for (String drink : drinkNames) {
-            if (drink.contains("Mojito")) {
-              JButton mj = new JButton(drink);
-              mojitoSubMenu.add(mj);
-            }
-          }
-
-          // Add the submenu panel to the employee_frame
-          mojitoFrame.add(mojitoSubMenu);
-
-          // Make the new frame visible
-          mojitoFrame.setVisible(true);
         }
         if (s.equals("Creama")) {
           // Create a new frame for Creama options
-          JFrame creamaFrame = new JFrame("Creama Options");
-          creamaFrame.setSize(800, 800);
-          JPanel creamaSubMenu = new JPanel(new GridLayout(2, 4));
-
-          ArrayList<String> drinkNames = null;
           try {
-            drinkNames = getDrinkNames("drink_dictionary.csv");
+            typeWindow("Creama", 2, 4);
           }
           catch (IOException error1) {
             error1.printStackTrace();
           }
-
-          for (String drink : drinkNames) {
-            if (drink.contains("Creama")) {
-              JButton cr = new JButton(drink);
-              creamaSubMenu.add(cr);
-            }
-          }
-
-          // Add the submenu panel to the employee_frame
-          creamaFrame.add(creamaSubMenu);
-
-          // Make the new frame visible
-          creamaFrame.setVisible(true);
         }
 
         if (s.equals("Customizations")) {
@@ -610,8 +572,7 @@ public class GUI extends JFrame implements ActionListener {
           customizationsFrame.setVisible(true);
       }
  
- 
-      }
+    }
     
     public static void fillIDList(int maxDrinks) {
       while (order_drinks.size() < maxDrinks) {
