@@ -247,31 +247,36 @@ public class GUI extends JFrame implements ActionListener {
           employee_frame.setVisible(true);
         }
         if (s.equals("View Order")) {
-          // DISPLAY SELECTED ITEM LIKE 
-          // - drink, custom, custom
-          // - drink
           JFrame orderFrame = new JFrame("Viewing Order");
           orderFrame.setSize(400,400);
 
           JTextArea order_text = new JTextArea();
           order_text.setEditable(false);
 
+          ArrayList<String> drinkNames = null;
+          try {
+            drinkNames = getDrinkNames("drink_dictionary.csv");
+          }
+          catch (IOException error1) {
+            error1.printStackTrace();
+          }
+          int index = 0;
           for (String selectedItem : selectedItems) {
-            order_text.append(selectedItem);
-            ArrayList<String> drinkNames = null;
-            try {
-              drinkNames = getDrinkNames("drink_dictionary.csv");
-            }
-            catch (IOException error1) {
-              error1.printStackTrace();
-            }
-            if (drinkNames.contains(selectedItem)) {
-              order_text.append("\n");
+            if (index == 0) {
+              order_text.append(selectedItem);
             }
             else {
-              order_text.append(", ");
+              if (drinkNames.contains(selectedItem)) {
+                order_text.append("\n\n");
+              }
+              else {
+                order_text.append("\n");
+              }
+              order_text.append(selectedItem);
             }
+            index++;
           }
+          
           orderFrame.add(order_text);
           orderFrame.setVisible(true);
         }
