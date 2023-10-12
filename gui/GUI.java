@@ -374,6 +374,38 @@ public class GUI extends JFrame implements ActionListener {
       outsideFrame.setVisible(true);
     }
 
+    public static void payWindow () {
+      JFrame outsideFrame = new JFrame("Payment Processed");
+      outsideFrame.setSize(400, 400);
+      JPanel buttonSubMenu = new JPanel(new GridLayout(0,2));
+
+      JButton employee_exit = new JButton("Employee Exit");
+      JButton another_order = new JButton("Another Order");
+
+      employee_exit.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          // Close the outsideFrame and employee frame
+          outsideFrame.dispose();
+          employee_frame.dispose();
+        }
+      });
+
+      another_order.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          // Close the outsideFrame
+          outsideFrame.dispose();
+        }
+      });
+
+      buttonSubMenu.add(employee_exit);
+      buttonSubMenu.add(another_order);
+
+      outsideFrame.add(buttonSubMenu);
+      outsideFrame.setVisible(true);
+    }
+
     // if button is pressed
     public void actionPerformed(ActionEvent e) {
         String s = e.getActionCommand();
@@ -476,6 +508,8 @@ public class GUI extends JFrame implements ActionListener {
                 // close order frame
                 paid = true;
                 orderFrame.dispose();
+
+                payWindow();
               }
             }
           }); 
