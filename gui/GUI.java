@@ -19,6 +19,10 @@ public class GUI extends JFrame implements ActionListener {
     static JTextArea text_output;
     static JTextField text_input_inventory;
     static JTextArea text_output_inventory;
+    static JTextField update_text_input;
+    static JTextArea update_text_output;
+    static JTextField update_input_inventory;
+    static JTextArea update_output_inventory;
     static JTextArea out;
     static JTable table_menu;
     static JTable table_inventory;
@@ -122,7 +126,7 @@ public class GUI extends JFrame implements ActionListener {
       update_menu = new JFrame("Update Menu Item");
       JPanel p_update_menu = new JPanel();
       update_inventory= new JFrame("Update Inventory Item");
-      JPanel p_updte_inventory = new JPanel();
+      JPanel p_update_inventory = new JPanel();
 
 
       add_menu.setSize(200, 200);
@@ -130,15 +134,23 @@ public class GUI extends JFrame implements ActionListener {
       add_inventory.setSize(200, 200);
       add_inventory.add(p_add_inventory);
       update_menu.setSize(200, 200);
+      update_menu.add(p_update_menu);
       update_inventory.setSize(200, 200);
+      update_inventory.add(p_update_inventory);
 
       JButton add_menu_btn = new JButton("Save Menu Item");
       p_add_menu.add(add_menu_btn);
       JButton add_inventory_btn = new JButton("Save Inventory Item");
       p_add_inventory.add(add_inventory_btn);
+      JButton update_menu_btn = new JButton("Save Updates for Menu Item");
+      p_update_menu.add(update_menu_btn);
+      JButton update_inventory_btn = new JButton("Save Updates for Inventory Item");
+      p_update_inventory.add(update_inventory_btn);
 
       add_menu_btn.addActionListener(s);
       add_inventory_btn.addActionListener(s);
+      update_menu_btn.addActionListener(s);
+      update_inventory_btn.addActionListener(s);
 
       
       p_inventory.add(save_btn_inventory);
@@ -168,6 +180,20 @@ public class GUI extends JFrame implements ActionListener {
       update_menu.addActionListener(s);
       update_inventory.addActionListener(s);
 
+
+      //text area for UPDATES to menu and inventory 
+      update_text_input = new JTextField("enter the text");
+      update_text_output = new JTextArea("");
+      p_update_menu.add(update_text_input);
+      p_update_inventory.add(update_text_output);
+
+
+      update_input_inventory = new JTextField("enter the text");
+      update_output_inventory = new JTextArea("");
+      p_update_inventory.add(update_input_inventory);
+      p_update_inventory.add(update_output_inventory);
+
+
       
       String[] inventory_cols = {"product_id", "itemname", "total_amount", "current_amount", "restock"};
       String[] menu_cols = {"drink_id", "name", "price"};
@@ -175,6 +201,7 @@ public class GUI extends JFrame implements ActionListener {
       String menu_items = "";
       ArrayList<ArrayList<String>> data_inventory = new ArrayList<>();
       ArrayList<ArrayList<String>> data_menu = new ArrayList<>();
+
       try{
         //create a statement object
         Statement stmt = conn.createStatement();
@@ -278,7 +305,7 @@ public class GUI extends JFrame implements ActionListener {
         if (s.equals("Menu")){
           drinks_frame.setVisible(true);
         }
-        if (s.equals("Add Menu Item")){
+        if (s.equals("Add Menu Item")){ 
             // set the text of the label to the text of the field
           add_menu.setVisible(true);
         }
@@ -343,18 +370,21 @@ public class GUI extends JFrame implements ActionListener {
         }
         //update menu 
         if (s.equals("Update Menu")){
+          update_menu.setVisible(true);
+        }
+        if(s.equals("Save Updates for Menu Item")){
             // set the text of the label to the text of the field
-          text_output.setText(text_input.getText());
+          update_text_output.setText(update_text_input.getText());
           
           // set the text of field to blank
-          text_input.setText("enter the text");
+          update_text_input.setText("enter the text");
 
-          if (!(text_output.getText().equals("") || text_output.getText().equals("enter the text"))) {
+          if (!(update_text_output.getText().equals("") || update_text_output.getText().equals("enter the text"))) {
             
             try{
             
             Statement stmt = conn.createStatement();
-            String[] splitted = text_output.getText().split("\\s+");
+            String[] splitted = update_text_output.getText().split("\\s+");
             
             String menu_update = "UPDATE drink_dictionary SET name = \'";
             int splitted_length = splitted.length;
@@ -370,7 +400,7 @@ public class GUI extends JFrame implements ActionListener {
             }
             menu_update += drink_name + "\', price = " + splitted[splitted_length -1] + "WHERE drink_id = \'" + splitted[0] + "\';";
             stmt.execute(menu_update);
-            out.setText("The menu has been updated to " + text_output.getText());
+            out.setText("The menu has been updated to " + update_text_output.getText());
             
             }catch (Exception n){
               n.printStackTrace();
@@ -382,18 +412,22 @@ public class GUI extends JFrame implements ActionListener {
         }
 
         if (s.equals("Update Inventory")){
+          update_inventory.setVisible(true);
+        }
+
+        if(s.equals("Save Updates for Inventory Item")){
             // set the text of the label to the text of the field
-          text_output_inventory.setText(text_input_inventory.getText());
+         update_output_inventory.setText(update_input_inventory.getText());
           
           // set the text of field to blank
-          text_input_inventory.setText("enter the text");
+          update_input_inventory.setText("enter the text");
 
-          if (!(text_output_inventory.getText().equals("") || text_output_inventory.getText().equals("enter the text"))) {
+          if (!(update_output_inventory.getText().equals("") || update_output_inventory.getText().equals("enter the text"))) {
             
             try{
             
             Statement stmt = conn.createStatement();
-            String[] splitted = text_output_inventory.getText().split("\\s+");
+            String[] splitted = update_output_inventory.getText().split("\\s+");
             
             String inventory_update = "UPDATE inventory SET itemname = \'";
             int splitted_length = splitted.length;
@@ -410,7 +444,7 @@ public class GUI extends JFrame implements ActionListener {
 
             inventory_update += item_name + "\', total_amount = " + splitted[splitted_length -3] + ", current_amount = " + splitted[splitted_length -2] +  ", restock = \'" + splitted[splitted_length-1]+ "\' WHERE product_id = " + splitted[0] + ";";
             stmt.execute(inventory_update);
-            out.setText("The inventory item has been updated to " + text_output_inventory.getText());
+            out.setText("The inventory item has been updated to " + update_output_inventory.getText());
             
             }catch (Exception n){
               n.printStackTrace();
