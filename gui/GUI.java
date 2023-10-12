@@ -24,6 +24,8 @@ public class GUI extends JFrame implements ActionListener {
     static JFrame manager_frame;
     static JFrame employee_frame;
 
+    static ArrayList<String> selectedItems = new ArrayList<>();
+
     public static void main(String[] args)
     {
       //Building the connection
@@ -112,6 +114,7 @@ public class GUI extends JFrame implements ActionListener {
       JButton creama = new JButton("Creama");
       JButton customizations = new JButton("Customizations");
       JButton order = new JButton("View Order");
+      order.setBackground(Color.GREEN);
 
       p_emplo.add(milk_tea);
       p_emplo.add(brewed_tea);
@@ -144,7 +147,7 @@ public class GUI extends JFrame implements ActionListener {
       }
     }
 
-
+    // make customization window
     public static JFrame customizationWindow() throws IOException {
       // Create a new frame for Customization options
       JFrame customizationsFrame = new JFrame("Customization Options");
@@ -162,7 +165,48 @@ public class GUI extends JFrame implements ActionListener {
           String customization = customizationNames.get(i);
           JButton custom = new JButton(customization);
           customizationSubMenu.add(custom);
+
+
+          // check if clicked
+          custom.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                  // Extract the text from the clicked button
+                  String selectedItem = custom.getText();
+                  // Add it to the ArrayList
+                  selectedItems.add(selectedItem);
+
+                  for (String item : selectedItems) {
+                    System.out.println(item);
+                  }
+
+                  // change color 
+                  custom.setBackground(Color.BLUE);
+
+                  // NOTE: ADD CUSTOMIZATIONS IN A CHECKBOX, FOR EVERY BOX THAT IS CHECKED, 
+                  // ADD THAT TO selectedItems AND ADD THAT TO THE ORDER
+                }
+            });
       }
+
+      // continue button 
+      // JPanel continueSubMenu = new JPanel();
+      JButton continueButton = new JButton("Continue");
+      continueButton.setBackground(Color.RED);
+      // continueSubMenu.add(continueButton);
+      customizationSubMenu.add(continueButton);
+
+      continueButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          String s = e.getActionCommand();
+          if (s == "Continue") {
+            customizationsFrame.dispose();
+          }
+        }
+      });
+      
+      // customizationsFrame.add(continueSubMenu);
   
       // Add the submenu panel to the customizationsFrame
       customizationsFrame.add(customizationSubMenu);
@@ -255,8 +299,10 @@ public class GUI extends JFrame implements ActionListener {
                     } catch (IOException error1) {
                         error1.printStackTrace();
                     }
-                    customsFrame.setSize(500, 500);
+
+                    customsFrame.setSize(800, 800);
                     customsFrame.setVisible(true);
+
 
                     // NOTE: ADD CUSTOMIZATIONS IN A CHECKBOX, FOR EVERY BOX THAT IS CHECKED, 
                     // ADD THAT TO selectedItems AND ADD THAT TO THE ORDER
