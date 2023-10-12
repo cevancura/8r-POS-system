@@ -123,11 +123,19 @@ public class GUI extends JFrame implements ActionListener {
       JButton ice_blended = new JButton("Ice Blended");
       JButton tea_mojito = new JButton("Tea Mojito");
       JButton creama = new JButton("Creama");
-      JButton customizations = new JButton("Customizations");
+      // JButton customizations = new JButton("Customizations");
+      JButton employee_exit = new JButton("Employee Exit");
+      employee_exit.setBackground(Color.GRAY);
+      employee_exit.setOpaque(true);
+
+      JButton cancel_order = new JButton("Cancel Order");
+      cancel_order.setBackground(Color.RED);
+      cancel_order.setOpaque(true);
+
       JButton order = new JButton("View Order");
       order.setBackground(Color.GREEN);
       order.setOpaque(true);
-      order.setBorderPainted(false);
+      // order.setBorderPainted(false);
 
       p_emplo.add(milk_tea);
       p_emplo.add(brewed_tea);
@@ -136,7 +144,9 @@ public class GUI extends JFrame implements ActionListener {
       p_emplo.add(ice_blended);
       p_emplo.add(tea_mojito);
       p_emplo.add(creama);
-      p_emplo.add(customizations);
+      // p_emplo.add(customizations);
+      p_emplo.add(employee_exit);
+      p_emplo.add(cancel_order);
       p_emplo.add(order);
 
       milk_tea.addActionListener(s);
@@ -146,7 +156,9 @@ public class GUI extends JFrame implements ActionListener {
       ice_blended.addActionListener(s);
       tea_mojito.addActionListener(s);
       creama.addActionListener(s);
-      customizations.addActionListener(s);
+      // customizations.addActionListener(s);
+      employee_exit.addActionListener(s);
+      cancel_order.addActionListener(s);
       order.addActionListener(s);
 
       employee_frame.add(p_emplo);
@@ -268,7 +280,7 @@ public class GUI extends JFrame implements ActionListener {
       // continue button 
       // JPanel continueSubMenu = new JPanel();
       JButton continueButton = new JButton("Continue");
-      continueButton.setBackground(Color.RED);
+      continueButton.setBackground(Color.GREEN);
       continueButton.setOpaque(true);
       continueButton.setBorderPainted(false);
       // continueSubMenu.add(continueButton);
@@ -374,7 +386,7 @@ public class GUI extends JFrame implements ActionListener {
       outsideFrame.setVisible(true);
     }
 
-    public static void payWindow () {
+    public static void payWindow() {
       JFrame outsideFrame = new JFrame("Payment Processed");
       outsideFrame.setSize(400, 400);
       JPanel buttonSubMenu = new JPanel(new GridLayout(0,2));
@@ -406,6 +418,32 @@ public class GUI extends JFrame implements ActionListener {
       outsideFrame.setVisible(true);
     }
 
+    public static void cancelWindow() {
+      JFrame outsideFrame = new JFrame("Cancelled Order");
+      outsideFrame.setSize(400, 400);
+      JPanel cancelSubMenu = new JPanel(new BorderLayout());
+
+      JTextArea cancel_text = new JTextArea("Order has been cancelled.");
+      cancel_text.setEditable(false);
+
+      JButton exit_button = new JButton("Exit");
+
+      exit_button.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          // Close the outsideFrame and employee frame
+          outsideFrame.dispose();
+        }
+      });
+
+      cancelSubMenu.add(cancel_text);
+      cancelSubMenu.add(exit_button, BorderLayout.PAGE_END);
+
+      outsideFrame.add(cancelSubMenu);
+
+      outsideFrame.setVisible(true);
+    }
+
     // if button is pressed
     public void actionPerformed(ActionEvent e) {
         String s = e.getActionCommand();
@@ -423,7 +461,7 @@ public class GUI extends JFrame implements ActionListener {
           orderFrame.setSize(400,400);
           
           JPanel totalSubMenu = new JPanel(new BorderLayout());
-          JPanel buttonSubMenu = new JPanel(new GridLayout(0,2));
+          JPanel buttonSubMenu = new JPanel(new GridLayout(0,3));
           JPanel orderSubMenu = new JPanel(new GridLayout(0, 2));
 
           
@@ -483,6 +521,7 @@ public class GUI extends JFrame implements ActionListener {
 
           // add buttons
           JButton more_drinks = new JButton("Add More Drinks");
+          JButton cancel_order = new JButton("Cancel Order");
           JButton finish_and_pay = new JButton("Finish and Pay");
 
           // check if clicked
@@ -495,6 +534,23 @@ public class GUI extends JFrame implements ActionListener {
               }
             }
           }); 
+          cancel_order.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+              String s = e.getActionCommand();
+              if (s == "Cancel Order") {
+                // reset values
+                num_drinks = 0;
+                total_cost = 0.0;
+                order_drinks.clear();
+                selectedItems.clear();
+
+                orderFrame.dispose();
+                // output window acknowledging cancelled order
+                cancelWindow();
+              }
+            }
+          });
           finish_and_pay.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -523,6 +579,7 @@ public class GUI extends JFrame implements ActionListener {
           // orderFrame.getContentPane().add(scrollable_order);
 
           buttonSubMenu.add(more_drinks);
+          buttonSubMenu.add(cancel_order);
           buttonSubMenu.add(finish_and_pay);
 
           totalSubMenu.add(scrollable_order);
@@ -624,7 +681,30 @@ public class GUI extends JFrame implements ActionListener {
       
           // Make the new frame visible
           customizationsFrame.setVisible(true);
-      }
+        }
+        if (s.equals("Employee Exit")) {
+          // reset values
+          num_drinks = 0;
+          total_cost = 0.0;
+          order_drinks.clear();
+          selectedItems.clear();
+          // cancel order
+          cancelWindow();
+          // exit employee
+          employee_frame.dispose();
+        }
+        if (s.equals("Cancel Order")) {
+          // reset values
+          num_drinks = 0;
+          total_cost = 0.0;
+          order_drinks.clear();
+          selectedItems.clear();
+
+          // output window acknowledging cancelled order
+          cancelWindow();
+        }
+
+      
  
     }
     
