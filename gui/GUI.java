@@ -439,6 +439,27 @@ public class GUI extends JFrame implements ActionListener {
             if (drink.contains("Brewed Tea")) {
               JButton bt = new JButton(drink);
               brewedSubMenu.add(bt);
+
+              bt.addActionListener(new ActionListener() {
+                  @Override
+                  public void actionPerformed(ActionEvent e) {
+                      // Extract the text from the clicked button
+                      String selectedItem = bt.getText();
+                      // Add it to the ArrayList
+                      selectedItems.add(selectedItem);
+
+                      // Open the customizations window
+                      try {
+                          JFrame customizationsFrame = customizationWindow();
+                          customizationsFrame.setVisible(true);
+                      } catch (IOException error1) {
+                          error1.printStackTrace();
+                      }
+
+                      // Close the brewedTeaFrame if needed
+                      brewedTeaFrame.dispose();
+                  }
+              });
             }
           }
 
@@ -466,6 +487,26 @@ public class GUI extends JFrame implements ActionListener {
             if (drink.contains("Fruit Tea")) {
               JButton ft = new JButton(drink);
               fruitSubMenu.add(ft);
+              ft.addActionListener(new ActionListener() {
+                  @Override
+                  public void actionPerformed(ActionEvent e) {
+                      // Extract the text from the clicked button
+                      String selectedItem = ft.getText();
+                      // Add it to the ArrayList
+                      selectedItems.add(selectedItem);
+
+                      // Open the customizations window
+                      try {
+                          JFrame customizationsFrame = customizationWindow();
+                          customizationsFrame.setVisible(true);
+                      } catch (IOException error1) {
+                          error1.printStackTrace();
+                      }
+
+                      // Close the brewedTeaFrame if needed
+                      fruitTeaFrame.dispose();
+                  }
+              });
             }
           }
 
@@ -493,6 +534,26 @@ public class GUI extends JFrame implements ActionListener {
             if (drink.contains("Fresh Milk")) {
               JButton fm = new JButton(drink);
               freshMilkSubMenu.add(fm);
+              fm.addActionListener(new ActionListener() {
+                  @Override
+                  public void actionPerformed(ActionEvent e) {
+                      // Extract the text from the clicked button
+                      String selectedItem = fm.getText();
+                      // Add it to the ArrayList
+                      selectedItems.add(selectedItem);
+
+                      // Open the customizations window
+                      try {
+                          JFrame customizationsFrame = customizationWindow();
+                          customizationsFrame.setVisible(true);
+                      } catch (IOException error1) {
+                          error1.printStackTrace();
+                      }
+
+                      // Close the brewedTeaFrame if needed
+                      freshMilkFrame.dispose();
+                  }
+              });
             }
           }
 
@@ -520,6 +581,27 @@ public class GUI extends JFrame implements ActionListener {
             if (drink.contains("Ice Blended")) {
               JButton ib = new JButton(drink);
               blendedSubMenu.add(ib);
+
+              ib.addActionListener(new ActionListener() {
+                  @Override
+                  public void actionPerformed(ActionEvent e) {
+                      // Extract the text from the clicked button
+                      String selectedItem = ib.getText();
+                      // Add it to the ArrayList
+                      selectedItems.add(selectedItem);
+
+                      // Open the customizations window
+                      try {
+                          JFrame customizationsFrame = customizationWindow();
+                          customizationsFrame.setVisible(true);
+                      } catch (IOException error1) {
+                          error1.printStackTrace();
+                      }
+
+                      // Close the brewedTeaFrame if needed
+                      blendedFrame.dispose();
+                  }
+              });
             }
           }
 
@@ -547,6 +629,26 @@ public class GUI extends JFrame implements ActionListener {
             if (drink.contains("Mojito")) {
               JButton mj = new JButton(drink);
               mojitoSubMenu.add(mj);
+              mj.addActionListener(new ActionListener() {
+                  @Override
+                  public void actionPerformed(ActionEvent e) {
+                      // Extract the text from the clicked button
+                      String selectedItem = mj.getText();
+                      // Add it to the ArrayList
+                      selectedItems.add(selectedItem);
+
+                      // Open the customizations window
+                      try {
+                          JFrame customizationsFrame = customizationWindow();
+                          customizationsFrame.setVisible(true);
+                      } catch (IOException error1) {
+                          error1.printStackTrace();
+                      }
+
+                      // Close the brewedTeaFrame if needed
+                      mojitoFrame.dispose();
+                  }
+              });
             }
           }
 
@@ -574,6 +676,26 @@ public class GUI extends JFrame implements ActionListener {
             if (drink.contains("Creama")) {
               JButton cr = new JButton(drink);
               creamaSubMenu.add(cr);
+              cr.addActionListener(new ActionListener() {
+                  @Override
+                  public void actionPerformed(ActionEvent e) {
+                      // Extract the text from the clicked button
+                      String selectedItem = cr.getText();
+                      // Add it to the ArrayList
+                      selectedItems.add(selectedItem);
+
+                      // Open the customizations window
+                      try {
+                          JFrame customizationsFrame = customizationWindow();
+                          customizationsFrame.setVisible(true);
+                      } catch (IOException error1) {
+                          error1.printStackTrace();
+                      }
+
+                      // Close the brewedTeaFrame if needed
+                      creamaFrame.dispose();
+                  }
+              });
             }
           }
 
