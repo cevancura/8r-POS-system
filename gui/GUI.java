@@ -126,6 +126,8 @@ public class GUI extends JFrame implements ActionListener {
       JButton customizations = new JButton("Customizations");
       JButton order = new JButton("View Order");
       order.setBackground(Color.GREEN);
+      order.setOpaque(true);
+      order.setBorderPainted(false);
 
       p_emplo.add(milk_tea);
       p_emplo.add(brewed_tea);
@@ -248,6 +250,8 @@ public class GUI extends JFrame implements ActionListener {
                   else {
                     currentCustomizations.add(selectedItem);
                     custom.setBackground(Color.BLUE);
+                    custom.setOpaque(true);
+                    custom.setBorderPainted(false);
                   }
 
                   // Add it to the ArrayList
@@ -265,6 +269,8 @@ public class GUI extends JFrame implements ActionListener {
       // JPanel continueSubMenu = new JPanel();
       JButton continueButton = new JButton("Continue");
       continueButton.setBackground(Color.RED);
+      continueButton.setOpaque(true);
+      continueButton.setBorderPainted(false);
       // continueSubMenu.add(continueButton);
       customizationSubMenu.add(continueButton);
 
@@ -395,6 +401,12 @@ public class GUI extends JFrame implements ActionListener {
           JTextArea prices_text = new JTextArea();
           prices_text.setEditable(false);
 
+          JScrollPane scrollable_order = new JScrollPane(order_text);  
+  
+          scrollable_order.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);  
+  
+          orderFrame.getContentPane().add(scrollable_order);
+
           ArrayList<String> drinkNames = null;
           try {
             drinkNames = getDrinkNames("drink_dictionary.csv");
@@ -479,6 +491,7 @@ public class GUI extends JFrame implements ActionListener {
           // orderFrame.add(orderSubMenu);
 
           orderFrame.add(totalSubMenu);
+          orderFrame.add(scrollable_order);
 
           orderFrame.setVisible(true);
         }
