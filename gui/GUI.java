@@ -155,6 +155,9 @@ public class GUI extends JFrame implements ActionListener {
       JPanel customizationSubMenu = new JPanel(new GridLayout(4, 4));
   
       ArrayList<String> customizationNames = null;
+
+      ArrayList<String> currentCustomizations = new ArrayList<>();
+
       try {
           customizationNames = getCustomizationNames("customs.csv");
       } catch (IOException error1) {
@@ -173,15 +176,21 @@ public class GUI extends JFrame implements ActionListener {
                 public void actionPerformed(ActionEvent e) {
                   // Extract the text from the clicked button
                   String selectedItem = custom.getText();
-                  // Add it to the ArrayList
-                  selectedItems.add(selectedItem);
 
-                  for (String item : selectedItems) {
-                    System.out.println(item);
+                  if (currentCustomizations.contains(selectedItem)) {
+                    // if currently selected, deselect
+                    currentCustomizations.remove(selectedItem);
+                    custom.setBackground(null);
+                  }
+                  else {
+                    currentCustomizations.add(selectedItem);
+                    custom.setBackground(Color.BLUE);
                   }
 
-                  // change color 
-                  custom.setBackground(Color.BLUE);
+                  // Add it to the ArrayList
+                  // selectedItems.add(selectedItem);
+                  // // change color 
+                  // custom.setBackground(Color.BLUE);
 
                   // NOTE: ADD CUSTOMIZATIONS IN A CHECKBOX, FOR EVERY BOX THAT IS CHECKED, 
                   // ADD THAT TO selectedItems AND ADD THAT TO THE ORDER
@@ -201,6 +210,11 @@ public class GUI extends JFrame implements ActionListener {
         public void actionPerformed(ActionEvent e) {
           String s = e.getActionCommand();
           if (s == "Continue") {
+            // once continue is clicked add all current customizations to order
+            for (String custom : currentCustomizations) {
+              selectedItems.add(custom);
+            }
+            // and close frame
             customizationsFrame.dispose();
           }
         }
