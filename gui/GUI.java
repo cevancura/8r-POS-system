@@ -6,6 +6,10 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
 
 /*
   TODO:
@@ -23,8 +27,14 @@ public class GUI extends JFrame implements ActionListener {
     static JFrame f;
     static JFrame manager_frame;
     static JFrame employee_frame;
+    static Integer num_drinks = 0;
+    static double total_cost = 0.0;
+
+    // drink list per order
+    static ArrayList<String> order_drinks = new ArrayList<>();
 
     static ArrayList<String> selectedItems = new ArrayList<>();
+
 
     public static void main(String[] args)
     {
@@ -138,6 +148,57 @@ public class GUI extends JFrame implements ActionListener {
 
       employee_frame.add(p_emplo);
 
+      // do not close connection until done with all orders
+      // FIX ME (currently set to after close is clicked)
+      while (f.isDisplayable()) {
+        continue;
+      }
+
+
+      // get current order number (next after max)
+      String prev_order_id_str = "";
+      Integer current_order_id_int = 0;
+      String current_order_id_str = "";
+      try{
+        //create a statement object
+        Statement stmt = conn.createStatement();
+        //create a SQL statement
+        String sqlStatement = "SELECT MAX(order_id) FROM order_history;";
+        //send statement to DBMS
+        ResultSet result = stmt.executeQuery(sqlStatement);
+        if (result.next()) {
+          prev_order_id_str += result.getString("max");
+        }
+        try {
+          current_order_id_int = Integer.parseInt(prev_order_id_str) + 1;
+          current_order_id_str = String.valueOf(current_order_id_int);
+        }
+        catch (NumberFormatException e) {}
+      } catch (Exception e){
+        JOptionPane.showMessageDialog(null,"Error accessing Database.");
+      }
+      System.out.println(current_order_id_str);
+
+      // get and format date and time
+      LocalDate current_date = LocalDate.now();
+      LocalTime current_time = LocalTime.now();
+      DateTimeFormatter date_format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+      DateTimeFormatter time_format = DateTimeFormatter.ofPattern("HH:mm:ss");
+      String formatted_date = current_date.format(date_format);
+      String formatted_time = current_time.format(time_format);
+
+      // drink codes for drinks 1-10 (0000 if none)
+      fillIDList(10);
+
+      // full order string
+      String order_str = current_order_id_str + "," + formatted_date + "," + formatted_time + "," + String.valueOf(num_drinks) + "," + String.valueOf(total_cost);
+      for (String id : order_drinks) {
+        order_str += "," + id;
+      }
+
+      // write order
+      System.out.println(order_str);
+
       //closing the connection
       try {
         conn.close();
@@ -213,6 +274,13 @@ public class GUI extends JFrame implements ActionListener {
             // once continue is clicked add all current customizations to order
             for (String custom : currentCustomizations) {
               selectedItems.add(custom);
+              // update total cost
+              try {
+                total_cost += getCustomizationCost("customs.csv", custom);
+              }
+              catch (IOException error1) {
+                error1.printStackTrace();
+              }
             }
             // and close frame
             customizationsFrame.dispose();
@@ -306,6 +374,23 @@ public class GUI extends JFrame implements ActionListener {
                     String selectedItem = mt.getText();
                     // Add it to the ArrayList
                     selectedItems.add(selectedItem);
+
+                    // add to number of drinks and total cost
+                    num_drinks += 1;
+                    try {
+                       total_cost += getDrinkCost("drink_dictionary.csv", drink);
+                    }
+                    catch (IOException error1) {
+                      error1.printStackTrace();
+                    }
+                    try {
+                      order_drinks.add(getDrinkID("drink_dictionary.csv", drink));
+                    }
+                    catch (IOException error1) {
+                      error1.printStackTrace();
+                    }
+                   
+
                     // Close the milkTeaFrame
                     milkTeaFrame.dispose();
 
@@ -527,6 +612,12 @@ public class GUI extends JFrame implements ActionListener {
  
  
       }
+    
+    public static void fillIDList(int maxDrinks) {
+      while (order_drinks.size() < maxDrinks) {
+        order_drinks.add("0000");
+      }
+    }
 
     public static ArrayList<String> getDrinkNames(String filePath) throws IOException {
       ArrayList<String> drinkNames = new ArrayList<>();
@@ -548,6 +639,54 @@ public class GUI extends JFrame implements ActionListener {
       return drinkNames;
     }
 
+    public static double getDrinkCost(String filePath, String drinkName) throws IOException {
+      double drinkCost = 0;
+      File file = new File(filePath);
+
+      Scanner scanner = new Scanner(file);
+
+      while (scanner.hasNextLine()) {
+        String line = scanner.nextLine();
+        String[] parts = line.split(",");
+        if (parts.length >= 3) {
+          String currentDrink = parts[1].trim();
+          String currentCost = parts[2].trim();
+
+          if (currentDrink.equals(drinkName)) {
+            drinkCost = Double.valueOf(currentCost);
+          }
+        }
+      }
+
+      scanner.close(); // Close the scanner explicitly.
+
+      return drinkCost;
+    }
+
+    public static String getDrinkID(String filePath, String drinkName) throws IOException {
+      String drinkID = "0000";
+      File file = new File(filePath);
+
+      Scanner scanner = new Scanner(file);
+
+      while (scanner.hasNextLine()) {
+        String line = scanner.nextLine();
+        String[] parts = line.split(",");
+        if (parts.length >= 2) {
+          String currentDrink = parts[1].trim();
+          String currentID = parts[0].trim();
+
+          if (currentDrink.equals(drinkName)) {
+            drinkID = currentID;
+          }
+        }
+      }
+
+      scanner.close(); // Close the scanner explicitly.
+
+      return drinkID;
+    }
+
     public static ArrayList<String> getCustomizationNames(String filePath) throws IOException {
       ArrayList<String> customizationNames = new ArrayList<>();
       File file = new File(filePath);
@@ -566,6 +705,30 @@ public class GUI extends JFrame implements ActionListener {
       scanner.close(); // Close the scanner explicitly.
   
       return customizationNames;
+  }
+
+    public static double getCustomizationCost(String filePath, String customName) throws IOException {
+      double customCost = 0;
+      File file = new File(filePath);
+  
+      Scanner scanner = new Scanner(file);
+  
+      while (scanner.hasNextLine()) {
+          String line = scanner.nextLine();
+          String[] parts = line.split(",");
+          if (parts.length >= 4) {
+              String currentCustom = parts[2].trim();
+              String currentCost = parts[3].trim();
+
+              if (currentCustom.equals(customName)) {
+                customCost = Double.valueOf(currentCost);
+              }
+          }
+      }
+  
+      scanner.close(); // Close the scanner explicitly.
+  
+      return customCost;
   }
 
   
