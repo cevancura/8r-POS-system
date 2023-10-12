@@ -221,7 +221,6 @@ public class GUI extends JFrame implements ActionListener {
     // if button is pressed
     public void actionPerformed(ActionEvent e)
     {
-        ArrayList<String> selectedItems = new ArrayList<>();
 
         String s = e.getActionCommand();
         if (s.equals("Close")) {
