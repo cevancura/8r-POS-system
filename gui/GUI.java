@@ -107,8 +107,8 @@ public class GUI extends JFrame implements ActionListener {
 
 
       //adding a save button 
-      JButton save_btn = new JButton("Save");
-      JButton save_btn_inventory= new JButton("Save Inventory");
+      JButton save_btn = new JButton("Add Menu Item");
+      JButton save_btn_inventory= new JButton("Add Item");
 
       
       p_inventory.add(save_btn_inventory);
@@ -162,7 +162,7 @@ public class GUI extends JFrame implements ActionListener {
         }
         String[][] arr = data_inventory.stream().map(l -> l.stream().toArray(String[]::new)).toArray(String[][]::new);
         table_inventory = new JTable(arr, inventory_cols);
-        table_inventory.setBounds(30,40,200,300);
+        table_inventory.setBounds(30,40,200,500);
         JScrollPane sp = new JScrollPane(table_inventory);
         inventory_frame.getContentPane().add(sp);
         p_inventory.add(sp);
@@ -181,7 +181,7 @@ public class GUI extends JFrame implements ActionListener {
 
         String[][] arr_menu = data_menu.stream().map(l -> l.stream().toArray(String[]::new)).toArray(String[][]::new);
         table_menu = new JTable(arr_menu, menu_cols);
-        table_menu.setBounds(30,40,200,300);
+        table_menu.setBounds(30,40,400,500);
         JScrollPane sp_menu = new JScrollPane(table_menu);
         drinks_frame.getContentPane().add(sp_menu);
         p_menu.add(sp_menu);
@@ -247,7 +247,7 @@ public class GUI extends JFrame implements ActionListener {
         if (s.equals("Menu")){
           drinks_frame.setVisible(true);
         }
-        if (s.equals("Save")){
+        if (s.equals("Add Menu Item")){
             // set the text of the label to the text of the field
           text_output.setText(text_input.getText());
           
@@ -274,7 +274,7 @@ public class GUI extends JFrame implements ActionListener {
             closeConnection(conn);
           }
         }
-        if (s.equals("Save Inventory")){
+        if (s.equals("Add Item")){
           // set the text of the label to the text of the field
           text_output_inventory.setText(text_input_inventory.getText());
           
@@ -402,3 +402,4 @@ public static String database(ResultSet result, String name) {
     return response;
   }
 }
+//delete the panel make a table and reload the table 
