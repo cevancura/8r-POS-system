@@ -321,6 +321,12 @@ public class GUI extends JFrame implements ActionListener {
           JTextArea order_text = new JTextArea();
           order_text.setEditable(false);
 
+          JScrollPane scrollable_order = new JScrollPane(order_text);  
+  
+          scrollable_order.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);  
+  
+          orderFrame.getContentPane().add(scrollable_order);
+          
           ArrayList<String> drinkNames = null;
           try {
             drinkNames = getDrinkNames("drink_dictionary.csv");
@@ -345,7 +351,7 @@ public class GUI extends JFrame implements ActionListener {
             index++;
           }
           
-          orderFrame.add(order_text);
+          orderFrame.add(scrollable_order);
           orderFrame.setVisible(true);
         }
         if (s.equals("Milk Tea")) {
