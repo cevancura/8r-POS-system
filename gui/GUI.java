@@ -401,12 +401,6 @@ public class GUI extends JFrame implements ActionListener {
           JTextArea prices_text = new JTextArea();
           prices_text.setEditable(false);
 
-          JScrollPane scrollable_order = new JScrollPane(order_text);  
-  
-          scrollable_order.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);  
-  
-          orderFrame.getContentPane().add(scrollable_order);
-
           ArrayList<String> drinkNames = null;
           try {
             drinkNames = getDrinkNames("drink_dictionary.csv");
@@ -429,18 +423,25 @@ public class GUI extends JFrame implements ActionListener {
               if (drinkNames.contains(selectedItem)) {
                 order_text.append("\n\n");
                 prices_text.append("\n\n");
+                try {
+                  prices_text.append(String.valueOf(getDrinkCost("drink_dictionary.csv", selectedItem)));
+                }
+                catch (IOException error1) {
+                  error1.printStackTrace();
+                }
               }
               else {
                 order_text.append("\n");
                 prices_text.append("\n");
+                try {
+                  prices_text.append(String.valueOf(getCustomizationCost("customs.csv", selectedItem)));
+                }
+                catch (IOException error1) {
+                  error1.printStackTrace();
+                }
               }
               order_text.append(selectedItem);
-              try {
-                prices_text.append(String.valueOf(getCustomizationCost("customs.csv", selectedItem)));
-              }
-              catch (IOException error1) {
-                error1.printStackTrace();
-              }
+              
             }
             index++;
           }
@@ -482,16 +483,22 @@ public class GUI extends JFrame implements ActionListener {
           orderSubMenu.add(order_text);
           orderSubMenu.add(prices_text);
 
+          JScrollPane scrollable_order = new JScrollPane(orderSubMenu);  
+          scrollable_order.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);  
+  
+          // orderFrame.getContentPane().add(scrollable_order);
+
           buttonSubMenu.add(more_drinks);
           buttonSubMenu.add(finish_and_pay);
 
-          totalSubMenu.add(orderSubMenu);
+          totalSubMenu.add(scrollable_order);
+          // totalSubMenu.add(orderSubMenu);
           totalSubMenu.add(buttonSubMenu, BorderLayout.PAGE_END);
 
           // orderFrame.add(orderSubMenu);
 
           orderFrame.add(totalSubMenu);
-          orderFrame.add(scrollable_order);
+          // orderFrame.add(scrollable_order);
 
           orderFrame.setVisible(true);
         }
