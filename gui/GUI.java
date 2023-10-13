@@ -39,6 +39,9 @@ public class GUI extends JFrame implements ActionListener {
     // all customizations per order
     static ArrayList<String> order_customizations = new ArrayList<>();
 
+    // drink names
+    static ArrayList<String> drinkNames = null;
+
 
     public static void main(String[] args)
     {
@@ -165,6 +168,15 @@ public class GUI extends JFrame implements ActionListener {
       order.addActionListener(s);
 
       employee_frame.add(p_emplo);
+
+
+      // update drink array
+      try {
+        drinkNames = getDrinkNamesTable(conn);
+      }
+      catch (IOException error1) {
+        error1.printStackTrace();
+      }
 
       // do not close connection until done with all orders
       // FIX ME (currently set to after close is clicked)
@@ -351,15 +363,6 @@ public class GUI extends JFrame implements ActionListener {
       outsideFrame.setSize(800, 800);
       JPanel subMenu = new JPanel(new GridLayout(size_x, size_y));
 
-      // go through drink names
-      ArrayList<String> drinkNames = null;
-      try {
-        drinkNames = getDrinkNames("drink_dictionary.csv");
-      }
-      catch (IOException error1) {
-        error1.printStackTrace();
-      }
-
       for (String drink : drinkNames) {
         // if the right type
         if (drink.length() >= drinkType.length() && drink.substring(0, drinkType.length()).equals(drinkType)) {
@@ -497,13 +500,6 @@ public class GUI extends JFrame implements ActionListener {
           JTextArea prices_text = new JTextArea();
           prices_text.setEditable(false);
 
-          ArrayList<String> drinkNames = null;
-          try {
-            drinkNames = getDrinkNames("drink_dictionary.csv");
-          }
-          catch (IOException error1) {
-            error1.printStackTrace();
-          }
           int index = 0;
           for (String selectedItem : selectedItems) {
             if (index == 0) {
@@ -756,6 +752,28 @@ public class GUI extends JFrame implements ActionListener {
       scanner.close(); // Close the scanner explicitly.
 
       return drinkNames;
+    }
+
+    public static ArrayList<String> getDrinkNamesTable(Connection conn) throws IOException {
+      ArrayList<String> drink_names = new ArrayList<>();
+
+      //create a statement object
+      try {
+        Statement stmt = conn.createStatement();
+        //create a SQL statement
+        String sqlStatement = "SELECT * FROM drink_dictionary ORDER BY drink_id asc;";
+        //send statement to DBMS
+
+        ResultSet result = stmt.executeQuery(sqlStatement);
+        while (result.next()) {
+          drink_names.add(result.getString("name"));
+        }
+      } catch (Exception e){
+        System.out.println(e.toString());
+        JOptionPane.showMessageDialog(null,"Error accessing Database.");
+      }
+
+      return drink_names;
     }
 
     public static double getDrinkCost(String filePath, String drinkName) throws IOException {
