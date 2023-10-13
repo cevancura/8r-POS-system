@@ -36,6 +36,9 @@ public class GUI extends JFrame implements ActionListener {
 
     static ArrayList<String> selectedItems = new ArrayList<>();
 
+    // all customizations per order
+    static ArrayList<String> order_customizations = new ArrayList<>();
+
 
     public static void main(String[] args)
     {
@@ -233,6 +236,7 @@ public class GUI extends JFrame implements ActionListener {
           total_cost = 0.0;
           order_drinks.clear();
           selectedItems.clear();
+          order_customizations.clear();
         }
       }
 
@@ -315,6 +319,7 @@ public class GUI extends JFrame implements ActionListener {
             // once continue is clicked add all current customizations to order
             for (String custom : currentCustomizations) {
               selectedItems.add(custom);
+              order_customizations.add(custom);
               // update total cost
               try {
                 total_cost += getCustomizationCost("customs.csv", custom);
@@ -565,6 +570,7 @@ public class GUI extends JFrame implements ActionListener {
                 total_cost = 0.0;
                 order_drinks.clear();
                 selectedItems.clear();
+                order_customizations.clear();
 
                 orderFrame.dispose();
                 // output window acknowledging cancelled order
@@ -704,6 +710,7 @@ public class GUI extends JFrame implements ActionListener {
           total_cost = 0.0;
           order_drinks.clear();
           selectedItems.clear();
+          order_customizations.clear();
           // cancel order
           cancelWindow();
           // exit employee
@@ -715,6 +722,7 @@ public class GUI extends JFrame implements ActionListener {
           total_cost = 0.0;
           order_drinks.clear();
           selectedItems.clear();
+          order_customizations.clear();
 
           // output window acknowledging cancelled order
           cancelWindow();
@@ -1382,6 +1390,91 @@ public class GUI extends JFrame implements ActionListener {
         // napkins
         if (item.contains("600005")) {
           item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - num_drinks));
+        }
+      }
+
+      // all customizations
+      for (String customization : order_customizations) {
+        // customizations array is off in ids
+        if (customization.equals("pearl")) {
+          // pearl
+          for (ArrayList<String> item : inventory_list) {
+            if (item.contains("500022")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (customization.equals("mini pearl")) {
+          // mini pearl
+          for (ArrayList<String> item : inventory_list) {
+            if (item.contains("500025")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (customization.equals("ice cream")) {
+          // ice cream
+          for (ArrayList<String> item : inventory_list) {
+            if (item.contains("500028")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (customization.equals("pudding")) {
+          // pudding
+          for (ArrayList<String> item : inventory_list) {
+            if (item.contains("500031")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (customization.equals("aloe vera")) {
+          // aloe vera
+          for (ArrayList<String> item : inventory_list) {
+            if (item.contains("500023")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (customization.equals("red bean")) {
+          // red bean
+          for (ArrayList<String> item : inventory_list) {
+            if (item.contains("500026")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (customization.equals("herb jelly")) {
+          // herb jelly
+          for (ArrayList<String> item : inventory_list) {
+            if (item.contains("500029")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (customization.equals("aiyu jelly")) {
+          // aiyu jelly
+          for (ArrayList<String> item : inventory_list) {
+            if (item.contains("500030")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (customization.equals("lychee jelly")) {
+          // lychee jelly
+          for (ArrayList<String> item : inventory_list) {
+            if (item.contains("500024")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (customization.equals("creama")) {
+          // creama
+          for (ArrayList<String> item : inventory_list) {
+            if (item.contains("500027")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
         }
       }
 
