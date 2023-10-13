@@ -103,15 +103,15 @@ public class GUI extends JFrame implements ActionListener {
     }
 
 
-    public static void dataFeature(JTextField text_in, JTextArea text_out, Connection conn, Boolean isAdd, Boolean isMenu) {
+    public static void dataFeature(JTextField text_in, JTextArea text_out, Connection conn, Boolean is_add, Boolean is_menu) {
       text_out.setText(text_in.getText());
       text_in.setText("enter the text");
       String update = "";
 
       String text = "Inventory";
-      if (isMenu) {text = "Menu";}
+      if (is_menu) {text = "Menu";}
       int formatting = 3;
-      if (isMenu) {formatting = 1;}
+      if (is_menu) {formatting = 1;}
 
       if (!(text_out.getText().equals("") || text_out.getText().equals("enter the text"))) {
         try{
@@ -119,23 +119,23 @@ public class GUI extends JFrame implements ActionListener {
             Statement stmt = conn.createStatement();
             String[] splitted = text_out.getText().split("\\s+");
             
-            if (isAdd) {
-              if (isMenu) { update = "INSERT INTO drink_dictionary (drink_id, name, price) VALUES";}
+            if (is_add) {
+              if (is_menu) { update = "INSERT INTO drink_dictionary (drink_id, name, price) VALUES";}
               else {update = "INSERT INTO inventory (product_id, itemname, total_amount, current_amount, restock) VALUES";}
             }
             else {
-              if(isMenu) { update = "UPDATE drink_dictionary SET name = \'"; }
+              if(is_menu) { update = "UPDATE drink_dictionary SET name = \'"; }
               else {update = "UPDATE inventory SET itemname = \'";}
             }
             
             int splitted_length = splitted.length;
             String drink_name = getDrinkName(splitted, formatting);
-            if (isAdd) {
-              if(isMenu) { update += " (\'" + splitted[0] + "\', \'" + drink_name + "\', " + splitted[splitted_length -1] + ");";}
+            if (is_add) {
+              if(is_menu) { update += " (\'" + splitted[0] + "\', \'" + drink_name + "\', " + splitted[splitted_length -1] + ");";}
               else { update += " (" + splitted[0] + ", \'" + drink_name + "\', " + splitted[splitted_length -3] + ", " + splitted[splitted_length -2] + ", \'" + splitted[splitted_length -1] + "\');"; }
             }
             else {
-              if(isMenu) { update += drink_name + "\', price = " + splitted[splitted_length -1] + "WHERE drink_id = \'" + splitted[0] + "\';";}
+              if(is_menu) { update += drink_name + "\', price = " + splitted[splitted_length -1] + "WHERE drink_id = \'" + splitted[0] + "\';";}
               else {update += drink_name + "\', total_amount = " + splitted[splitted_length -3] + ", current_amount = " + splitted[splitted_length -2] +  ", restock = \'" + splitted[splitted_length-1]+ "\' WHERE product_id = " + splitted[0] + ";";}
             }
             
@@ -148,16 +148,16 @@ public class GUI extends JFrame implements ActionListener {
               JOptionPane.showMessageDialog(null,"Error executing command.");
             }
       }
-      updateTable(conn, isMenu);
+      updateTable(conn, is_menu);
     }
 
-    public static void updateTable(Connection conn, Boolean isMenu) {
+    public static void updateTable(Connection conn, Boolean is_menu) {
       
-      // if (isMenu) {
-        Component[] componentListMenu = p_menu.getComponents();
+      // if (is_menu) {
+        Component[] component_list_menu = p_menu.getComponents();
 
         //Loop through the components
-        for(Component c : componentListMenu){
+        for(Component c : component_list_menu){
 
             //Find the components to remove
             if(!(c instanceof JButton)){
@@ -170,10 +170,10 @@ public class GUI extends JFrame implements ActionListener {
         p_menu.repaint();
       // }
       // else {
-        Component[] componentList = p_inventory.getComponents();
+        Component[] component_list = p_inventory.getComponents();
 
         //Loop through the components
-        for(Component c : componentList){
+        for(Component c : component_list){
 
           //Find the components to remove
           if(!(c instanceof JButton)){
@@ -195,8 +195,8 @@ public class GUI extends JFrame implements ActionListener {
         //create a statement object
         Statement stmt = conn.createStatement();
         //create a SQL statement
-        String sqlStatement = "SELECT * FROM inventory;";
-        ResultSet result = stmt.executeQuery(sqlStatement);
+        String sql_statement_m = "SELECT * FROM inventory;";
+        ResultSet result = stmt.executeQuery(sql_statement_m);
         while (result.next()) {
           ArrayList<String> curr = new ArrayList<>();
           curr.add(result.getString("product_id"));
@@ -431,7 +431,7 @@ public class GUI extends JFrame implements ActionListener {
       }
 
       // do not close connection until done with all orders
-      // FIX ME (currently set to after close is clicked)
+      // currently set to after close is clicked
       while (f.isDisplayable()) {
         if (paid) {
           // get current order number (next after max)
@@ -557,24 +557,15 @@ public class GUI extends JFrame implements ActionListener {
                     custom.setBorderPainted(false);
                   }
 
-                  // Add it to the ArrayList
-                  // selected_items.add(selected_item);
-                  // // change color 
-                  // custom.setBackground(Color.BLUE);
-
-                  // NOTE: ADD CUSTOMIZATIONS IN A CHECKBOX, FOR EVERY BOX THAT IS CHECKED, 
-                  // ADD THAT TO selected_items AND ADD THAT TO THE ORDER
                 }
             });
       }
 
       // continue button 
-      // JPanel continueSubMenu = new JPanel();
       JButton continue_button = new JButton("Continue");
       continue_button.setBackground(Color.GREEN);
       continue_button.setOpaque(true);
       continue_button.setBorderPainted(false);
-      // continueSubMenu.add(continue_button);
       customization_sub_menu.add(continue_button);
 
       continue_button.addActionListener(new ActionListener() {
@@ -599,14 +590,10 @@ public class GUI extends JFrame implements ActionListener {
           }
         }
       });
-      
-      // customizations_frame.add(continueSubMenu);
-  
+        
       // Add the submenu panel to the customizations_frame
       customizations_frame.add(customization_sub_menu);
-  
-      // // Make the new frame visible
-      // customizations_frame.setVisible(true);
+
 
       return customizations_frame;
     }
@@ -704,7 +691,7 @@ public class GUI extends JFrame implements ActionListener {
     public static void cancelWindow() {
       JFrame outside_frame = new JFrame("Cancelled Order");
       outside_frame.setSize(400, 400);
-      JPanel cancelSubMenu = new JPanel(new BorderLayout());
+      JPanel cancel_sub_menu = new JPanel(new BorderLayout());
 
       JTextArea cancel_text = new JTextArea("Order has been cancelled.");
       cancel_text.setEditable(false);
@@ -719,10 +706,10 @@ public class GUI extends JFrame implements ActionListener {
         }
       });
 
-      cancelSubMenu.add(cancel_text);
-      cancelSubMenu.add(exit_button, BorderLayout.PAGE_END);
+      cancel_sub_menu.add(cancel_text);
+      cancel_sub_menu.add(exit_button, BorderLayout.PAGE_END);
 
-      outside_frame.add(cancelSubMenu);
+      outside_frame.add(cancel_sub_menu);
 
       outside_frame.setVisible(true);
     }
@@ -789,12 +776,12 @@ public class GUI extends JFrame implements ActionListener {
         }
 
         if (s.equals("View Order")) {
-          JFrame orderFrame = new JFrame("Viewing Order");
-          orderFrame.setSize(400,400);
+          JFrame order_frame = new JFrame("Viewing Order");
+          order_frame.setSize(400,400);
           
-          JPanel totalSubMenu = new JPanel(new BorderLayout());
+          JPanel total_sub_menu = new JPanel(new BorderLayout());
           JPanel button_sub_menu = new JPanel(new GridLayout(0,3));
-          JPanel orderSubMenu = new JPanel(new GridLayout(0, 2));
+          JPanel order_sub_menu = new JPanel(new GridLayout(0, 2));
 
           
           JTextArea order_text = new JTextArea();
@@ -855,7 +842,7 @@ public class GUI extends JFrame implements ActionListener {
             public void actionPerformed(ActionEvent e) {
               String s = e.getActionCommand();
               if (s == "Add More Drinks") {
-                orderFrame.dispose();
+                order_frame.dispose();
               }
             }
           }); 
@@ -871,7 +858,7 @@ public class GUI extends JFrame implements ActionListener {
                 selected_items.clear();
                 order_customizations.clear();
 
-                orderFrame.dispose();
+                order_frame.dispose();
                 // output window acknowledging cancelled order
                 cancelWindow();
               }
@@ -884,35 +871,29 @@ public class GUI extends JFrame implements ActionListener {
               if (s == "Finish and Pay") {
                 // close order frame
                 paid = true;
-                orderFrame.dispose();
+                order_frame.dispose();
 
                 payWindow();
               }
             }
           }); 
           
-          orderSubMenu.add(order_text);
-          orderSubMenu.add(prices_text);
+          order_sub_menu.add(order_text);
+          order_sub_menu.add(prices_text);
 
-          JScrollPane scrollable_order = new JScrollPane(orderSubMenu);  
+          JScrollPane scrollable_order = new JScrollPane(order_sub_menu);  
           scrollable_order.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);  
   
-          // orderFrame.getContentPane().add(scrollable_order);
-
           button_sub_menu.add(more_drinks);
           button_sub_menu.add(cancel_order);
           button_sub_menu.add(finish_and_pay);
 
-          totalSubMenu.add(scrollable_order);
-          // totalSubMenu.add(orderSubMenu);
-          totalSubMenu.add(button_sub_menu, BorderLayout.PAGE_END);
+          total_sub_menu.add(scrollable_order);
+          total_sub_menu.add(button_sub_menu, BorderLayout.PAGE_END);
 
-          // orderFrame.add(orderSubMenu);
+          order_frame.add(total_sub_menu);
 
-          orderFrame.add(totalSubMenu);
-          // orderFrame.add(scrollable_order);
-
-          orderFrame.setVisible(true);
+          order_frame.setVisible(true);
         }
         if (s.equals("Milk Tea")) {
           // Create a new frame for Milk Tea options
@@ -1031,15 +1012,15 @@ public class GUI extends JFrame implements ActionListener {
  
     }
     
-    public static void fillIDList(int maxDrinks) {
-      while (order_drinks.size() < maxDrinks) {
+    public static void fillIDList(int max_drinks) {
+      while (order_drinks.size() < max_drinks) {
         order_drinks.add("0000");
       }
     }
 
-    public static ArrayList<String> getDrinkNames(String filePath) throws IOException {
+    public static ArrayList<String> getDrinkNames(String file_path) throws IOException {
       ArrayList<String> drink_names = new ArrayList<>();
-      File file = new File(filePath);
+      File file = new File(file_path);
 
       Scanner scanner = new Scanner(file);
 
@@ -1047,8 +1028,8 @@ public class GUI extends JFrame implements ActionListener {
         String line = scanner.nextLine();
         String[] parts = line.split(",");
         if (parts.length >= 2) {
-          String drinkName = parts[1].trim();
-          drink_names.add(drinkName);
+          String drink_name = parts[1].trim();
+          drink_names.add(drink_name);
         }
       }
 
@@ -1079,9 +1060,9 @@ public class GUI extends JFrame implements ActionListener {
       return drink_names;
     }
 
-    public static double getDrinkCost(String filePath, String drinkName) throws IOException {
-      double drinkCost = 0;
-      File file = new File(filePath);
+    public static double getDrinkCost(String file_path, String drink_name) throws IOException {
+      double drink_cost = 0;
+      File file = new File(file_path);
 
       Scanner scanner = new Scanner(file);
 
@@ -1089,23 +1070,23 @@ public class GUI extends JFrame implements ActionListener {
         String line = scanner.nextLine();
         String[] parts = line.split(",");
         if (parts.length >= 3) {
-          String currentDrink = parts[1].trim();
-          String currentCost = parts[2].trim();
+          String current_drink = parts[1].trim();
+          String current_cost = parts[2].trim();
 
-          if (currentDrink.equals(drinkName)) {
-            drinkCost = Double.valueOf(currentCost);
+          if (current_drink.equals(drink_name)) {
+            drink_cost = Double.valueOf(current_cost);
           }
         }
       }
 
       scanner.close(); // Close the scanner explicitly.
 
-      return drinkCost;
+      return drink_cost;
     }
 
-    public static String getDrinkID(String filePath, String drinkName) throws IOException {
-      String drinkID = "0000";
-      File file = new File(filePath);
+    public static String getDrinkID(String file_path, String drink_name) throws IOException {
+      String drink_ID = "0000";
+      File file = new File(file_path);
 
       Scanner scanner = new Scanner(file);
 
@@ -1113,23 +1094,23 @@ public class GUI extends JFrame implements ActionListener {
         String line = scanner.nextLine();
         String[] parts = line.split(",");
         if (parts.length >= 2) {
-          String currentDrink = parts[1].trim();
-          String currentID = parts[0].trim();
+          String current_drink = parts[1].trim();
+          String current_ID = parts[0].trim();
 
-          if (currentDrink.equals(drinkName)) {
-            drinkID = currentID;
+          if (current_drink.equals(drink_name)) {
+            drink_ID = current_ID;
           }
         }
       }
 
       scanner.close(); // Close the scanner explicitly.
 
-      return drinkID;
+      return drink_ID;
     }
 
-    public static ArrayList<String> getCustomizationNames(String filePath) throws IOException {
+    public static ArrayList<String> getCustomizationNames(String file_path) throws IOException {
       ArrayList<String> customization_names = new ArrayList<>();
-      File file = new File(filePath);
+      File file = new File(file_path);
   
       Scanner scanner = new Scanner(file);
   
@@ -1137,8 +1118,8 @@ public class GUI extends JFrame implements ActionListener {
           String line = scanner.nextLine();
           String[] parts = line.split(",");
           if (parts.length >= 3) {
-              String customizationName = parts[2].trim();
-              customization_names.add(customizationName);
+              String customization_name = parts[2].trim();
+              customization_names.add(customization_name);
           }
       }
   
@@ -1147,9 +1128,9 @@ public class GUI extends JFrame implements ActionListener {
       return customization_names;
     }
 
-    public static double getCustomizationCost(String filePath, String customName) throws IOException {
-      double customCost = 0;
-      File file = new File(filePath);
+    public static double getCustomizationCost(String file_path, String custom_name) throws IOException {
+      double custom_cost = 0;
+      File file = new File(file_path);
   
       Scanner scanner = new Scanner(file);
   
@@ -1157,18 +1138,18 @@ public class GUI extends JFrame implements ActionListener {
           String line = scanner.nextLine();
           String[] parts = line.split(",");
           if (parts.length >= 4) {
-              String currentCustom = parts[2].trim();
-              String currentCost = parts[3].trim();
+              String current_custom = parts[2].trim();
+              String current_cost = parts[3].trim();
 
-              if (currentCustom.equals(customName)) {
-                customCost = Double.valueOf(currentCost);
+              if (current_custom.equals(custom_name)) {
+                custom_cost = Double.valueOf(current_cost);
               }
           }
       }
   
       scanner.close(); // Close the scanner explicitly.
   
-      return customCost;
+      return custom_cost;
     }
 
     public static void updateInventory(Connection conn) {
