@@ -264,24 +264,24 @@ public class GUI extends JFrame implements ActionListener {
     // make customization window
     public static JFrame customizationWindow() throws IOException {
       // Create a new frame for Customization options
-      JFrame customizationsFrame = new JFrame("Customization Options");
-      customizationsFrame.setSize(800, 800);
-      JPanel customizationSubMenu = new JPanel(new GridLayout(4, 4));
+      JFrame customizations_frame = new JFrame("Customization Options");
+      customizations_frame.setSize(800, 800);
+      JPanel customization_sub_menu = new JPanel(new GridLayout(4, 4));
   
-      ArrayList<String> customizationNames = null;
+      ArrayList<String> customization_names = null;
 
-      ArrayList<String> currentCustomizations = new ArrayList<>();
+      ArrayList<String> current_customizations = new ArrayList<>();
 
       try {
-          customizationNames = getCustomizationNames("customs.csv");
+          customization_names = getCustomizationNames("customs.csv");
       } catch (IOException error1) {
           error1.printStackTrace();
       }
   
-      for (int i = 1; i < customizationNames.size(); i++) {
-          String customization = customizationNames.get(i);
+      for (int i = 1; i < customization_names.size(); i++) {
+          String customization = customization_names.get(i);
           JButton custom = new JButton(customization);
-          customizationSubMenu.add(custom);
+          customization_sub_menu.add(custom);
 
 
           // check if clicked
@@ -291,13 +291,13 @@ public class GUI extends JFrame implements ActionListener {
                   // Extract the text from the clicked button
                   String selectedItem = custom.getText();
 
-                  if (currentCustomizations.contains(selectedItem)) {
+                  if (current_customizations.contains(selectedItem)) {
                     // if currently selected, deselect
-                    currentCustomizations.remove(selectedItem);
+                    current_customizations.remove(selectedItem);
                     custom.setBackground(null);
                   }
                   else {
-                    currentCustomizations.add(selectedItem);
+                    current_customizations.add(selectedItem);
                     custom.setBackground(Color.BLUE);
                     custom.setOpaque(true);
                     custom.setBorderPainted(false);
@@ -321,7 +321,7 @@ public class GUI extends JFrame implements ActionListener {
       continueButton.setOpaque(true);
       continueButton.setBorderPainted(false);
       // continueSubMenu.add(continueButton);
-      customizationSubMenu.add(continueButton);
+      customization_sub_menu.add(continueButton);
 
       continueButton.addActionListener(new ActionListener() {
         @Override
@@ -329,7 +329,7 @@ public class GUI extends JFrame implements ActionListener {
           String s = e.getActionCommand();
           if (s == "Continue") {
             // once continue is clicked add all current customizations to order
-            for (String custom : currentCustomizations) {
+            for (String custom : current_customizations) {
               selected_items.add(custom);
               order_customizations.add(custom);
               // update total cost
@@ -341,20 +341,20 @@ public class GUI extends JFrame implements ActionListener {
               }
             }
             // and close frame
-            customizationsFrame.dispose();
+            customizations_frame.dispose();
           }
         }
       });
       
-      // customizationsFrame.add(continueSubMenu);
+      // customizations_frame.add(continueSubMenu);
   
-      // Add the submenu panel to the customizationsFrame
-      customizationsFrame.add(customizationSubMenu);
+      // Add the submenu panel to the customizations_frame
+      customizations_frame.add(customization_sub_menu);
   
       // // Make the new frame visible
-      // customizationsFrame.setVisible(true);
+      // customizations_frame.setVisible(true);
 
-      return customizationsFrame;
+      return customizations_frame;
     }
 
     public static void typeWindow(String drinkType, int size_x, int size_y) throws IOException {
@@ -677,28 +677,28 @@ public class GUI extends JFrame implements ActionListener {
 
         if (s.equals("Customizations")) {
           // Create a new frame for Customization options
-          JFrame customizationsFrame = new JFrame("Customization Options");
-          customizationsFrame.setSize(800, 800);
-          JPanel customizationSubMenu = new JPanel(new GridLayout(4, 4));
+          JFrame customizations_frame = new JFrame("Customization Options");
+          customizations_frame.setSize(800, 800);
+          JPanel customization_sub_menu = new JPanel(new GridLayout(4, 4));
       
-          ArrayList<String> customizationNames = null;
+          ArrayList<String> customization_names = null;
           try {
-              customizationNames = getCustomizationNames("customs.csv");
+              customization_names = getCustomizationNames("customs.csv");
           } catch (IOException error1) {
               error1.printStackTrace();
           }
       
-          for (int i = 1; i < customizationNames.size(); i++) {
-              String customization = customizationNames.get(i);
+          for (int i = 1; i < customization_names.size(); i++) {
+              String customization = customization_names.get(i);
               JButton custom = new JButton(customization);
-              customizationSubMenu.add(custom);
+              customization_sub_menu.add(custom);
           }
       
-          // Add the submenu panel to the customizationsFrame
-          customizationsFrame.add(customizationSubMenu);
+          // Add the submenu panel to the customizations_frame
+          customizations_frame.add(customization_sub_menu);
       
           // Make the new frame visible
-          customizationsFrame.setVisible(true);
+          customizations_frame.setVisible(true);
         }
         if (s.equals("Employee Exit")) {
           // reset values
@@ -825,7 +825,7 @@ public class GUI extends JFrame implements ActionListener {
     }
 
     public static ArrayList<String> getCustomizationNames(String filePath) throws IOException {
-      ArrayList<String> customizationNames = new ArrayList<>();
+      ArrayList<String> customization_names = new ArrayList<>();
       File file = new File(filePath);
   
       Scanner scanner = new Scanner(file);
@@ -835,13 +835,13 @@ public class GUI extends JFrame implements ActionListener {
           String[] parts = line.split(",");
           if (parts.length >= 3) {
               String customizationName = parts[2].trim();
-              customizationNames.add(customizationName);
+              customization_names.add(customizationName);
           }
       }
   
       scanner.close(); // Close the scanner explicitly.
   
-      return customizationNames;
+      return customization_names;
     }
 
     public static double getCustomizationCost(String filePath, String customName) throws IOException {
