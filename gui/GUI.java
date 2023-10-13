@@ -850,7 +850,7 @@ public class GUI extends JFrame implements ActionListener {
       return customCost;
     }
 
-    public static String updateInventory(Connection conn) {
+    public static void updateInventory(Connection conn) {
       // for each item in inventory find current amount
       ArrayList<ArrayList<String>> inventory_list = new ArrayList<ArrayList<String>>();
 
@@ -1476,8 +1476,55 @@ public class GUI extends JFrame implements ActionListener {
             }
           }
         }
+        if (customization.equals("regular ice")) {
+          // regular ice
+          for (ArrayList<String> item : inventory_list) {
+            if (item.contains("600006")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 2));
+            }
+          }
+        }
+        if (customization.equals("less ice")) {
+          // less ice
+          for (ArrayList<String> item : inventory_list) {
+            if (item.contains("600006")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (customization.equals("normal sweet")) {
+          // normal sweet
+          for (ArrayList<String> item : inventory_list) {
+            if (item.contains("600007")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 4));
+            }
+          }
+        }
+        if (customization.equals("less sweet")) {
+          // less sweet
+          for (ArrayList<String> item : inventory_list) {
+            if (item.contains("600007")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 3));
+            }
+          }
+        }
+        if (customization.equals("half sweet")) {
+          // half sweet
+          for (ArrayList<String> item : inventory_list) {
+            if (item.contains("600007")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 2));
+            }
+          }
+        }
+        if (customization.equals("light sweet")) {
+          // light sweet
+          for (ArrayList<String> item : inventory_list) {
+            if (item.contains("600007")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
       }
-
 
       // update values
       for (ArrayList<String> item : inventory_list) {
@@ -1498,9 +1545,6 @@ public class GUI extends JFrame implements ActionListener {
           JOptionPane.showMessageDialog(null,"Error accessing Database.");
         }
       }
-
-      return "n/a";
     }
-
   
 }
