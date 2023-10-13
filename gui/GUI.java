@@ -418,7 +418,7 @@ public class GUI extends JFrame implements ActionListener {
     public static void payWindow() {
       JFrame outside_frame = new JFrame("Payment Processed");
       outside_frame.setSize(400, 400);
-      JPanel buttonSubMenu = new JPanel(new GridLayout(0,2));
+      JPanel button_sub_menu = new JPanel(new GridLayout(0,2));
 
       JButton employee_exit = new JButton("Employee Exit");
       JButton another_order = new JButton("Another Order");
@@ -440,10 +440,10 @@ public class GUI extends JFrame implements ActionListener {
         }
       });
 
-      buttonSubMenu.add(employee_exit);
-      buttonSubMenu.add(another_order);
+      button_sub_menu.add(employee_exit);
+      button_sub_menu.add(another_order);
 
-      outside_frame.add(buttonSubMenu);
+      outside_frame.add(button_sub_menu);
       outside_frame.setVisible(true);
     }
 
@@ -490,7 +490,7 @@ public class GUI extends JFrame implements ActionListener {
           orderFrame.setSize(400,400);
           
           JPanel totalSubMenu = new JPanel(new BorderLayout());
-          JPanel buttonSubMenu = new JPanel(new GridLayout(0,3));
+          JPanel button_sub_menu = new JPanel(new GridLayout(0,3));
           JPanel orderSubMenu = new JPanel(new GridLayout(0, 2));
 
           
@@ -596,13 +596,13 @@ public class GUI extends JFrame implements ActionListener {
   
           // orderFrame.getContentPane().add(scrollable_order);
 
-          buttonSubMenu.add(more_drinks);
-          buttonSubMenu.add(cancel_order);
-          buttonSubMenu.add(finish_and_pay);
+          button_sub_menu.add(more_drinks);
+          button_sub_menu.add(cancel_order);
+          button_sub_menu.add(finish_and_pay);
 
           totalSubMenu.add(scrollable_order);
           // totalSubMenu.add(orderSubMenu);
-          totalSubMenu.add(buttonSubMenu, BorderLayout.PAGE_END);
+          totalSubMenu.add(button_sub_menu, BorderLayout.PAGE_END);
 
           // orderFrame.add(orderSubMenu);
 
