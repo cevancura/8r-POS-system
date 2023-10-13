@@ -289,22 +289,22 @@ public class GUI extends JFrame implements ActionListener {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                   // Extract the text from the clicked button
-                  String selectedItem = custom.getText();
+                  String selected_item = custom.getText();
 
-                  if (current_customizations.contains(selectedItem)) {
+                  if (current_customizations.contains(selected_item)) {
                     // if currently selected, deselect
-                    current_customizations.remove(selectedItem);
+                    current_customizations.remove(selected_item);
                     custom.setBackground(null);
                   }
                   else {
-                    current_customizations.add(selectedItem);
+                    current_customizations.add(selected_item);
                     custom.setBackground(Color.BLUE);
                     custom.setOpaque(true);
                     custom.setBorderPainted(false);
                   }
 
                   // Add it to the ArrayList
-                  // selected_items.add(selectedItem);
+                  // selected_items.add(selected_item);
                   // // change color 
                   // custom.setBackground(Color.BLUE);
 
@@ -316,14 +316,14 @@ public class GUI extends JFrame implements ActionListener {
 
       // continue button 
       // JPanel continueSubMenu = new JPanel();
-      JButton continueButton = new JButton("Continue");
-      continueButton.setBackground(Color.GREEN);
-      continueButton.setOpaque(true);
-      continueButton.setBorderPainted(false);
-      // continueSubMenu.add(continueButton);
-      customization_sub_menu.add(continueButton);
+      JButton continue_button = new JButton("Continue");
+      continue_button.setBackground(Color.GREEN);
+      continue_button.setOpaque(true);
+      continue_button.setBorderPainted(false);
+      // continueSubMenu.add(continue_button);
+      customization_sub_menu.add(continue_button);
 
-      continueButton.addActionListener(new ActionListener() {
+      continue_button.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
           String s = e.getActionCommand();
@@ -357,23 +357,23 @@ public class GUI extends JFrame implements ActionListener {
       return customizations_frame;
     }
 
-    public static void typeWindow(String drinkType, int size_x, int size_y) throws IOException {
+    public static void typeWindow(String drink_type, int size_x, int size_y) throws IOException {
       // Create a new frame for type options
-      JFrame outsideFrame = new JFrame(drinkType + " Options");
-      outsideFrame.setSize(800, 800);
-      JPanel subMenu = new JPanel(new GridLayout(size_x, size_y));
+      JFrame outside_frame = new JFrame(drink_type + " Options");
+      outside_frame.setSize(800, 800);
+      JPanel sub_menu = new JPanel(new GridLayout(size_x, size_y));
 
       for (String drink : drink_names) {
         // if the right type
-        if (drink.length() >= drinkType.length() && drink.substring(0, drinkType.length()).equals(drinkType)) {
+        if (drink.length() >= drink_type.length() && drink.substring(0, drink_type.length()).equals(drink_type)) {
           JButton mt = new JButton(drink);
           mt.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
               // Extract the text from the clicked button
-              String selectedItem = mt.getText();
+              String selected_item = mt.getText();
               // Add it to the ArrayList
-              selected_items.add(selectedItem);
+              selected_items.add(selected_item);
 
               // add to number of drinks and total cost
               num_drinks += 1;
@@ -391,33 +391,33 @@ public class GUI extends JFrame implements ActionListener {
               }
               
 
-              // Close the outsideFrame
-              outsideFrame.dispose();
+              // Close the outside_frame
+              outside_frame.dispose();
 
               // Open the new frame here (e.g., a new options frame)
-              JFrame customsFrame = new JFrame("Customizations");
+              JFrame customs_frame = new JFrame("Customizations");
               try {
-                customsFrame = customizationWindow();
+                customs_frame = customizationWindow();
               } catch (IOException error1) {
                   error1.printStackTrace();
               }
 
-              customsFrame.setSize(800, 800);
-              customsFrame.setVisible(true);
+              customs_frame.setSize(800, 800);
+              customs_frame.setVisible(true);
             }
           });
-          subMenu.add(mt);
+          sub_menu.add(mt);
         }
       }
 
-      // add submenu to frame and make visible
-      outsideFrame.add(subMenu);
-      outsideFrame.setVisible(true);
+      // add sub_menu to frame and make visible
+      outside_frame.add(sub_menu);
+      outside_frame.setVisible(true);
     }
 
     public static void payWindow() {
-      JFrame outsideFrame = new JFrame("Payment Processed");
-      outsideFrame.setSize(400, 400);
+      JFrame outside_frame = new JFrame("Payment Processed");
+      outside_frame.setSize(400, 400);
       JPanel buttonSubMenu = new JPanel(new GridLayout(0,2));
 
       JButton employee_exit = new JButton("Employee Exit");
@@ -426,8 +426,8 @@ public class GUI extends JFrame implements ActionListener {
       employee_exit.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          // Close the outsideFrame and employee frame
-          outsideFrame.dispose();
+          // Close the outside_frame and employee frame
+          outside_frame.dispose();
           employee_frame.dispose();
         }
       });
@@ -435,21 +435,21 @@ public class GUI extends JFrame implements ActionListener {
       another_order.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          // Close the outsideFrame
-          outsideFrame.dispose();
+          // Close the outside_frame
+          outside_frame.dispose();
         }
       });
 
       buttonSubMenu.add(employee_exit);
       buttonSubMenu.add(another_order);
 
-      outsideFrame.add(buttonSubMenu);
-      outsideFrame.setVisible(true);
+      outside_frame.add(buttonSubMenu);
+      outside_frame.setVisible(true);
     }
 
     public static void cancelWindow() {
-      JFrame outsideFrame = new JFrame("Cancelled Order");
-      outsideFrame.setSize(400, 400);
+      JFrame outside_frame = new JFrame("Cancelled Order");
+      outside_frame.setSize(400, 400);
       JPanel cancelSubMenu = new JPanel(new BorderLayout());
 
       JTextArea cancel_text = new JTextArea("Order has been cancelled.");
@@ -460,17 +460,17 @@ public class GUI extends JFrame implements ActionListener {
       exit_button.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          // Close the outsideFrame and employee frame
-          outsideFrame.dispose();
+          // Close the outside_frame and employee frame
+          outside_frame.dispose();
         }
       });
 
       cancelSubMenu.add(cancel_text);
       cancelSubMenu.add(exit_button, BorderLayout.PAGE_END);
 
-      outsideFrame.add(cancelSubMenu);
+      outside_frame.add(cancelSubMenu);
 
-      outsideFrame.setVisible(true);
+      outside_frame.setVisible(true);
     }
 
     // if button is pressed
@@ -501,22 +501,22 @@ public class GUI extends JFrame implements ActionListener {
           prices_text.setEditable(false);
 
           int index = 0;
-          for (String selectedItem : selected_items) {
+          for (String selected_item : selected_items) {
             if (index == 0) {
-              order_text.append(selectedItem);
+              order_text.append(selected_item);
               try {
-                prices_text.append(String.valueOf(getDrinkCost("drink_dictionary.csv", selectedItem)));
+                prices_text.append(String.valueOf(getDrinkCost("drink_dictionary.csv", selected_item)));
               }
               catch (IOException error1) {
                 error1.printStackTrace();
               }
             }
             else {
-              if (drink_names.contains(selectedItem)) {
+              if (drink_names.contains(selected_item)) {
                 order_text.append("\n\n");
                 prices_text.append("\n\n");
                 try {
-                  prices_text.append(String.valueOf(getDrinkCost("drink_dictionary.csv", selectedItem)));
+                  prices_text.append(String.valueOf(getDrinkCost("drink_dictionary.csv", selected_item)));
                 }
                 catch (IOException error1) {
                   error1.printStackTrace();
@@ -526,13 +526,13 @@ public class GUI extends JFrame implements ActionListener {
                 order_text.append("\n");
                 prices_text.append("\n");
                 try {
-                  prices_text.append(String.valueOf(getCustomizationCost("customs.csv", selectedItem)));
+                  prices_text.append(String.valueOf(getCustomizationCost("customs.csv", selected_item)));
                 }
                 catch (IOException error1) {
                   error1.printStackTrace();
                 }
               }
-              order_text.append(selectedItem);
+              order_text.append(selected_item);
               
             }
             index++;
