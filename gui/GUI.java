@@ -220,8 +220,11 @@ public class GUI extends JFrame implements ActionListener {
             stmt.execute(sqlStatement);
           } catch (Exception e){
             System.out.println(e.toString());
-            JOptionPane.showMessageDialog(null,"Error accessing Database after Write.");
+            JOptionPane.showMessageDialog(null,"Error accessing Database.");
           }
+
+          // update inventory
+          updateInventory(conn);
 
           // update paid
           paid = false;
@@ -813,7 +816,7 @@ public class GUI extends JFrame implements ActionListener {
       scanner.close(); // Close the scanner explicitly.
   
       return customizationNames;
-  }
+    }
 
     public static double getCustomizationCost(String filePath, String customName) throws IOException {
       double customCost = 0;
@@ -837,7 +840,574 @@ public class GUI extends JFrame implements ActionListener {
       scanner.close(); // Close the scanner explicitly.
   
       return customCost;
-  }
+    }
+
+    public static String updateInventory(Connection conn) {
+      // for each item in inventory find current amount
+      ArrayList<ArrayList<String>> inventory_list = new ArrayList<ArrayList<String>>();
+
+      //create a statement object
+      try {
+        Statement stmt = conn.createStatement();
+        //create a SQL statement
+        String sqlStatement = "SELECT * FROM inventory ORDER BY product_id asc;";
+        //send statement to DBMS
+        ResultSet result = stmt.executeQuery(sqlStatement);
+        while (result.next()) {
+          ArrayList<String> single_item = new ArrayList<String>();
+
+          single_item.add(result.getString("product_id"));
+          single_item.add(result.getString("total_amount"));
+          single_item.add(result.getString("current_amount"));
+
+          // make list of lists with all id, total, and current amount included for each item
+          inventory_list.add(single_item);
+        }
+      } catch (Exception e){
+        JOptionPane.showMessageDialog(null,"Error accessing Database.");
+      }
+
+      // update values in inventory list
+      // 500001-500021 are drink types
+      // 500022-500031 are add-ins
+      // 600001-600008 are misc, often used in every drink
+
+      for (String id : order_drinks) {
+        if (id.equals("0000")) {
+          // no update, null value
+          continue;
+        }
+        if (id.equals("0001")) {
+          // milk tea classic black
+          for (ArrayList<String> item : inventory_list) {
+            // milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // black tea
+            if (item.contains("500001")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0002")) {
+          // milk tea classic green
+          for (ArrayList<String> item : inventory_list) {
+            // milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // green tea
+            if (item.contains("500002")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0003")) {
+          // milk tea classic oolong
+          for (ArrayList<String> item : inventory_list) {
+            // milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // oolong tea
+            if (item.contains("500003")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0004")) {
+          // milk tea honey black
+          for (ArrayList<String> item : inventory_list) {
+            // milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // black tea
+            if (item.contains("500001")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0005")) {
+          // milk tea honey green
+          for (ArrayList<String> item : inventory_list) {
+            // milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // green tea
+            if (item.contains("500002")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0006")) {
+          // milk tea honey oolong
+          for (ArrayList<String> item : inventory_list) {
+            // milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // oolong tea
+            if (item.contains("500003")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0007")) {
+          // milk tea classic coffee
+          for (ArrayList<String> item : inventory_list) {
+            // milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // coffee
+            if (item.contains("500004")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0008")) {
+          // milk tea ginger
+          for (ArrayList<String> item : inventory_list) {
+            // milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // ginger
+            if (item.contains("500005")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0009")) {
+          // milk tea hokkaido
+          for (ArrayList<String> item : inventory_list) {
+            // milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // oolong tea
+            if (item.contains("500006")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0010")) {
+          // milk tea okinawa
+          for (ArrayList<String> item : inventory_list) {
+            // milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // okinawa tea
+            if (item.contains("500007")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0011")) {
+          // milk tea thai
+          for (ArrayList<String> item : inventory_list) {
+            // milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // thai tea
+            if (item.contains("500008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0012")) {
+          // milk tea taro
+          for (ArrayList<String> item : inventory_list) {
+            // milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // taro
+            if (item.contains("500009")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0013")) {
+          // milk tea mango green
+          for (ArrayList<String> item : inventory_list) {
+            // milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // green tea
+            if (item.contains("500002")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // mango
+            if (item.contains("500010")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0014")) {
+          // milk tea QQ Happy Family
+          for (ArrayList<String> item : inventory_list) {
+            // milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // tea
+            if (item.contains("500011")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0015")) {
+          // milk tea matcha red bean
+          for (ArrayList<String> item : inventory_list) {
+            // milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // matcha
+            if (item.contains("500012")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // red bean
+            if (item.contains("500026")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0016")) {
+          // brewed tea classic black
+          for (ArrayList<String> item : inventory_list) {
+            // black tea
+            if (item.contains("500001")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0017")) {
+          // brewed tea classic green
+          for (ArrayList<String> item : inventory_list) {
+            // green tea
+            if (item.contains("500002")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0018")) {
+          // brewed tea classic oolong
+          for (ArrayList<String> item : inventory_list) {
+            // oolong tea
+            if (item.contains("500003")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0019")) {
+          // brewed tea wintermelon
+          for (ArrayList<String> item : inventory_list) {
+            // wintermelon
+            if (item.contains("500013")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0020")) {
+          // brewed tea honey black
+          for (ArrayList<String> item : inventory_list) {
+            // black tea
+            if (item.contains("500001")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0021")) {
+          // brewed tea honey green
+          for (ArrayList<String> item : inventory_list) {
+            // green tea
+            if (item.contains("500002")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0022")) {
+          // brewed tea honey oolong
+          for (ArrayList<String> item : inventory_list) {
+            // oolong tea
+            if (item.contains("500003")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0023")) {
+          // brewed tea ginger
+          for (ArrayList<String> item : inventory_list) {
+            // ginger
+            if (item.contains("500005")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0024")) {
+          // fruit tea mango green
+          for (ArrayList<String> item : inventory_list) {
+            // green tea
+            if (item.contains("500002")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // mango
+            if (item.contains("500010")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0025")) {
+          // fruit tea wintermelon lemonade
+          for (ArrayList<String> item : inventory_list) {
+            // wintermelon
+            if (item.contains("500013")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }            
+        if (id.equals("0026")) {
+          // fruit tea strawberry
+          for (ArrayList<String> item : inventory_list) {
+            // strawberry
+            if (item.contains("500015")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }      
+        if (id.equals("0027")) {
+          // fruit tea peach
+          for (ArrayList<String> item : inventory_list) {
+            // peach
+            if (item.contains("500016")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }    
+        if (id.equals("0028")) {
+          // fruit tea peach kiwi
+          for (ArrayList<String> item : inventory_list) {
+            // peach
+            if (item.contains("500016")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // kiwi
+            if (item.contains("500017")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0029")) {
+          // fruit tea kiwi
+          for (ArrayList<String> item : inventory_list) {
+            // kiwi
+            if (item.contains("500017")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }  
+        if (id.equals("0030")) {
+          // fruit tea mango and passionfruit
+          for (ArrayList<String> item : inventory_list) {
+            // mango
+            if (item.contains("500010")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // passionfruit
+            if (item.contains("500018")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }  
+        if (id.equals("0031")) {
+          // fruit tea tropical fruit
+          for (ArrayList<String> item : inventory_list) {
+            // tropical fruit
+            if (item.contains("500019")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }     
+        if (id.equals("0032")) {
+          // fruit tea hawaii fruit
+          for (ArrayList<String> item : inventory_list) {
+            // hawaii fruit
+            if (item.contains("500020")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }   
+        if (id.equals("0033")) {
+          // fruit tea passionfruit orange and grapefruit
+          for (ArrayList<String> item : inventory_list) {
+            // passionfruit
+            if (item.contains("500018")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // orange and grapefruit
+            if (item.contains("500021")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }   
+        if (id.equals("0034")) {
+          // fresh milk
+          for (ArrayList<String> item : inventory_list) {
+            // fresh milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0035")) {
+          // fresh milk classic black
+          for (ArrayList<String> item : inventory_list) {
+            // fresh milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // black tea
+            if (item.contains("500001")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0036")) {
+          // fresh milk classic green
+          for (ArrayList<String> item : inventory_list) {
+            // fresh milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // green tea
+            if (item.contains("500002")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0037")) {
+          // fresh milk classic oolong
+          for (ArrayList<String> item : inventory_list) {
+            // fresh milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // oolong tea
+            if (item.contains("500003")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0038")) {
+          // fresh milk tea wintermelon
+          for (ArrayList<String> item : inventory_list) {
+            // fresh milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // wintermelon
+            if (item.contains("500013")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0039")) {
+          // fresh milk cocoa lover
+          for (ArrayList<String> item : inventory_list) {
+            // fresh milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0040")) {
+          // fresh milk QQ Happy Family
+          for (ArrayList<String> item : inventory_list) {
+            // milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // tea
+            if (item.contains("500011")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0041")) {
+          // fresh milk milk tea matcha
+          for (ArrayList<String> item : inventory_list) {
+            // milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // matcha
+            if (item.contains("500012")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+        if (id.equals("0042")) {
+          // fresh milk taro
+          for (ArrayList<String> item : inventory_list) {
+            // milk
+            if (item.contains("600008")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // taro
+            if (item.contains("500009")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+          }
+        }
+      }
+
+      // found in every drink (cups, straws, napkins)
+      for (ArrayList<String> item : inventory_list) {
+        // cups
+        if (item.contains("600001")) {
+          item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - num_drinks));
+        }
+        // straws
+        if (item.contains("600003")) {
+          item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - num_drinks));
+        }
+        // napkins
+        if (item.contains("600005")) {
+          item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - num_drinks));
+        }
+      }
+
+
+      // update values
+      for (ArrayList<String> item : inventory_list) {
+        //create a SQL statement
+        String sqlStatement = "UPDATE inventory";
+        sqlStatement += " SET current_amount = ";
+        sqlStatement += item.get(2);
+        sqlStatement += " WHERE product_id = ";
+        sqlStatement += item.get(0);
+        sqlStatement += ";";
+
+        try{
+          //create a statement object
+          Statement stmt = conn.createStatement();
+          //send statement to DBMS
+          stmt.execute(sqlStatement);
+        } catch (Exception e){
+          JOptionPane.showMessageDialog(null,"Error accessing Database.");
+        }
+      }
+
+      return "n/a";
+    }
 
   
 }
