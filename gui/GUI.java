@@ -34,13 +34,13 @@ public class GUI extends JFrame implements ActionListener {
     // drink list per order
     static ArrayList<String> order_drinks = new ArrayList<>();
 
-    static ArrayList<String> selectedItems = new ArrayList<>();
+    static ArrayList<String> selected_items = new ArrayList<>();
 
     // all customizations per order
     static ArrayList<String> order_customizations = new ArrayList<>();
 
     // drink names
-    static ArrayList<String> drinkNames = null;
+    static ArrayList<String> drink_names = null;
 
 
     public static void main(String[] args)
@@ -66,9 +66,9 @@ public class GUI extends JFrame implements ActionListener {
         Statement stmt = conn.createStatement();
         //create a SQL statement
         //TODO Step 2
-        String sqlStatement = "SELECT * FROM drink_dictionary;";
+        String sql_statement = "SELECT * FROM drink_dictionary;";
         //send statement to DBMS
-        ResultSet result = stmt.executeQuery(sqlStatement);
+        ResultSet result = stmt.executeQuery(sql_statement);
         while (result.next()) {
           name += result.getString("name")+"\n";
         }
@@ -172,7 +172,7 @@ public class GUI extends JFrame implements ActionListener {
 
       // update drink array
       try {
-        drinkNames = getDrinkNamesTable(conn);
+        drink_names = getDrinkNamesTable(conn);
       }
       catch (IOException error1) {
         error1.printStackTrace();
@@ -190,9 +190,9 @@ public class GUI extends JFrame implements ActionListener {
             //create a statement object
             Statement stmt = conn.createStatement();
             //create a SQL statement
-            String sqlStatement = "SELECT MAX(order_id) FROM order_history;";
+            String sql_statement = "SELECT MAX(order_id) FROM order_history;";
             //send statement to DBMS
-            ResultSet result = stmt.executeQuery(sqlStatement);
+            ResultSet result = stmt.executeQuery(sql_statement);
             if (result.next()) {
               prev_order_id_str += result.getString("max");
             }
@@ -230,9 +230,9 @@ public class GUI extends JFrame implements ActionListener {
             //create a statement object
             Statement stmt = conn.createStatement();
             //create a SQL statement
-            String sqlStatement = "INSERT INTO order_history VALUES " + order_str;
+            String sql_statement = "INSERT INTO order_history VALUES " + order_str;
             //send statement to DBMS
-            stmt.execute(sqlStatement);
+            stmt.execute(sql_statement);
           } catch (Exception e){
             System.out.println(e.toString());
             JOptionPane.showMessageDialog(null,"Error accessing Database.");
@@ -247,7 +247,7 @@ public class GUI extends JFrame implements ActionListener {
           num_drinks = 0;
           total_cost = 0.0;
           order_drinks.clear();
-          selectedItems.clear();
+          selected_items.clear();
           order_customizations.clear();
         }
       }
@@ -304,12 +304,12 @@ public class GUI extends JFrame implements ActionListener {
                   }
 
                   // Add it to the ArrayList
-                  // selectedItems.add(selectedItem);
+                  // selected_items.add(selectedItem);
                   // // change color 
                   // custom.setBackground(Color.BLUE);
 
                   // NOTE: ADD CUSTOMIZATIONS IN A CHECKBOX, FOR EVERY BOX THAT IS CHECKED, 
-                  // ADD THAT TO selectedItems AND ADD THAT TO THE ORDER
+                  // ADD THAT TO selected_items AND ADD THAT TO THE ORDER
                 }
             });
       }
@@ -330,7 +330,7 @@ public class GUI extends JFrame implements ActionListener {
           if (s == "Continue") {
             // once continue is clicked add all current customizations to order
             for (String custom : currentCustomizations) {
-              selectedItems.add(custom);
+              selected_items.add(custom);
               order_customizations.add(custom);
               // update total cost
               try {
@@ -363,7 +363,7 @@ public class GUI extends JFrame implements ActionListener {
       outsideFrame.setSize(800, 800);
       JPanel subMenu = new JPanel(new GridLayout(size_x, size_y));
 
-      for (String drink : drinkNames) {
+      for (String drink : drink_names) {
         // if the right type
         if (drink.length() >= drinkType.length() && drink.substring(0, drinkType.length()).equals(drinkType)) {
           JButton mt = new JButton(drink);
@@ -373,7 +373,7 @@ public class GUI extends JFrame implements ActionListener {
               // Extract the text from the clicked button
               String selectedItem = mt.getText();
               // Add it to the ArrayList
-              selectedItems.add(selectedItem);
+              selected_items.add(selectedItem);
 
               // add to number of drinks and total cost
               num_drinks += 1;
@@ -501,7 +501,7 @@ public class GUI extends JFrame implements ActionListener {
           prices_text.setEditable(false);
 
           int index = 0;
-          for (String selectedItem : selectedItems) {
+          for (String selectedItem : selected_items) {
             if (index == 0) {
               order_text.append(selectedItem);
               try {
@@ -512,7 +512,7 @@ public class GUI extends JFrame implements ActionListener {
               }
             }
             else {
-              if (drinkNames.contains(selectedItem)) {
+              if (drink_names.contains(selectedItem)) {
                 order_text.append("\n\n");
                 prices_text.append("\n\n");
                 try {
@@ -565,7 +565,7 @@ public class GUI extends JFrame implements ActionListener {
                 num_drinks = 0;
                 total_cost = 0.0;
                 order_drinks.clear();
-                selectedItems.clear();
+                selected_items.clear();
                 order_customizations.clear();
 
                 orderFrame.dispose();
@@ -705,7 +705,7 @@ public class GUI extends JFrame implements ActionListener {
           num_drinks = 0;
           total_cost = 0.0;
           order_drinks.clear();
-          selectedItems.clear();
+          selected_items.clear();
           order_customizations.clear();
           // cancel order
           cancelWindow();
@@ -717,7 +717,7 @@ public class GUI extends JFrame implements ActionListener {
           num_drinks = 0;
           total_cost = 0.0;
           order_drinks.clear();
-          selectedItems.clear();
+          selected_items.clear();
           order_customizations.clear();
 
           // output window acknowledging cancelled order
@@ -735,7 +735,7 @@ public class GUI extends JFrame implements ActionListener {
     }
 
     public static ArrayList<String> getDrinkNames(String filePath) throws IOException {
-      ArrayList<String> drinkNames = new ArrayList<>();
+      ArrayList<String> drink_names = new ArrayList<>();
       File file = new File(filePath);
 
       Scanner scanner = new Scanner(file);
@@ -745,13 +745,13 @@ public class GUI extends JFrame implements ActionListener {
         String[] parts = line.split(",");
         if (parts.length >= 2) {
           String drinkName = parts[1].trim();
-          drinkNames.add(drinkName);
+          drink_names.add(drinkName);
         }
       }
 
       scanner.close(); // Close the scanner explicitly.
 
-      return drinkNames;
+      return drink_names;
     }
 
     public static ArrayList<String> getDrinkNamesTable(Connection conn) throws IOException {
@@ -761,10 +761,10 @@ public class GUI extends JFrame implements ActionListener {
       try {
         Statement stmt = conn.createStatement();
         //create a SQL statement
-        String sqlStatement = "SELECT * FROM drink_dictionary ORDER BY drink_id asc;";
+        String sql_statement = "SELECT * FROM drink_dictionary ORDER BY drink_id asc;";
         //send statement to DBMS
 
-        ResultSet result = stmt.executeQuery(sqlStatement);
+        ResultSet result = stmt.executeQuery(sql_statement);
         while (result.next()) {
           drink_names.add(result.getString("name"));
         }
@@ -876,9 +876,9 @@ public class GUI extends JFrame implements ActionListener {
       try {
         Statement stmt = conn.createStatement();
         //create a SQL statement
-        String sqlStatement = "SELECT * FROM inventory ORDER BY product_id asc;";
+        String sql_statement = "SELECT * FROM inventory ORDER BY product_id asc;";
         //send statement to DBMS
-        ResultSet result = stmt.executeQuery(sqlStatement);
+        ResultSet result = stmt.executeQuery(sql_statement);
         while (result.next()) {
           ArrayList<String> single_item = new ArrayList<String>();
 
@@ -1547,18 +1547,18 @@ public class GUI extends JFrame implements ActionListener {
       // update values
       for (ArrayList<String> item : inventory_list) {
         //create a SQL statement
-        String sqlStatement = "UPDATE inventory";
-        sqlStatement += " SET current_amount = ";
-        sqlStatement += item.get(2);
-        sqlStatement += " WHERE product_id = ";
-        sqlStatement += item.get(0);
-        sqlStatement += ";";
+        String sql_statement = "UPDATE inventory";
+        sql_statement += " SET current_amount = ";
+        sql_statement += item.get(2);
+        sql_statement += " WHERE product_id = ";
+        sql_statement += item.get(0);
+        sql_statement += ";";
 
         try{
           //create a statement object
           Statement stmt = conn.createStatement();
           //send statement to DBMS
-          stmt.execute(sqlStatement);
+          stmt.execute(sql_statement);
         } catch (Exception e){
           JOptionPane.showMessageDialog(null,"Error accessing Database.");
         }
