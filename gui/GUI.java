@@ -117,7 +117,7 @@ public class GUI extends JFrame implements ActionListener {
             }
             
             stmt.execute(update);
-            out.setText("The" + text + "has been updated to " + text_out.getText());
+            out.setText("The " + text + " has been updated to " + text_out.getText());
             
             }catch (Exception n){
               n.printStackTrace();
@@ -125,8 +125,6 @@ public class GUI extends JFrame implements ActionListener {
               JOptionPane.showMessageDialog(null,"Error executing command.");
             }
       }
-      // p_inventory.remove(table_inventory);
-      // p_menu.remove(table_menu);
       updateTable(conn, isMenu);
     }
 
@@ -169,7 +167,7 @@ public class GUI extends JFrame implements ActionListener {
       String[] menu_cols = {"drink_id", "name", "price"};
       ArrayList<ArrayList<String>> data_inventory = new ArrayList<>();
       ArrayList<ArrayList<String>> data_menu = new ArrayList<>();
-
+      
       try{
         //create a statement object
         Statement stmt = conn.createStatement();
@@ -211,6 +209,11 @@ public class GUI extends JFrame implements ActionListener {
         JScrollPane sp_menu = new JScrollPane(table_menu);
         drinks_frame.getContentPane().add(sp_menu);
         p_menu.add(sp_menu);
+
+        p_menu.revalidate();
+        p_menu.repaint();
+        p_inventory.revalidate();
+        p_inventory.repaint();
 
       } catch (Exception e){
         e.printStackTrace();
@@ -259,22 +262,8 @@ public class GUI extends JFrame implements ActionListener {
       manager_frame.setSize(400, 400);
       JPanel p_man = new JPanel();
 
-      /*
-      JButton employee_info = new JButton("Employee Information");      
-      p_man.add(employee_info);
-      manager_frame.add(p_man);
-      */
-      //JButton employee_info = addButtontoPanel("Employee Information", p_man);
 
-
-      //JButton drinks = new JButton("Menu");
-      //drinks.addActionListener(s);
-      //p_man.add(drinks);
       implementButton("Menu", p_man, s);
-
-      // JButton inventory = new JButton("Inventory");
-      // inventory.addActionListener(s);
-      // p_man.add(inventory);
       implementButton("Inventory", p_man, s);
 
       inventory_frame = new JFrame("Inventory Window");
@@ -282,14 +271,6 @@ public class GUI extends JFrame implements ActionListener {
       p_inventory = new JPanel();
       p_menu = new JPanel();
 
-
-      // adding a save button 
-      // JButton save_btn = new JButton("Add Menu Item");
-      // JButton save_btn_inventory= new JButton("Add Inventory Item");
-      // p_inventory.add(save_btn_inventory);
-      // p_menu.add(save_btn);
-      // save_btn.addActionListener(s);
-      // save_btn_inventory.addActionListener(s);
       implementButton("Add Menu Item", p_menu, s);
       implementButton("Add Inventory Item", p_inventory, s);
 
@@ -313,20 +294,6 @@ public class GUI extends JFrame implements ActionListener {
       update_inventory.setSize(200, 200);
       update_inventory.add(p_update_inventory);
 
-      // JButton add_menu_btn = new JButton("Save Menu Item");
-      // p_add_menu.add(add_menu_btn);
-      // JButton add_inventory_btn = new JButton("Save Inventory Item");
-      // p_add_inventory.add(add_inventory_btn);
-      // JButton update_menu_btn = new JButton("Save Updates for Menu Item");
-      // p_update_menu.add(update_menu_btn);
-      // JButton update_inventory_btn = new JButton("Save Updates for Inventory Item");
-      // p_update_inventory.add(update_inventory_btn);
-
-      // add_menu_btn.addActionListener(s);
-      // add_inventory_btn.addActionListener(s);
-      // update_menu_btn.addActionListener(s);
-      // update_inventory_btn.addActionListener(s);
-
       implementButton("Save Menu Item", p_add_menu, s);
       implementButton("Save Updates for Menu Item", p_update_menu, s);
       implementButton("Save Inventory Item", p_add_inventory, s);
@@ -347,13 +314,7 @@ public class GUI extends JFrame implements ActionListener {
       p_add_inventory.add(text_input_inventory);
       p_add_inventory.add(text_output_inventory);
 
-      //updating the database
-      // JButton update_menu = new JButton("Update Menu");
-      // JButton update_inventory = new JButton("Update Inventory");
-      // p_inventory.add(update_inventory);
-      // p_menu.add(update_menu);
-      // update_menu.addActionListener(s);
-      // update_inventory.addActionListener(s);
+
       implementButton("Update Menu", p_menu, s);
       implementButton("Update Inventory", p_inventory, s);
 
@@ -362,7 +323,7 @@ public class GUI extends JFrame implements ActionListener {
       update_text_input = new JTextField("enter the text");
       update_text_output = new JTextArea("");
       p_update_menu.add(update_text_input);
-      p_update_inventory.add(update_text_output);
+      p_update_menu.add(update_text_output);
 
 
       update_input_inventory = new JTextField("enter the text");
@@ -372,59 +333,7 @@ public class GUI extends JFrame implements ActionListener {
 
 
       updateTable(conn, true);
-      // String[] inventory_cols = {"product_id", "itemname", "total_amount", "current_amount", "restock"};
-      // String[] menu_cols = {"drink_id", "name", "price"};
-      // ArrayList<ArrayList<String>> data_inventory = new ArrayList<>();
-      // ArrayList<ArrayList<String>> data_menu = new ArrayList<>();
 
-      // try{
-      //   //create a statement object
-      //   Statement stmt = conn.createStatement();
-      //   //create a SQL statement
-      //   String sqlStatement = "SELECT * FROM inventory;";
-      //   ResultSet result = stmt.executeQuery(sqlStatement);
-      //   while (result.next()) {
-      //     ArrayList<String> curr = new ArrayList<>();
-      //     curr.add(result.getString("product_id"));
-      //     curr.add(result.getString("itemname"));
-      //     curr.add(result.getString("total_amount"));
-      //     curr.add(result.getString("current_amount"));
-      //     curr.add(result.getString("restock"));
-
-      //     data_inventory.add(curr);          
-      //   }
-      //   String[][] arr = data_inventory.stream().map(l -> l.stream().toArray(String[]::new)).toArray(String[][]::new);
-      //   table_inventory = new JTable(arr, inventory_cols);
-      //   table_inventory.setBounds(30,40,200,500);
-      //   JScrollPane sp = new JScrollPane(table_inventory);
-      //   inventory_frame.getContentPane().add(sp);
-      //   p_inventory.add(sp);
-
-      //   //getting menu items from drinks dictionary
-      //   String menu_command = "SELECT * FROM drink_dictionary;";
-      //   ResultSet menuresult = stmt.executeQuery(menu_command);
-      //   while (menuresult.next()) {          
-      //     ArrayList<String> curr = new ArrayList<>();
-      //     curr.add(menuresult.getString("drink_id"));
-      //     curr.add(menuresult.getString("name"));
-      //     curr.add(menuresult.getString("price"));
-
-      //     data_menu.add(curr); 
-      //   }
-
-      //   String[][] arr_menu = data_menu.stream().map(l -> l.stream().toArray(String[]::new)).toArray(String[][]::new);
-      //   table_menu = new JTable(arr_menu, menu_cols);
-      //   table_menu.setBounds(30,40,400,500);
-      //   JScrollPane sp_menu = new JScrollPane(table_menu);
-      //   drinks_frame.getContentPane().add(sp_menu);
-      //   p_menu.add(sp_menu);
-
-      // } catch (Exception e){
-      //   e.printStackTrace();
-      //   System.err.println(e.getClass().getName()+": "+e.getMessage());
-      //   JOptionPane.showMessageDialog(null,"Error accessing drink and inventory.");
-      // }
-      
       //output changes
       out = new JTextArea();
       p_menu.add(out);
