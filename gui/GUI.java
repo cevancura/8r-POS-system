@@ -57,7 +57,8 @@ public class GUI extends JFrame implements ActionListener {
     static JPanel p_inventory;
     static JPanel p_menu;
     static JPanel p_reports;
-
+    static Boolean menu_check = false;
+    static Boolean inventory_check = false;
 
     public static Connection createConnection() {
       Connection conn = null;
@@ -149,12 +150,12 @@ public class GUI extends JFrame implements ActionListener {
               JOptionPane.showMessageDialog(null,"Error executing command.");
             }
       }
-      updateTable(conn, is_menu);
+      updateTable(conn);
     }
 
-    public static void updateTable(Connection conn, Boolean is_menu) {
+    public static void updateTable(Connection conn) {
       
-      // if (is_menu) {
+      if (menu_check) {
         Component[] component_list_menu = p_menu.getComponents();
 
         //Loop through the components
@@ -169,8 +170,8 @@ public class GUI extends JFrame implements ActionListener {
         }
         p_menu.revalidate();
         p_menu.repaint();
-      // }
-      // else {
+      }
+      if(inventory_check) {
         Component[] component_list = p_inventory.getComponents();
 
         //Loop through the components
@@ -185,7 +186,7 @@ public class GUI extends JFrame implements ActionListener {
         }
         p_inventory.revalidate();
         p_inventory.repaint();
-      // }
+      }
 
       String[] inventory_cols = {"product_id", "itemname", "total_amount", "current_amount", "restock"};
       String[] menu_cols = {"drink_id", "name", "price"};
@@ -195,50 +196,53 @@ public class GUI extends JFrame implements ActionListener {
       try{
         //create a statement object
         Statement stmt = conn.createStatement();
-        //create a SQL statement
-        String sql_statement_m = "SELECT * FROM inventory;";
-        ResultSet result = stmt.executeQuery(sql_statement_m);
-        while (result.next()) {
-          ArrayList<String> curr = new ArrayList<>();
-          curr.add(result.getString("product_id"));
-          curr.add(result.getString("itemname"));
-          curr.add(result.getString("total_amount"));
-          curr.add(result.getString("current_amount"));
-          curr.add(result.getString("restock"));
+        if (inventory_check) {
+          //create a SQL statement
+          String sql_statement_m = "SELECT * FROM inventory;";
+          ResultSet result = stmt.executeQuery(sql_statement_m);
+          while (result.next()) {
+            ArrayList<String> curr = new ArrayList<>();
+            curr.add(result.getString("product_id"));
+            curr.add(result.getString("itemname"));
+            curr.add(result.getString("total_amount"));
+            curr.add(result.getString("current_amount"));
+            curr.add(result.getString("restock"));
 
-          data_inventory.add(curr);          
+            data_inventory.add(curr);          
+          }
+          String[][] arr = data_inventory.stream().map(l -> l.stream().toArray(String[]::new)).toArray(String[][]::new);
+          table_inventory = new JTable(arr, inventory_cols);
+          table_inventory.setBounds(30,40,200,500);
+          JScrollPane sp = new JScrollPane(table_inventory);
+          inventory_frame.getContentPane().add(sp);
+          p_inventory.add(sp);
+
+          p_inventory.revalidate();
+          p_inventory.repaint();
         }
-        String[][] arr = data_inventory.stream().map(l -> l.stream().toArray(String[]::new)).toArray(String[][]::new);
-        table_inventory = new JTable(arr, inventory_cols);
-        table_inventory.setBounds(30,40,200,500);
-        JScrollPane sp = new JScrollPane(table_inventory);
-        inventory_frame.getContentPane().add(sp);
-        p_inventory.add(sp);
+        if (menu_check) {
+          //getting menu items from drinks dictionary
+          String menu_command = "SELECT * FROM drink_dictionary;";
+          ResultSet menuresult = stmt.executeQuery(menu_command);
+          while (menuresult.next()) {          
+            ArrayList<String> curr = new ArrayList<>();
+            curr.add(menuresult.getString("drink_id"));
+            curr.add(menuresult.getString("name"));
+            curr.add(menuresult.getString("price"));
 
-        //getting menu items from drinks dictionary
-        String menu_command = "SELECT * FROM drink_dictionary;";
-        ResultSet menuresult = stmt.executeQuery(menu_command);
-        while (menuresult.next()) {          
-          ArrayList<String> curr = new ArrayList<>();
-          curr.add(menuresult.getString("drink_id"));
-          curr.add(menuresult.getString("name"));
-          curr.add(menuresult.getString("price"));
+            data_menu.add(curr); 
+          }
 
-          data_menu.add(curr); 
+          String[][] arr_menu = data_menu.stream().map(l -> l.stream().toArray(String[]::new)).toArray(String[][]::new);
+          table_menu = new JTable(arr_menu, menu_cols);
+          table_menu.setBounds(30,40,400,500);
+          JScrollPane sp_menu = new JScrollPane(table_menu);
+          drinks_frame.getContentPane().add(sp_menu);
+          p_menu.add(sp_menu);
+
+          p_menu.revalidate();
+          p_menu.repaint();
         }
-
-        String[][] arr_menu = data_menu.stream().map(l -> l.stream().toArray(String[]::new)).toArray(String[][]::new);
-        table_menu = new JTable(arr_menu, menu_cols);
-        table_menu.setBounds(30,40,400,500);
-        JScrollPane sp_menu = new JScrollPane(table_menu);
-        drinks_frame.getContentPane().add(sp_menu);
-        p_menu.add(sp_menu);
-
-        p_menu.revalidate();
-        p_menu.repaint();
-        p_inventory.revalidate();
-        p_inventory.repaint();
-
       } catch (Exception e){
         e.printStackTrace();
         System.err.println(e.getClass().getName()+": "+e.getMessage());
@@ -430,8 +434,11 @@ public class GUI extends JFrame implements ActionListener {
       p_update_inventory.add(update_input_inventory);
       p_update_inventory.add(update_output_inventory);
 
-
-      updateTable(conn, true);
+      menu_check = true;
+      inventory_check = true;
+      updateTable(conn);
+      menu_check = false;
+      inventory_check = false;
 
       //output changes
       out = new JTextArea();
@@ -916,18 +923,24 @@ public class GUI extends JFrame implements ActionListener {
         }
 
         if(s.equals("Save Menu Item")){
+          menu_check = true;
           dataFeature(text_input, text_output, conn, true, true);
+          menu_check = false;
         }
 
         if (s.equals("Save Inventory Item")){
+          inventory_check = true;
           dataFeature(text_input_inventory, text_output_inventory, conn, true, false);
+          inventory_check = false;
         }
         //update menu 
         if (s.equals("Update Menu")){
           update_menu.setVisible(true);
         }
-        if(s.equals("Save Updates for Menu Item")){
+        if(s.equals("Save Updates for Menu Item")) {
+          menu_check = true;
           dataFeature(update_text_input, update_text_output, conn, false, true);
+          menu_check = false;
         }
 
         if (s.equals("Update Inventory")){
@@ -935,7 +948,9 @@ public class GUI extends JFrame implements ActionListener {
         }
 
         if(s.equals("Save Updates for Inventory Item")){
+          inventory_check = true;
           dataFeature(update_input_inventory, update_output_inventory, conn, false, false);
+          inventory_check = false;
         }
 
         if (s.equals("View Order")) {
