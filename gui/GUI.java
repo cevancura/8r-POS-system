@@ -692,7 +692,7 @@ public class GUI extends JFrame implements ActionListener {
     }
 
     // make customization window
-    public static JFrame customizationWindow() throws IOException {
+    public static JFrame customizationWindow(Connection conn) throws IOException {
       // Create a new frame for Customization options
       JFrame customizations_frame = new JFrame("Customization Options");
       customizations_frame.setSize(800, 800);
@@ -703,7 +703,7 @@ public class GUI extends JFrame implements ActionListener {
       ArrayList<String> current_customizations = new ArrayList<>();
 
       try {
-          customization_names = getCustomizationNames("customs.csv");
+          customization_names = getCustomizationNamesTable(conn);
       } catch (IOException error1) {
           error1.printStackTrace();
       }
@@ -755,7 +755,7 @@ public class GUI extends JFrame implements ActionListener {
               order_customizations.add(custom);
               // update total cost
               try {
-                total_cost += getCustomizationCost("customs.csv", custom);
+                total_cost += getCustomizationCostTable(conn, custom);
               }
               catch (IOException error1) {
                 error1.printStackTrace();
@@ -774,7 +774,7 @@ public class GUI extends JFrame implements ActionListener {
       return customizations_frame;
     }
 
-    public static void typeWindow(String drink_type, int size_x, int size_y) throws IOException {
+    public static void typeWindow(Connection conn, String drink_type, int size_x, int size_y) throws IOException {
       // Create a new frame for type options
       JFrame outside_frame = new JFrame(drink_type + " Options");
       outside_frame.setSize(800, 800);
@@ -795,13 +795,13 @@ public class GUI extends JFrame implements ActionListener {
               // add to number of drinks and total cost
               num_drinks += 1;
               try {
-                  total_cost += getDrinkCost("drink_dictionary.csv", drink);
+                  total_cost += getDrinkCostTable(conn, drink);
               }
               catch (IOException error1) {
                 error1.printStackTrace();
               }
               try {
-                order_drinks.add(getDrinkID("drink_dictionary.csv", drink));
+                order_drinks.add(getDrinkIDTable(conn, drink));
               }
               catch (IOException error1) {
                 error1.printStackTrace();
@@ -814,7 +814,7 @@ public class GUI extends JFrame implements ActionListener {
               // Open the new frame here (e.g., a new options frame)
               JFrame customs_frame = new JFrame("Customizations");
               try {
-                customs_frame = customizationWindow();
+                customs_frame = customizationWindow(conn);
               } catch (IOException error1) {
                   error1.printStackTrace();
               }
@@ -951,11 +951,9 @@ public class GUI extends JFrame implements ActionListener {
           dataFeature(update_text_input, update_text_output, conn, false, true);
           menu_check = false;
         }
-
         if (s.equals("Update Inventory")){
           update_inventory.setVisible(true);
         }
-
         if(s.equals("Save Updates for Inventory Item")){
           inventory_check = true;
           dataFeature(update_input_inventory, update_output_inventory, conn, false, false);
@@ -982,7 +980,7 @@ public class GUI extends JFrame implements ActionListener {
             if (index == 0) {
               order_text.append(selected_item);
               try {
-                prices_text.append(String.valueOf(getDrinkCost("drink_dictionary.csv", selected_item)));
+                prices_text.append(String.valueOf(getDrinkCostTable(conn, selected_item)));
               }
               catch (IOException error1) {
                 error1.printStackTrace();
@@ -993,7 +991,7 @@ public class GUI extends JFrame implements ActionListener {
                 order_text.append("\n\n");
                 prices_text.append("\n\n");
                 try {
-                  prices_text.append(String.valueOf(getDrinkCost("drink_dictionary.csv", selected_item)));
+                  prices_text.append(String.valueOf(getDrinkCostTable(conn, selected_item)));
                 }
                 catch (IOException error1) {
                   error1.printStackTrace();
@@ -1003,7 +1001,7 @@ public class GUI extends JFrame implements ActionListener {
                 order_text.append("\n");
                 prices_text.append("\n");
                 try {
-                  prices_text.append(String.valueOf(getCustomizationCost("customs.csv", selected_item)));
+                  prices_text.append(String.valueOf(getCustomizationCostTable(conn, selected_item)));
                 }
                 catch (IOException error1) {
                   error1.printStackTrace();
@@ -1085,7 +1083,7 @@ public class GUI extends JFrame implements ActionListener {
         if (s.equals("Milk Tea")) {
           // Create a new frame for Milk Tea options
           try {
-            typeWindow("Milk Tea", 4, 4);
+            typeWindow(conn, "Milk Tea", 4, 4);
           }
           catch (IOException error1) {
             error1.printStackTrace();
@@ -1093,7 +1091,7 @@ public class GUI extends JFrame implements ActionListener {
         }
         if(s.equals("Seasonal")){
           try{
-            typeWindow("Seasonal", 4, 4);
+            typeWindow(conn, "Seasonal", 4, 4);
           }
           catch (IOException error1){
             error1.printStackTrace();
@@ -1102,7 +1100,7 @@ public class GUI extends JFrame implements ActionListener {
         if (s.equals("Brewed Tea")) {
           // Create a new frame for Brewed Tea options
           try {
-            typeWindow("Brewed Tea", 2, 4);
+            typeWindow(conn, "Brewed Tea", 2, 4);
           }
           catch (IOException error1) {
             error1.printStackTrace();
@@ -1111,7 +1109,7 @@ public class GUI extends JFrame implements ActionListener {
         if (s.equals("Fruit Tea")) {
           // Create a new frame for Fruit Tea options
           try {
-            typeWindow("Fruit Tea", 3, 4);
+            typeWindow(conn, "Fruit Tea", 3, 4);
           }
           catch (IOException error1) {
             error1.printStackTrace();
@@ -1120,7 +1118,7 @@ public class GUI extends JFrame implements ActionListener {
         if (s.equals("Fresh Milk")) {
           // Create a new frame for Fresh Milk options
           try {
-            typeWindow("Fresh Milk", 3, 3);
+            typeWindow(conn, "Fresh Milk", 3, 3);
           }
           catch (IOException error1) {
             error1.printStackTrace();
@@ -1129,7 +1127,7 @@ public class GUI extends JFrame implements ActionListener {
         if (s.equals("Ice Blended")) {
           // Create a new frame for Ice Blended options
           try {
-            typeWindow("Ice Blended", 3, 3);
+            typeWindow(conn, "Ice Blended", 3, 3);
           }
           catch (IOException error1) {
             error1.printStackTrace();
@@ -1138,7 +1136,7 @@ public class GUI extends JFrame implements ActionListener {
         if (s.equals("Tea Mojito")) {
           // Create a new frame for Mojito options
           try {
-            typeWindow("Mojito", 2, 2);
+            typeWindow(conn, "Mojito", 2, 2);
           }
           catch (IOException error1) {
             error1.printStackTrace();
@@ -1147,7 +1145,7 @@ public class GUI extends JFrame implements ActionListener {
         if (s.equals("Creama")) {
           // Create a new frame for Creama options
           try {
-            typeWindow("Creama", 2, 4);
+            typeWindow(conn, "Creama", 2, 4);
           }
           catch (IOException error1) {
             error1.printStackTrace();
@@ -1162,7 +1160,7 @@ public class GUI extends JFrame implements ActionListener {
       
           ArrayList<String> customization_names = null;
           try {
-              customization_names = getCustomizationNames("customs.csv");
+              customization_names = getCustomizationNamesTable(conn);
           } catch (IOException error1) {
               error1.printStackTrace();
           }
@@ -1202,9 +1200,6 @@ public class GUI extends JFrame implements ActionListener {
           // output window acknowledging cancelled order
           cancelWindow();
         }
-
-      
- 
     }
     
     public static void fillIDList(int max_drinks) {
@@ -1279,6 +1274,30 @@ public class GUI extends JFrame implements ActionListener {
       return drink_cost;
     }
 
+    public static double getDrinkCostTable(Connection conn, String drinkName) throws IOException {
+      double drinkCost = 0;
+
+      //create a statement object
+      try {
+        Statement stmt = conn.createStatement();
+        //create a SQL statement
+        String sqlStatement = "SELECT * FROM drink_dictionary ORDER BY drink_id asc;";
+        //send statement to DBMS
+
+        ResultSet result = stmt.executeQuery(sqlStatement);
+        while (result.next()) {
+          if (result.getString("name").equals(drinkName)) {
+            drinkCost = Double.valueOf(result.getString("price"));
+          }
+        }
+      } catch (Exception e){
+        System.out.println(e.toString());
+        JOptionPane.showMessageDialog(null,"Error accessing Database.");
+      }
+
+      return drinkCost;
+    }
+
     public static String getDrinkID(String file_path, String drink_name) throws IOException {
       String drink_ID = "0000";
       File file = new File(file_path);
@@ -1303,6 +1322,30 @@ public class GUI extends JFrame implements ActionListener {
       return drink_ID;
     }
 
+    public static String getDrinkIDTable(Connection conn, String drinkName) throws IOException {
+      String drinkID = "0000";
+
+      //create a statement object
+      try {
+        Statement stmt = conn.createStatement();
+        //create a SQL statement
+        String sqlStatement = "SELECT * FROM drink_dictionary ORDER BY drink_id asc;";
+        //send statement to DBMS
+
+        ResultSet result = stmt.executeQuery(sqlStatement);
+        while (result.next()) {
+          if (result.getString("name").equals(drinkName)) {
+            drinkID = result.getString("drink_id");
+          }
+        }
+      } catch (Exception e){
+        System.out.println(e.toString());
+        JOptionPane.showMessageDialog(null,"Error accessing Database.");
+      }
+
+      return drinkID;
+    }
+
     public static ArrayList<String> getCustomizationNames(String file_path) throws IOException {
       ArrayList<String> customization_names = new ArrayList<>();
       File file = new File(file_path);
@@ -1321,6 +1364,28 @@ public class GUI extends JFrame implements ActionListener {
       scanner.close(); // Close the scanner explicitly.
   
       return customization_names;
+    }
+
+    public static ArrayList<String> getCustomizationNamesTable(Connection conn) throws IOException {
+      ArrayList<String> customizationNames = new ArrayList<>();
+
+      //create a statement object
+      try {
+        Statement stmt = conn.createStatement();
+        //create a SQL statement
+        String sqlStatement = "SELECT * FROM customizations ORDER BY id asc;";
+        //send statement to DBMS
+
+        ResultSet result = stmt.executeQuery(sqlStatement);
+        while (result.next()) {
+          customizationNames.add(result.getString("customization"));
+        }
+      } catch (Exception e){
+        System.out.println(e.toString());
+        JOptionPane.showMessageDialog(null,"Error accessing Database.");
+      }
+
+      return customizationNames;
     }
 
     public static double getCustomizationCost(String file_path, String custom_name) throws IOException {
@@ -1345,6 +1410,30 @@ public class GUI extends JFrame implements ActionListener {
       scanner.close(); // Close the scanner explicitly.
   
       return custom_cost;
+    }
+
+    public static double getCustomizationCostTable(Connection conn, String customName) throws IOException {
+      double customCost = 0;
+
+      //create a statement object
+      try {
+        Statement stmt = conn.createStatement();
+        //create a SQL statement
+        String sqlStatement = "SELECT * FROM customizations ORDER BY id asc;";
+        //send statement to DBMS
+
+        ResultSet result = stmt.executeQuery(sqlStatement);
+        while (result.next()) {
+          if (result.getString("customization").equals(customName)) {
+            customCost = Double.valueOf(result.getString("price"));
+          }
+        }
+      } catch (Exception e){
+        System.out.println(e.toString());
+        JOptionPane.showMessageDialog(null,"Error accessing Database.");
+      }
+    
+      return customCost;
     }
 
     public static void updateInventory(Connection conn) {
@@ -1432,6 +1521,10 @@ public class GUI extends JFrame implements ActionListener {
             if (item.contains("500001")) {
               item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
             }
+            // honey
+            if (item.contains("600010")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
           }
         }
         if (id.equals("0005")) {
@@ -1445,6 +1538,10 @@ public class GUI extends JFrame implements ActionListener {
             if (item.contains("500002")) {
               item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
             }
+            // honey
+            if (item.contains("600010")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
           }
         }
         if (id.equals("0006")) {
@@ -1456,6 +1553,10 @@ public class GUI extends JFrame implements ActionListener {
             }
             // oolong tea
             if (item.contains("500003")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // honey
+            if (item.contains("600010")) {
               item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
             }
           }
@@ -1493,7 +1594,7 @@ public class GUI extends JFrame implements ActionListener {
             if (item.contains("600008")) {
               item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
             }
-            // oolong tea
+            // hokkaido tea
             if (item.contains("500006")) {
               item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
             }
@@ -1562,7 +1663,7 @@ public class GUI extends JFrame implements ActionListener {
             if (item.contains("600008")) {
               item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
             }
-            // tea
+            // QQ Happy Family
             if (item.contains("500011")) {
               item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
             }
@@ -1628,6 +1729,10 @@ public class GUI extends JFrame implements ActionListener {
             if (item.contains("500001")) {
               item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
             }
+            // honey
+            if (item.contains("600010")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
           }
         }
         if (id.equals("0021")) {
@@ -1637,6 +1742,10 @@ public class GUI extends JFrame implements ActionListener {
             if (item.contains("500002")) {
               item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
             }
+            // honey
+            if (item.contains("600010")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
           }
         }
         if (id.equals("0022")) {
@@ -1644,6 +1753,10 @@ public class GUI extends JFrame implements ActionListener {
           for (ArrayList<String> item : inventory_list) {
             // oolong tea
             if (item.contains("500003")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // honey
+            if (item.contains("600010")) {
               item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
             }
           }
@@ -1675,6 +1788,10 @@ public class GUI extends JFrame implements ActionListener {
           for (ArrayList<String> item : inventory_list) {
             // wintermelon
             if (item.contains("500013")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
+            // lemonade
+            if (item.contains("600011")) {
               item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
             }
           }
@@ -1767,8 +1884,8 @@ public class GUI extends JFrame implements ActionListener {
           // fresh milk
           for (ArrayList<String> item : inventory_list) {
             // fresh milk
-            if (item.contains("600008")) {
-              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            if (item.contains("600009")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 2));
             }
           }
         }
@@ -1776,7 +1893,7 @@ public class GUI extends JFrame implements ActionListener {
           // fresh milk classic black
           for (ArrayList<String> item : inventory_list) {
             // fresh milk
-            if (item.contains("600008")) {
+            if (item.contains("600009")) {
               item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
             }
             // black tea
@@ -1789,7 +1906,7 @@ public class GUI extends JFrame implements ActionListener {
           // fresh milk classic green
           for (ArrayList<String> item : inventory_list) {
             // fresh milk
-            if (item.contains("600008")) {
+            if (item.contains("600009")) {
               item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
             }
             // green tea
@@ -1802,7 +1919,7 @@ public class GUI extends JFrame implements ActionListener {
           // fresh milk classic oolong
           for (ArrayList<String> item : inventory_list) {
             // fresh milk
-            if (item.contains("600008")) {
+            if (item.contains("600009")) {
               item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
             }
             // oolong tea
@@ -1815,7 +1932,7 @@ public class GUI extends JFrame implements ActionListener {
           // fresh milk tea wintermelon
           for (ArrayList<String> item : inventory_list) {
             // fresh milk
-            if (item.contains("600008")) {
+            if (item.contains("600009")) {
               item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
             }
             // wintermelon
@@ -1827,8 +1944,12 @@ public class GUI extends JFrame implements ActionListener {
         if (id.equals("0039")) {
           // fresh milk cocoa lover
           for (ArrayList<String> item : inventory_list) {
+            // cocoa
+            if (item.contains("500032")) {
+              item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+            }
             // fresh milk
-            if (item.contains("600008")) {
+            if (item.contains("600009")) {
               item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
             }
           }
@@ -1836,11 +1957,11 @@ public class GUI extends JFrame implements ActionListener {
         if (id.equals("0040")) {
           // fresh milk QQ Happy Family
           for (ArrayList<String> item : inventory_list) {
-            // milk
-            if (item.contains("600008")) {
+            // fresh milk
+            if (item.contains("600009")) {
               item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
             }
-            // tea
+            // QQ Happy Family
             if (item.contains("500011")) {
               item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
             }
@@ -1849,8 +1970,8 @@ public class GUI extends JFrame implements ActionListener {
         if (id.equals("0041")) {
           // fresh milk milk tea matcha
           for (ArrayList<String> item : inventory_list) {
-            // milk
-            if (item.contains("600008")) {
+            // fresh milk
+            if (item.contains("600009")) {
               item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
             }
             // matcha
@@ -1862,8 +1983,8 @@ public class GUI extends JFrame implements ActionListener {
         if (id.equals("0042")) {
           // fresh milk taro
           for (ArrayList<String> item : inventory_list) {
-            // milk
-            if (item.contains("600008")) {
+            // fresh milk
+            if (item.contains("600009")) {
               item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
             }
             // taro
