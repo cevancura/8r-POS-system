@@ -38,6 +38,7 @@ public class GUI extends JFrame implements ActionListener {
 
 
     static JFrame drinks_frame;
+    static JFrame reports_frame;
     static JTextField text_input;
     static JTextArea text_output;
     static JTextField text_input_inventory;
@@ -55,6 +56,7 @@ public class GUI extends JFrame implements ActionListener {
     static JFrame update_inventory;
     static JPanel p_inventory;
     static JPanel p_menu;
+    static JPanel p_reports;
 
 
     public static Connection createConnection() {
@@ -244,6 +246,62 @@ public class GUI extends JFrame implements ActionListener {
       }
     }
 
+    public static void checkInventoryLevels(Connection conn) {
+      // for each item in inventory get current data
+      ArrayList<ArrayList<String>> inventory_list = new ArrayList<ArrayList<String>>();
+
+      //create a statement object
+      try {
+        Statement stmt = conn.createStatement();
+        //create a SQL statement
+        String sql_statement = "SELECT * FROM inventory ORDER BY product_id asc;";
+        //send statement to DBMS
+        ResultSet result = stmt.executeQuery(sql_statement);
+        while (result.next()) {
+          ArrayList<String> single_item = new ArrayList<String>();
+
+          single_item.add(result.getString("product_id"));
+          single_item.add(result.getString("total_amount"));
+          single_item.add(result.getString("current_amount"));
+          single_item.add(result.getString("restock"));
+
+          // make list of lists with all id, total, and current amount included for each item
+          inventory_list.add(single_item);
+        }
+      } catch (Exception e){
+        JOptionPane.showMessageDialog(null,"Error accessing Database.");
+      }
+
+      // update values
+      for (ArrayList<String> item : inventory_list) {
+        //create a SQL statement
+        String sql_statement = "UPDATE inventory";
+        sql_statement += " SET restock = ";
+        
+        if (Float.valueOf(item.get(2)) < Float.valueOf(item.get(1))) {
+          // if current amount < needed amount update restock to "t"
+          sql_statement += "true";
+        }
+        else {
+          // update restock to "f"
+          sql_statement += "false";
+        }
+
+        sql_statement += " WHERE product_id = ";
+        sql_statement += item.get(0);
+        sql_statement += ";";
+
+        try{
+          //create a statement object
+          Statement stmt = conn.createStatement();
+          //send statement to DBMS
+          stmt.execute(sql_statement);
+        } catch (Exception e){
+          JOptionPane.showMessageDialog(null,"Error accessing Database.");
+        }
+      }
+    }
+
     public static void main(String[] args)
     {
       Connection conn = createConnection();
@@ -251,6 +309,12 @@ public class GUI extends JFrame implements ActionListener {
       String name = "";
       // create a new frame
       f = new JFrame("DB GUI");
+      // close connection when click "x" button
+      f.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+      // check inventory to start
+      checkInventoryLevels(conn);
+
       manager_frame = new JFrame("Manager GUI");
       employee_frame = new JFrame("Employee GUI");
 
@@ -288,10 +352,23 @@ public class GUI extends JFrame implements ActionListener {
       implementButton("Menu", p_man, s);
       implementButton("Inventory", p_man, s);
 
+      // add reports button
+      implementButton("Reports", p_man, s);
+
+
       inventory_frame = new JFrame("Inventory Window");
       drinks_frame = new JFrame("Drinks Window");
+
+      try {
+        reports_frame = reportsWindow(conn);
+      } 
+      catch (Exception e){
+        JOptionPane.showMessageDialog(null,"Error accessing Database.");
+      }
+
       p_inventory = new JPanel();
       p_menu = new JPanel();
+      p_reports = new JPanel();
 
       implementButton("Add Menu Item", p_menu, s);
       implementButton("Add Inventory Item", p_inventory, s);
@@ -366,8 +443,6 @@ public class GUI extends JFrame implements ActionListener {
       drinks_frame.setSize(800, 800);
 
       manager_frame.add(p_man);
-
-      
 
       employee_frame.setSize(800, 800);
 
@@ -513,7 +588,93 @@ public class GUI extends JFrame implements ActionListener {
     @param s String comparing to specific action performed
     @return None, void function
     */
-  
+
+    // restock window
+    public static JFrame restockWindow(Connection conn) throws IOException {
+      JFrame restock_frame = new JFrame();
+      restock_frame.setSize(400, 400);
+
+      JPanel restock_panel = new JPanel();
+      JPanel scrollable_panel = new JPanel();
+
+      // SELECT productid from Inventory WHERE Restock = 't';
+      JTextArea restock_text = new JTextArea();
+      restock_text.setEditable(false);
+
+      //create a statement object
+      try {
+        Statement stmt = conn.createStatement();
+        //create a SQL statement
+        String sql_statement = "SELECT * FROM inventory WHERE restock = 't' ORDER BY product_id asc ;";
+        //send statement to DBMS
+
+        ResultSet result = stmt.executeQuery(sql_statement);
+        while (result.next()) {
+          restock_text.append(result.getString("itemname"));
+          restock_text.append("\n");
+        }
+      } catch (Exception e){
+        System.out.println(e.toString());
+        JOptionPane.showMessageDialog(null,"Error calling restock.");
+      }
+
+      restock_panel.add(restock_text);
+      JScrollPane scrollable_pane = new JScrollPane(restock_panel);
+      restock_frame.add(scrollable_pane);
+
+      return restock_frame;
+    }
+
+    // reports window
+    public static JFrame reportsWindow(Connection conn) throws IOException {
+      // create frame for report
+      JFrame reports_frame = new JFrame("Reports Window");
+      reports_frame.setSize(400, 400);
+
+      // panel
+      JPanel reports_panel = new JPanel();
+
+      // create buttons for sales, excess, restock
+      JButton sales = new JButton("Sales");
+      JButton excess = new JButton("Excess");
+      JButton restock = new JButton("Restock");
+
+      // check if clicked
+      sales.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          // call sales function
+        }
+      });
+      excess.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          // call excess function
+        }
+      });
+      restock.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          // call restock function
+          JFrame restock_frame = new JFrame();
+          try {
+            restock_frame = restockWindow(conn);
+          } catch (Exception f){
+            JOptionPane.showMessageDialog(null,"Error restock window.");
+          }
+          restock_frame.setVisible(true);
+        }
+      });
+
+      reports_panel.add(sales);
+      reports_panel.add(excess);
+      reports_panel.add(restock);
+
+      reports_frame.add(reports_panel);
+
+      return reports_frame;
+    }
+
     // make customization window
     public static JFrame customizationWindow() throws IOException {
       // Create a new frame for Customization options
@@ -539,25 +700,25 @@ public class GUI extends JFrame implements ActionListener {
 
           // check if clicked
           custom.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                  // Extract the text from the clicked button
-                  String selected_item = custom.getText();
+            @Override
+            public void actionPerformed(ActionEvent e) {
+              // Extract the text from the clicked button
+              String selected_item = custom.getText();
 
-                  if (current_customizations.contains(selected_item)) {
-                    // if currently selected, deselect
-                    current_customizations.remove(selected_item);
-                    custom.setBackground(null);
-                  }
-                  else {
-                    current_customizations.add(selected_item);
-                    custom.setBackground(Color.BLUE);
-                    custom.setOpaque(true);
-                    custom.setBorderPainted(false);
-                  }
+              if (current_customizations.contains(selected_item)) {
+                // if currently selected, deselect
+                current_customizations.remove(selected_item);
+                custom.setBackground(null);
+              }
+              else {
+                current_customizations.add(selected_item);
+                custom.setBackground(Color.BLUE);
+                custom.setOpaque(true);
+                custom.setBorderPainted(false);
+              }
 
-                }
-            });
+            }
+        });
       }
 
       // continue button 
@@ -740,8 +901,11 @@ public class GUI extends JFrame implements ActionListener {
         if (s.equals("Inventory")) {
           inventory_frame.setVisible(true);
         }
-        if (s.equals("Menu")){
+        if (s.equals("Menu")) {
           drinks_frame.setVisible(true);
+        }
+        if (s.equals("Reports")) {
+          reports_frame.setVisible(true);
         }
         if (s.equals("Add Menu Item")){ 
           // set the text of the label to the text of the field
@@ -1149,63 +1313,6 @@ public class GUI extends JFrame implements ActionListener {
       scanner.close(); // Close the scanner explicitly.
   
       return custom_cost;
-    }
-
-    public static void checkInventoryLevels(Connection conn) {
-      // for each item in inventory get current data
-      ArrayList<ArrayList<String>> inventory_list = new ArrayList<ArrayList<String>>();
-
-      //create a statement object
-      try {
-        Statement stmt = conn.createStatement();
-        //create a SQL statement
-        String sql_statement = "SELECT * FROM inventory ORDER BY product_id asc;";
-        //send statement to DBMS
-        ResultSet result = stmt.executeQuery(sql_statement);
-        while (result.next()) {
-          ArrayList<String> single_item = new ArrayList<String>();
-
-          single_item.add(result.getString("product_id"));
-          single_item.add(result.getString("total_amount"));
-          single_item.add(result.getString("current_amount"));
-          single_item.add(result.getString("restock"));
-
-          // make list of lists with all id, total, and current amount included for each item
-          inventory_list.add(single_item);
-        }
-      } catch (Exception e){
-        JOptionPane.showMessageDialog(null,"Error accessing Database.");
-      }
-
-      // update values
-      for (ArrayList<String> item : inventory_list) {
-        //create a SQL statement
-        String sql_statement = "UPDATE inventory";
-        sql_statement += " SET restock = ";
-        
-        if (Float.valueOf(item.get(2)) < Float.valueOf(item.get(1))) {
-          // if current amount < needed amount update restock to "t"
-          sql_statement += "true";
-        }
-        else {
-          // update restock to "f"
-          sql_statement += "false";
-        }
-
-        sql_statement += " WHERE product_id = ";
-        sql_statement += item.get(0);
-        sql_statement += ";";
-
-        try{
-          //create a statement object
-          Statement stmt = conn.createStatement();
-          //send statement to DBMS
-          stmt.execute(sql_statement);
-        } catch (Exception e){
-          JOptionPane.showMessageDialog(null,"Error accessing Database.");
-        }
-      }
-
     }
 
     public static void updateInventory(Connection conn) {
@@ -1905,8 +2012,8 @@ public class GUI extends JFrame implements ActionListener {
       }
 
 
-    // check inventory values
-    checkInventoryLevels(conn);
+      // check inventory values
+      checkInventoryLevels(conn);
     }
   
 }
