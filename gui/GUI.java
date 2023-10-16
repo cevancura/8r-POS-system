@@ -475,7 +475,7 @@ public class GUI extends JFrame implements ActionListener {
           order_str += "');";
 
           // write order
-          System.out.println(order_str);
+          // System.out.println(order_str);
 
           try{
             //create a statement object
@@ -1149,6 +1149,63 @@ public class GUI extends JFrame implements ActionListener {
       scanner.close(); // Close the scanner explicitly.
   
       return custom_cost;
+    }
+
+    public static void checkInventoryLevels(Connection conn) {
+      // for each item in inventory get current data
+      ArrayList<ArrayList<String>> inventory_list = new ArrayList<ArrayList<String>>();
+
+      //create a statement object
+      try {
+        Statement stmt = conn.createStatement();
+        //create a SQL statement
+        String sql_statement = "SELECT * FROM inventory ORDER BY product_id asc;";
+        //send statement to DBMS
+        ResultSet result = stmt.executeQuery(sql_statement);
+        while (result.next()) {
+          ArrayList<String> single_item = new ArrayList<String>();
+
+          single_item.add(result.getString("product_id"));
+          single_item.add(result.getString("total_amount"));
+          single_item.add(result.getString("current_amount"));
+          single_item.add(result.getString("restock"));
+
+          // make list of lists with all id, total, and current amount included for each item
+          inventory_list.add(single_item);
+        }
+      } catch (Exception e){
+        JOptionPane.showMessageDialog(null,"Error accessing Database.");
+      }
+
+      // update values
+      for (ArrayList<String> item : inventory_list) {
+        //create a SQL statement
+        String sql_statement = "UPDATE inventory";
+        sql_statement += " SET restock = ";
+        
+        if (Float.valueOf(item.get(2)) < Float.valueOf(item.get(1))) {
+          // if current amount < needed amount update restock to "t"
+          sql_statement += "true";
+        }
+        else {
+          // update restock to "f"
+          sql_statement += "false";
+        }
+
+        sql_statement += " WHERE product_id = ";
+        sql_statement += item.get(0);
+        sql_statement += ";";
+
+        try{
+          //create a statement object
+          Statement stmt = conn.createStatement();
+          //send statement to DBMS
+          stmt.execute(sql_statement);
+        } catch (Exception e){
+          JOptionPane.showMessageDialog(null,"Error accessing Database.");
+        }
+      }
+
     }
 
     public static void updateInventory(Connection conn) {
@@ -1846,6 +1903,10 @@ public class GUI extends JFrame implements ActionListener {
           JOptionPane.showMessageDialog(null,"Error accessing Database.");
         }
       }
+
+
+    // check inventory values
+    checkInventoryLevels(conn);
     }
   
 }
