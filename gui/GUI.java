@@ -462,6 +462,9 @@ public class GUI extends JFrame implements ActionListener {
       JButton ice_blended = new JButton("Ice Blended");
       JButton tea_mojito = new JButton("Tea Mojito");
       JButton creama = new JButton("Creama");
+
+      //seasonal item
+      JButton seasonal = new JButton("Seasonal");
       // JButton customizations = new JButton("Customizations");
       JButton employee_exit = new JButton("Employee Exit");
       employee_exit.setBackground(Color.GRAY);
@@ -483,10 +486,15 @@ public class GUI extends JFrame implements ActionListener {
       p_emplo.add(ice_blended);
       p_emplo.add(tea_mojito);
       p_emplo.add(creama);
+      //seasonal
+      p_emplo.add(seasonal);
       // p_emplo.add(customizations);
       p_emplo.add(employee_exit);
       p_emplo.add(cancel_order);
       p_emplo.add(order);
+
+      
+      
 
       milk_tea.addActionListener(s);
       brewed_tea.addActionListener(s);
@@ -499,6 +507,7 @@ public class GUI extends JFrame implements ActionListener {
       employee_exit.addActionListener(s);
       cancel_order.addActionListener(s);
       order.addActionListener(s);
+      seasonal.addActionListener(s);
 
       employee_frame.add(p_emplo);
 
@@ -1079,6 +1088,14 @@ public class GUI extends JFrame implements ActionListener {
             typeWindow("Milk Tea", 4, 4);
           }
           catch (IOException error1) {
+            error1.printStackTrace();
+          }
+        }
+        if(s.equals("Seasonal")){
+          try{
+            typeWindow("Seasonal", 4, 4);
+          }
+          catch (IOException error1){
             error1.printStackTrace();
           }
         }
