@@ -624,6 +624,86 @@ public class GUI extends JFrame implements ActionListener {
     @return None, void function
     */
 
+    // sales window
+    public static JFrame salesWindow(Connection conn) throws IOException {
+      JFrame sales_frame = new JFrame();
+        sales_frame.setSize(800, 600);
+
+        JPanel sales_panel = new JPanel();
+        sales_panel.setLayout(new GridLayout(7, 2));
+
+        JLabel startDateLabel = new JLabel("Start Date (yyyy-mm-dd):");
+        JTextField startDateField = new JTextField();
+        JLabel endDateLabel = new JLabel("End Date (yyyy-mm-dd):");
+        JTextField endDateField = new JTextField();
+        JLabel startTimeLabel = new JLabel("Start Time (hh:mm:ss):");
+        JTextField startTimeField = new JTextField();
+        JLabel endTimeLabel = new JLabel("End Time (hh:mm:ss):");
+        JTextField endTimeField = new JTextField();
+        JLabel menuItemLabel = new JLabel("Menu Item (0010-0060):");
+        JTextField menuItemField = new JTextField();
+
+        JButton searchButton = new JButton("Search");
+        JTextArea sales_text = new JTextArea();
+        sales_text.setEditable(false);
+
+        searchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String startDate = startDateField.getText();
+                String endDate = endDateField.getText();
+                String startTime = startTimeField.getText();
+                String endTime = endTimeField.getText();
+                String menuItem = menuItemField.getText();
+
+                // Create a SQL statement to query the database
+                String sqlStatement = "SELECT * FROM order_history WHERE (order_date || ' ' || order_time) BETWEEN '" + startDate + " ' || '" + startTime + "' AND '" + endDate + " ' || '" + endTime +
+                        "' AND (drink1 = '" + menuItem + "' OR drink2 = '" + menuItem + "' OR drink3 = '" + menuItem +
+                        "' OR drink4 = '" + menuItem + "' OR drink5 = '" + menuItem + "' OR drink6 = '" + menuItem +
+                        "' OR drink7 = '" + menuItem + "' OR drink8 = '" + menuItem + "' OR drink9 = '" + menuItem +
+                        "' OR drink10 = '" + menuItem + "');" ;
+
+                try {
+                    Statement stmt = conn.createStatement();
+                    ResultSet result = stmt.executeQuery(sqlStatement);
+                    sales_text.setText(""); // Clear previous results
+
+                    while (result.next()) {
+                        sales_text.append("Order ID: " + result.getInt("order_id") + "\n");
+                        sales_text.append("Order Date: " + result.getString("order_date") + "\n");
+                        sales_text.append("Order Time: " + result.getString("order_time") + "\n");
+                      
+                        sales_text.append("\n");
+                      
+                    }
+                } catch (Exception ex) {
+                    System.out.println(ex.toString());
+                    JOptionPane.showMessageDialog(null, "Error querying the database.");
+                }
+            }
+        });
+
+        sales_panel.add(startDateLabel);
+        sales_panel.add(startDateField);
+        sales_panel.add(startTimeLabel);
+        sales_panel.add(startTimeField);
+        sales_panel.add(endDateLabel);
+        sales_panel.add(endDateField);
+        sales_panel.add(endTimeLabel);
+        sales_panel.add(endTimeField);
+        sales_panel.add(menuItemLabel);
+        sales_panel.add(menuItemField);
+        sales_panel.add(searchButton);
+
+        JScrollPane scrollable_pane = new JScrollPane(sales_text);
+
+        sales_frame.add(sales_panel, BorderLayout.NORTH);
+        sales_frame.add(scrollable_pane, BorderLayout.CENTER);
+
+        return sales_frame;
+      }
+
+    // excess window
+
     // restock window
     public static JFrame restockWindow(Connection conn) throws IOException {
       JFrame restock_frame = new JFrame();
@@ -821,6 +901,13 @@ public class GUI extends JFrame implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
           // call sales function
+          JFrame sales_frame = new JFrame();
+          try {
+            sales_frame = salesWindow(conn);
+          } catch (Exception f){
+            JOptionPane.showMessageDialog(null,"Error sales window.");
+          }
+          sales_frame.setVisible(true);
         }
       });
       excess.addActionListener(new ActionListener() {
