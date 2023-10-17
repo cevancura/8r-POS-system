@@ -660,7 +660,101 @@ public class GUI extends JFrame implements ActionListener {
       return restock_frame;
     }
 
-    // restock window
+    public static JFrame popularityCalculation(Connection conn, String start, String end, String num_items) throws IOException {
+      JFrame pop_frame = new JFrame("Popularity Output");
+      pop_frame.setSize(400,400);
+
+      JTextArea pop_text = new JTextArea();
+
+      ArrayList<ArrayList<String>> max_list = new ArrayList<ArrayList<String>>();
+
+      // from start to end
+      // need to tally up items in drink_dictionary and count how many times used
+      LocalDate start_date = LocalDate.parse(start);
+      LocalDate end_date = LocalDate.parse(end);
+      LocalDate current_date = start_date;
+
+      // first, get items in drink_dictionary
+      ArrayList<ArrayList<String>> drink_dictionary_list = new ArrayList<ArrayList<String>>();
+      //create a statement object
+      try {
+        Statement stmt = conn.createStatement();
+        //create a SQL statement
+        String sql_statement = "SELECT * FROM drink_dictionary ORDER BY drink_id asc;";
+        //send statement to DBMS
+        ResultSet result = stmt.executeQuery(sql_statement);
+        while (result.next()) {
+          ArrayList<String> single_item = new ArrayList<String>();
+
+          single_item.add(result.getString("drink_id"));
+          single_item.add("0");
+          single_item.add(result.getString("name"));
+
+          // make list of lists with ids and amount included for each item
+          drink_dictionary_list.add(single_item);
+        }
+      } catch (Exception e){
+        JOptionPane.showMessageDialog(null,"Error accessing Drink Dictionary.");
+      }
+
+      // from start date to end date
+      if (!current_date.isBefore(end_date)) {
+        pop_text.append("Invalid Date Entry");
+        pop_frame.add(pop_text);
+        return pop_frame;
+      }
+      while (!current_date.equals(end_date)) {
+        // go through each order and tally values
+        try {
+          Statement stmt = conn.createStatement();
+          //create a SQL statement
+          String sql_statement = "SELECT * FROM order_history WHERE order_date = '" + current_date + "' ORDER BY order_id asc;";
+          //send statement to DBMS
+          ResultSet result = stmt.executeQuery(sql_statement);
+          while (result.next()) {
+            Integer num_drinks = Integer.valueOf(result.getString("num_drinks"));
+
+            for (int i=1; i<=num_drinks; i++) {
+              String current_drink = result.getString("drink" + String.valueOf(i));
+              for (ArrayList<String> drink : drink_dictionary_list) {
+                if (drink.contains(current_drink)) {
+                  drink.set(1, String.valueOf(Integer.valueOf(drink.get(1)) + 1));
+                }
+              }
+            }
+          }
+        } catch (Exception e){
+          JOptionPane.showMessageDialog(null,"Error accessing Order by Date.");
+        }
+
+        current_date = current_date.plusDays(1);
+      }
+
+      // find top num_items
+      for (int i=0; i<Integer.valueOf(num_items); i++) {
+        ArrayList<String> current_max = new ArrayList<>();
+        int max_value = 0;
+        for (ArrayList<String> drink : drink_dictionary_list) {
+          if (Integer.valueOf(drink.get(1)) > max_value) {
+            current_max = drink;
+            max_value = Integer.valueOf(drink.get(1));
+          }
+        }
+        max_list.add(current_max);
+        drink_dictionary_list.remove(current_max);
+      }
+
+      // output top items
+      for (ArrayList<String> max_drink : max_list) {
+        pop_text.append(max_drink.get(1) + " " + max_drink.get(2) + "\n");
+      }
+
+      pop_frame.add(pop_text);
+
+      return pop_frame;
+    }
+
+    // popularity window
     public static JFrame popularityWindow(Connection conn) throws IOException {
       JFrame popularity_frame = new JFrame();
       popularity_frame.setSize(400, 400);
@@ -669,8 +763,7 @@ public class GUI extends JFrame implements ActionListener {
 
       JTextField start_date = new JTextField("Start Date");
       JTextField end_date = new JTextField("End Date");
-      JTextField num_items = new JTextField("Number of Items");
-      
+      JTextField items = new JTextField("Number of Items");
 
       JButton popularity_go = new JButton("Go");
 
@@ -678,13 +771,28 @@ public class GUI extends JFrame implements ActionListener {
       popularity_go.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          // calculate based on inputs
+          // calculate information
+          JFrame pop_frame = new JFrame();
+          try {
+            pop_frame = popularityCalculation(conn, start_date.getText(), end_date.getText(), items.getText());
+          }
+          catch (Exception f) {
+            JOptionPane.showMessageDialog(null,"Error calculating Popularity.");
+            f.printStackTrace();
+          }
+          pop_frame.setVisible(true);
+
+          // reset values
+          start_date.setText("Start Date");
+          end_date.setText("End Date");
+          items.setText("Number of Items");
         }
       });
 
       popularity_panel.add(start_date);
       popularity_panel.add(end_date);
-      popularity_panel.add(num_items);
+      popularity_panel.add(items);
+      // popularity_panel.add(output);
 
       popularity_panel.add(popularity_go);
 
