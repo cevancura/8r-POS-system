@@ -527,6 +527,9 @@ public class GUI extends JFrame implements ActionListener {
       // currently set to after close is clicked
       while (f.isDisplayable()) {
         if (paid) {
+          // update inventory
+          updateInventoryTable(conn);
+
           // get current order number (next after max)
           String prev_order_id_str = "";
           Integer current_order_id_int = 0;
@@ -561,15 +564,25 @@ public class GUI extends JFrame implements ActionListener {
           // drink codes for drinks 1-10 (0000 if none)
           fillIDList(10);
 
+          // change order ingredients to string
+          String order_ingredients_string = "";
+          for (String ingr : order_ingredients) {
+            if (!ingr.equals(order_ingredients.get(0))) {
+              order_ingredients_string += ",";
+            }
+            order_ingredients_string += ingr;
+          }
+
           // full order string
           String order_str = "('" + current_order_id_str + "', '" + formatted_date + "', '" + formatted_time + "', '" + String.valueOf(num_drinks) + "', '" + String.valueOf(total_cost);
           for (String id : order_drinks) {
             order_str += "', '" + id;
           }
-          order_str += "');";
+          order_str += "', '" + order_ingredients_string + "');";
+          // order_str += "');";
 
           // write order
-          // System.out.println(order_str);
+          System.out.println(order_str);
 
           try{
             //create a statement object
@@ -582,9 +595,6 @@ public class GUI extends JFrame implements ActionListener {
             System.out.println(e.toString());
             JOptionPane.showMessageDialog(null,"Error accessing Database.");
           }
-
-          // update inventory
-          updateInventoryTable(conn);
 
           // // update tables
           // inventory_check = true;
@@ -599,6 +609,7 @@ public class GUI extends JFrame implements ActionListener {
           order_drinks.clear();
           selected_items.clear();
           order_customizations.clear();
+          order_ingredients.clear();
         }
       }
 
@@ -2177,14 +2188,6 @@ public class GUI extends JFrame implements ActionListener {
       checkInventoryLevels(conn);
     }
 
-    // public static ArrayList<String> splitIngredients(String ingredients_string) {
-    //   ArrayList<String> ingredients_list = new ArrayList<String>();
-
-    //   in
-
-    //   return ingredients_list;
-    // }
-
     public static void updateInventoryTable(Connection conn) {
       // for each item in inventory find current amount
       ArrayList<ArrayList<String>> inventory_list = new ArrayList<ArrayList<String>>();
@@ -2298,19 +2301,18 @@ public class GUI extends JFrame implements ActionListener {
         // cups
         if (item.contains("600001")) {
           item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - num_drinks));
+          order_ingredients.add("600001");
         }
         // straws
         if (item.contains("600003")) {
           item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - num_drinks));
+          order_ingredients.add("600003");
         }
         // napkins
         if (item.contains("600005")) {
           item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - num_drinks));
-        }
-
-        order_ingredients.add("600001");
-        order_ingredients.add("600003");
-        order_ingredients.add("600005");
+          order_ingredients.add("600005");
+        }        
       }
 
       // all customizations
