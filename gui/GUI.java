@@ -582,7 +582,7 @@ public class GUI extends JFrame implements ActionListener {
           // order_str += "');";
 
           // write order
-          System.out.println(order_str);
+          // System.out.println(order_str);
 
           try{
             //create a statement object
@@ -660,6 +660,39 @@ public class GUI extends JFrame implements ActionListener {
       return restock_frame;
     }
 
+    // restock window
+    public static JFrame popularityWindow(Connection conn) throws IOException {
+      JFrame popularity_frame = new JFrame();
+      popularity_frame.setSize(400, 400);
+
+      JPanel popularity_panel = new JPanel();
+
+      JTextField start_date = new JTextField("Start Date");
+      JTextField end_date = new JTextField("End Date");
+      JTextField num_items = new JTextField("Number of Items");
+      
+
+      JButton popularity_go = new JButton("Go");
+
+      // check if clicked
+      popularity_go.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          // calculate based on inputs
+        }
+      });
+
+      popularity_panel.add(start_date);
+      popularity_panel.add(end_date);
+      popularity_panel.add(num_items);
+
+      popularity_panel.add(popularity_go);
+
+      popularity_frame.add(popularity_panel);
+
+      return popularity_frame;
+    }
+
     // reports window
     public static JFrame reportsWindow(Connection conn) throws IOException {
       // create frame for report
@@ -673,6 +706,7 @@ public class GUI extends JFrame implements ActionListener {
       JButton sales = new JButton("Sales");
       JButton excess = new JButton("Excess");
       JButton restock = new JButton("Restock");
+      JButton popularity = new JButton("Popularity");
 
       // check if clicked
       sales.addActionListener(new ActionListener() {
@@ -700,10 +734,24 @@ public class GUI extends JFrame implements ActionListener {
           restock_frame.setVisible(true);
         }
       });
+      popularity.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          // call restock function
+          JFrame popularity_frame = new JFrame();
+          try {
+            popularity_frame = popularityWindow(conn);
+          } catch (Exception f){
+            JOptionPane.showMessageDialog(null,"Error popularity window.");
+          }
+          popularity_frame.setVisible(true);
+        }
+      });
 
       reports_panel.add(sales);
       reports_panel.add(excess);
       reports_panel.add(restock);
+      reports_panel.add(popularity);
 
       reports_frame.add(reports_panel);
 
