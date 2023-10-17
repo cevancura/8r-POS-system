@@ -33,6 +33,9 @@ public class GUI extends JFrame implements ActionListener {
     // all customizations per order
     static ArrayList<String> order_customizations = new ArrayList<>();
 
+    // all ingredients per order
+    static ArrayList<String> order_ingredients = new ArrayList<>();
+
     // drink names
     static ArrayList<String> drink_names = null;
 
@@ -581,7 +584,12 @@ public class GUI extends JFrame implements ActionListener {
           }
 
           // update inventory
-          updateInventory(conn);
+          updateInventoryTable(conn);
+
+          // // update tables
+          // inventory_check = true;
+          // updateTable(conn);
+          // inventory_check = false;
 
           // update paid
           paid = false;
@@ -2168,5 +2176,187 @@ public class GUI extends JFrame implements ActionListener {
       // check inventory values
       checkInventoryLevels(conn);
     }
-  
+
+    // public static ArrayList<String> splitIngredients(String ingredients_string) {
+    //   ArrayList<String> ingredients_list = new ArrayList<String>();
+
+    //   in
+
+    //   return ingredients_list;
+    // }
+
+    public static void updateInventoryTable(Connection conn) {
+      // for each item in inventory find current amount
+      ArrayList<ArrayList<String>> inventory_list = new ArrayList<ArrayList<String>>();
+      //create a statement object
+      try {
+        Statement stmt = conn.createStatement();
+        //create a SQL statement
+        String sql_statement = "SELECT * FROM inventory ORDER BY product_id asc;";
+        //send statement to DBMS
+        ResultSet result = stmt.executeQuery(sql_statement);
+        while (result.next()) {
+          ArrayList<String> single_item = new ArrayList<String>();
+
+          single_item.add(result.getString("product_id"));
+          single_item.add(result.getString("total_amount"));
+          single_item.add(result.getString("current_amount"));
+
+          // make list of lists with all id, total, and current amount included for each item
+          inventory_list.add(single_item);
+        }
+      } catch (Exception e){
+        JOptionPane.showMessageDialog(null,"Error accessing Inventory.");
+      }
+
+      // for each item in drink_dictionary find ingredients
+      ArrayList<ArrayList<String>> drink_dictionary_list = new ArrayList<ArrayList<String>>();
+      //create a statement object
+      try {
+        Statement stmt = conn.createStatement();
+        //create a SQL statement
+        String sql_statement = "SELECT * FROM drink_dictionary ORDER BY drink_id asc;";
+        //send statement to DBMS
+        ResultSet result = stmt.executeQuery(sql_statement);
+        while (result.next()) {
+          ArrayList<String> single_item = new ArrayList<String>();
+
+          single_item.add(result.getString("drink_id"));
+          single_item.add(result.getString("ingredients"));
+
+          // make list of lists with ids and ingredients included for each item
+          drink_dictionary_list.add(single_item);
+        }
+      } catch (Exception e){
+        JOptionPane.showMessageDialog(null,"Error accessing Drink Dictionary.");
+      }
+
+      // for each item in customizations get id
+      ArrayList<ArrayList<String>> customizations_dictionary_list = new ArrayList<ArrayList<String>>();
+      //create a statement object
+      try {
+        Statement stmt = conn.createStatement();
+        //create a SQL statement
+        String sql_statement = "SELECT * FROM customizations ORDER BY id asc;";
+        //send statement to DBMS
+        ResultSet result = stmt.executeQuery(sql_statement);
+        while (result.next()) {
+          ArrayList<String> single_item = new ArrayList<String>();
+
+          single_item.add(result.getString("id"));
+          single_item.add(result.getString("customization"));
+
+          // make list of lists with ids and ingredients included for each item
+          customizations_dictionary_list.add(single_item);
+        }
+      } catch (Exception e){
+        JOptionPane.showMessageDialog(null,"Error accessing Customizations.");
+      }
+
+      // update values in inventory list
+      // 500001-500021 are drink types
+      // 500022-500031 are add-ins
+      // 600001-600008 are misc, often used in every drink
+
+      // for each drink in the order
+      for (String id : order_drinks) {
+        if (id.equals("0000")) {
+          // no update, null value
+          continue;
+        }
+
+        // find spot in drink_dictionary
+        for (ArrayList<String> drink : drink_dictionary_list) {
+          String ingredients = "";
+          ArrayList<String> ingredients_list = new ArrayList<String>();
+
+          // if at right drink
+          if (drink.get(0).equals(id)) {
+            // split ingredients into list
+            ingredients = drink.get(1);
+            String[] temp_str_array = ingredients.split(",");
+            ingredients_list = new ArrayList<String>(Arrays.asList(temp_str_array));
+
+            // decrease inventory value for each ingredient
+            for (String ingredient : ingredients_list) {
+              for (ArrayList<String> item : inventory_list) {
+                if (item.contains(ingredient)) {
+                  item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+                }
+              }
+
+              // append ingredient to order ingredients list
+              order_ingredients.add(ingredient);
+            }
+          }
+        }
+      }
+
+
+      // found in every drink (cups, straws, napkins)
+      for (ArrayList<String> item : inventory_list) {
+        // cups
+        if (item.contains("600001")) {
+          item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - num_drinks));
+        }
+        // straws
+        if (item.contains("600003")) {
+          item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - num_drinks));
+        }
+        // napkins
+        if (item.contains("600005")) {
+          item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - num_drinks));
+        }
+
+        order_ingredients.add("600001");
+        order_ingredients.add("600003");
+        order_ingredients.add("600005");
+      }
+
+      // all customizations
+      for (String customization : order_customizations) {
+        String custom_id = "";
+
+        // find spot in customizations_dictionary_list
+        for (ArrayList<String> custom_dictionary : customizations_dictionary_list) {
+          if (custom_dictionary.get(1).equals(customization)) {
+            custom_id = custom_dictionary.get(0);
+
+            order_ingredients.add(custom_id);
+          }
+        }
+
+        // update inventory
+        for (ArrayList<String> item : inventory_list) {
+          if (item.contains(custom_id)) {
+            item.set(2, String.valueOf(Integer.valueOf(item.get(2)) - 1));
+          }
+        }
+      }
+
+      // update values
+      for (ArrayList<String> item : inventory_list) {
+        //create a SQL statement
+        String sql_statement = "UPDATE inventory";
+        sql_statement += " SET current_amount = ";
+        sql_statement += item.get(2);
+        sql_statement += " WHERE product_id = ";
+        sql_statement += item.get(0);
+        sql_statement += ";";
+
+        try{
+          //create a statement object
+          Statement stmt = conn.createStatement();
+          //send statement to DBMS
+          stmt.execute(sql_statement);
+        } catch (Exception e){
+          JOptionPane.showMessageDialog(null,"Error updating Inventory.");
+        }
+      }
+
+
+      // check inventory values
+      checkInventoryLevels(conn);
+    }
+ 
 }
