@@ -756,7 +756,163 @@ public class GUI extends JFrame implements ActionListener {
         return sales_frame;
       }
 
+    /*
+    Excess Report window that displays the list of inventory items that only sold less than 10% of their inventory between the timestamp and the current time
+    @param conn A connection to the database
+    @return excess_frame a JFrame for the sales report
+    */
     // excess window
+    public static JFrame excessWindow(Connection conn) throws IOException {
+      //create window and get input
+      JFrame excess_frame = new JFrame();
+      excess_frame.setSize(800, 600);
+
+      JPanel excess_panel = new JPanel();
+      excess_panel.setLayout(new GridLayout(7, 2));
+
+      JLabel startDateLabel = new JLabel("Start Date - (yyyy-mm-dd):");
+      JTextField startDateField = new JTextField();
+      JLabel startTimeLabel = new JLabel("Start Time - (hh:mm:ss):");
+      JTextField startTimeField = new JTextField();
+
+      JButton excessButton = new JButton("Get Excess Report");
+      JTextArea excess_text = new JTextArea();
+      excess_text.setEditable(false);
+
+      excessButton.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+              String start_date = startDateField.getText();
+              String start_time = startTimeField.getText();
+              // get current time and format date and time
+              LocalDate current_date = LocalDate.now();
+              LocalTime current_time = LocalTime.now();
+              DateTimeFormatter date_format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+              DateTimeFormatter time_format = DateTimeFormatter.ofPattern("HH:mm:ss");
+              String end_date = current_date.format(date_format);
+              String end_time = current_time.format(time_format);
+
+              //create hashmap for inventory analysis
+              HashMap<Integer, ArrayList<Object>> inventory_report = new HashMap<Integer, ArrayList<Object>>(); // product id maps to item name, current(end) amount, and previous(start) amount
+              String sql_inventory_amounts = "SELECT * FROM inventory;";
+
+              //populate inventory report with item name and values, populate drink analysis
+              try {
+                  Statement stmt = conn.createStatement();
+                  ResultSet result = stmt.executeQuery(sql_inventory_amounts);
+
+                  while (result.next()) {
+                      int curr_item;
+                      curr_item = result.getInt("product_id");
+                      int curr_amount;
+                      curr_amount = result.getInt("current_amount");
+                      String item_name = result.getString("itemname");
+                      inventory_report.put(curr_item,new ArrayList<>(Arrays.asList(item_name, curr_amount, curr_amount)));
+                  }
+              } catch (Exception ex) {
+                  System.out.println(ex.toString());
+                  JOptionPane.showMessageDialog(null, "Error querying the database.");
+              }
+
+              
+              //create hashmap for drink analysis
+              HashMap <String, String> drink_analysis = new HashMap<String, String>(); // drink id corresponds to ingredients
+              String sql_drink_query = "SELECT * FROM drink_dictionary;";
+
+              //populate drink analysis
+              try {
+                  Statement stmt = conn.createStatement();
+                  ResultSet result = stmt.executeQuery(sql_drink_query);
+
+                  while (result.next()) {
+                    String drink_id = "";
+                    String drink_ingredients = "";
+                    drink_id = result.getString("drink_id");
+                    drink_ingredients = result.getString("ingredients");
+                    drink_analysis.put(drink_id, drink_ingredients);
+                  }
+              } catch (Exception ex) {
+                  System.out.println(ex.toString());
+                  JOptionPane.showMessageDialog(null, "Error querying the database.");
+              }
+
+              //Create a SQL statement to query the database which returns order history from a certain time to current time
+              String sqlStatement = "SELECT * FROM order_history WHERE (order_date || ' ' || order_time) BETWEEN '" + start_date + "' || '" + start_time + "' AND '" + end_date + "' || '" + end_time + "';" ;
+              //work backwards to figure out how much of each ingredient/ inventory item was sold during time window
+              try {
+                  Statement stmt = conn.createStatement();
+                  ResultSet result = stmt.executeQuery(sqlStatement);
+
+                  while (result.next()) {
+                    String[] inventory_used = null;
+                    String unparsed_string = "";
+                    if (result.getString("ingredients") != null) {
+                      unparsed_string = result.getString("ingredients");
+                    }
+                    else {
+                      //if ingredients are not already listed in order history, go through drinks to determine ingredients
+                      for (int i = 1; i < 11; i++) {
+                        String drink = "";
+                        drink = result.getString("drink"+i);
+                        //get ingredients from drink information
+                        if ((drink != null) && (!drink.equals("null")) && (!drink.equals("0000"))){
+                          unparsed_string += drink_analysis.get(drink)+ ",";
+                        }
+                      }
+
+                      //add default customizations
+                      unparsed_string += "600001,600003,600005,600004";
+                    }
+                    if (!unparsed_string.equals("")){
+                      inventory_used = unparsed_string.split(",");
+                    }
+
+                    //find in inventoryReport and add necessary values because working backwards
+                    if (inventory_used != null){
+                      for (String id : inventory_used) {
+                        if ((id != null) && (!id.equals("null")) && (!id.equals(""))) {
+                          //System.out.println("ID parsing: " + id);
+                          int id_int = Integer.parseInt(id);
+                          String item_name = (String) inventory_report.get(id_int).get(0);
+                          int curr = (Integer) inventory_report.get(id_int).get(1);
+                          int updated = (Integer) inventory_report.get(id_int).get(2) + 1;
+                          inventory_report.put(id_int, new ArrayList<>(Arrays.asList(item_name, curr, updated)));
+                        }
+                      }
+                    }
+                  }
+              } catch (Exception ex) {
+                  System.out.println(ex.toString());
+                  JOptionPane.showMessageDialog(null, "Error querying the database.");
+              }
+
+              //display results
+              excess_text.setText("Excess Inventory \n"); // Clear previous results
+              for (int i : inventory_report.keySet()) {
+                int start_amount = (Integer) inventory_report.get(i).get(2);
+                int end_amount = (Integer) inventory_report.get(i).get(1);
+
+                //check if less than 10% of inventory item was sold and display accordingly
+                if ((start_amount - end_amount) < (.10 * start_amount)) {
+                  excess_text.append("ID: " + i + ", Item Name: " + inventory_report.get(i).get(0) + "\n");
+                }
+              }
+          }
+      });
+
+      //add all elements to panel and frame
+      excess_panel.add(startDateLabel);
+      excess_panel.add(startDateField);
+      excess_panel.add(startTimeLabel);
+      excess_panel.add(startTimeField);
+      excess_panel.add(excessButton);
+
+      JScrollPane scrollable_pane = new JScrollPane(excess_text);
+
+      excess_frame.add(excess_panel, BorderLayout.NORTH);
+      excess_frame.add(scrollable_pane, BorderLayout.CENTER);
+
+      return excess_frame;
+    }
 
     // restock window
 /*
