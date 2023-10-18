@@ -302,6 +302,11 @@ public class GUI extends JFrame implements ActionListener {
       }
     }
 
+    /*
+    Checks inventory levels to see if restock needed or not
+    @param conn A connection to the database
+    @return None, void function
+    */
     public static void checkInventoryLevels(Connection conn) {
       // for each item in inventory get current data
       ArrayList<ArrayList<String>> inventory_list = new ArrayList<ArrayList<String>>();
@@ -358,6 +363,11 @@ public class GUI extends JFrame implements ActionListener {
       }
     }
 
+    /*
+    Main function that opens and closes database
+    @param args A string array
+    @return None, void function
+    */
     public static void main(String[] args)
     {
       Connection conn = createConnection();
@@ -664,11 +674,10 @@ public class GUI extends JFrame implements ActionListener {
   
 
     /*
-    @param e Action event to show button is clicked
-    @param s String comparing to specific action performed
-    @return None, void function
+    Sales Report window that displays order ID's of orders with a certain menu ID in a given timeframe
+    @param conn A connection to the database
+    @return sales_frame a JFrame for the sales report
     */
-
     // sales window
     public static JFrame salesWindow(Connection conn) throws IOException {
       JFrame sales_frame = new JFrame();
@@ -750,6 +759,11 @@ public class GUI extends JFrame implements ActionListener {
     // excess window
 
     // restock window
+    /*
+    Restock Window displays list of items needing restock
+    @param conn A connection to the database
+    @return restock_frame a JFrame for the restock report
+    */
     public static JFrame restockWindow(Connection conn) throws IOException {
       JFrame restock_frame = new JFrame();
       restock_frame.setSize(400, 400);
@@ -784,8 +798,124 @@ public class GUI extends JFrame implements ActionListener {
 
       return restock_frame;
     }
+    /*
+    Popularity analysis of menu items display the popularity of a given number of menu items given timeframe
+    @param conn A connection to the database
+    @param start String with the given start timestamp
+    @param end String with the given end timestamp
+    @param num_items String with the given number of items
+    @return pop_frame a JFrame for the Popularity Analysis
+    */
+    public static JFrame popularityCalculation(Connection conn, String start, String end, String num_items) throws IOException {
+      JFrame pop_frame = new JFrame("Popularity Output");
+      pop_frame.setSize(400,400);
+
+      JTextArea pop_text = new JTextArea();
+
+      ArrayList<ArrayList<String>> max_list = new ArrayList<ArrayList<String>>();
+
+      // from start to end
+      // need to tally up items in drink_dictionary and count how many times used
+      LocalDate start_date = LocalDate.parse("2000-01-01");
+      LocalDate end_date = LocalDate.parse("2000-01-01");
+      LocalDate current_date = LocalDate.parse("2000-01-01");
+      try {
+        start_date = LocalDate.parse(start);
+        end_date = LocalDate.parse(end);
+        current_date = start_date;
+      }
+      catch (Exception e) {
+        JOptionPane.showMessageDialog(null,"Error, Date in Wrong Format.");
+        return null;
+      }
+
+      // first, get items in drink_dictionary
+      ArrayList<ArrayList<String>> drink_dictionary_list = new ArrayList<ArrayList<String>>();
+      //create a statement object
+      try {
+        Statement stmt = conn.createStatement();
+        //create a SQL statement
+        String sql_statement = "SELECT * FROM drink_dictionary ORDER BY drink_id asc;";
+        //send statement to DBMS
+        ResultSet result = stmt.executeQuery(sql_statement);
+        while (result.next()) {
+          ArrayList<String> single_item = new ArrayList<String>();
+
+          single_item.add(result.getString("drink_id"));
+          single_item.add("0");
+          single_item.add(result.getString("name"));
+
+          // make list of lists with ids and amount included for each item
+          drink_dictionary_list.add(single_item);
+        }
+      } catch (Exception e){
+        JOptionPane.showMessageDialog(null,"Error accessing Drink Dictionary.");
+      }
+
+      // from start date to end date
+      if (!current_date.isBefore(end_date)) {
+        JOptionPane.showMessageDialog(null,"Invalid Date Entry");
+        return pop_frame;
+      }
+      while (!current_date.equals(end_date)) {
+        // go through each order and tally values
+        try {
+          Statement stmt = conn.createStatement();
+          //create a SQL statement
+          String sql_statement = "SELECT * FROM order_history WHERE order_date = '" + current_date + "' ORDER BY order_id asc;";
+          //send statement to DBMS
+          ResultSet result = stmt.executeQuery(sql_statement);
+          while (result.next()) {
+            Integer num_drinks = Integer.valueOf(result.getString("num_drinks"));
+
+            for (int i=1; i<=num_drinks; i++) {
+              String current_drink = result.getString("drink" + String.valueOf(i));
+              for (ArrayList<String> drink : drink_dictionary_list) {
+                if (drink.contains(current_drink)) {
+                  drink.set(1, String.valueOf(Integer.valueOf(drink.get(1)) + 1));
+                }
+              }
+            }
+          }
+        } catch (Exception e){
+          JOptionPane.showMessageDialog(null,"Error accessing Order by Date.");
+        }
+
+        current_date = current_date.plusDays(1);
+      }
+
+      // find top num_items
+      for (int i=0; i<Integer.valueOf(num_items); i++) {
+        ArrayList<String> current_max = new ArrayList<>();
+        int max_value = 0;
+        for (ArrayList<String> drink : drink_dictionary_list) {
+          if (Integer.valueOf(drink.get(1)) > max_value) {
+            current_max = drink;
+            max_value = Integer.valueOf(drink.get(1));
+          }
+        }
+        max_list.add(current_max);
+        drink_dictionary_list.remove(current_max);
+      }
+
+      // output top items
+      for (ArrayList<String> max_drink : max_list) {
+        pop_text.append(max_drink.get(1) + " " + max_drink.get(2) + "\n");
+      }
+
+      pop_frame.add(pop_text);
+
+      pop_frame.setVisible(true);
+
+      return pop_frame;
+    }
 
     // popularity window
+    /*
+    Popularity Window displays the popularity analysis results
+    @param conn A connection to the database
+    @return popularity a JFrame for the popularity window
+    */
     public static JFrame popularityWindow(Connection conn) throws IOException {
       JFrame popularity_frame = new JFrame();
       popularity_frame.setSize(400, 400);
@@ -794,8 +924,7 @@ public class GUI extends JFrame implements ActionListener {
 
       JTextField start_date = new JTextField("Start Date");
       JTextField end_date = new JTextField("End Date");
-      JTextField num_items = new JTextField("Number of Items");
-      
+      JTextField items = new JTextField("Number of Items");
 
       JButton popularity_go = new JButton("Go");
 
@@ -803,13 +932,27 @@ public class GUI extends JFrame implements ActionListener {
       popularity_go.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          // calculate based on inputs
+          // calculate information
+          JFrame pop_frame = new JFrame();
+          try {
+            pop_frame = popularityCalculation(conn, start_date.getText(), end_date.getText(), items.getText());
+          }
+          catch (Exception f) {
+            JOptionPane.showMessageDialog(null,"Error calculating Popularity.");
+            f.printStackTrace();
+          }
+
+          // reset values
+          start_date.setText("Start Date");
+          end_date.setText("End Date");
+          items.setText("Number of Items");
         }
       });
 
       popularity_panel.add(start_date);
       popularity_panel.add(end_date);
-      popularity_panel.add(num_items);
+      popularity_panel.add(items);
+      // popularity_panel.add(output);
 
       popularity_panel.add(popularity_go);
 
@@ -818,6 +961,11 @@ public class GUI extends JFrame implements ActionListener {
       return popularity_frame;
     }
     //sales together window
+    /*
+    Sales Together Report displays list of pairs of menu items that sell together often
+    @param conn A connection to the database
+    @return sales_together_frame a JFrame for the What Sales Together report
+    */
     public static JFrame sales_together_window(Connection conn) throws IOException {
       JFrame sales_together_frame = new JFrame();
       sales_together_frame.setSize(400, 400);
@@ -877,6 +1025,11 @@ public class GUI extends JFrame implements ActionListener {
     }
 
     // reports window
+    /*
+    Displays Reports window with buttons to choose report to view
+    @param conn A connection to the database
+    @return reports_frame a JFrame for the reports buttons
+    */
     public static JFrame reportsWindow(Connection conn) throws IOException {
       // create frame for report
       JFrame reports_frame = new JFrame("Reports Window");
