@@ -1,4 +1,4 @@
-fimport java.sql.*;
+import java.sql.*;
 import java.util.ArrayList;
 import java.awt.event.*;
 import javax.swing.*;
@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.HashMap;
 
 // TO RUN::
 // compile with 'javac *.java'
