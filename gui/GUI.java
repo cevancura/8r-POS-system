@@ -818,6 +818,8 @@ public class GUI extends JFrame implements ActionListener {
       sales_together_go.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            
+          results_sales.setText(""); // Clear previous content
 
           String start_date_text = start_date.getText();
           String end_date_text = end_date.getText();
