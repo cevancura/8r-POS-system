@@ -772,6 +772,49 @@ public class GUI extends JFrame implements ActionListener {
 
       return popularity_frame;
     }
+    //sales together window
+    public static JFrame sales_together_window(Connection conn) throws IOException {
+      JFrame sales_together_frame = new JFrame();
+      sales_together_frame.setSize(400, 400);
+
+      JPanel sales_together_panel = new JPanel();
+      JTextField start_date = new JTextField("Start Date");
+      JTextField end_date = new JTextField("End Date");  
+
+      JButton sales_together_go = new JButton("Go");
+
+      // check if clicked
+      sales_together_go.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+          String start_date_text = start_date.getText();
+          String end_date_text = end_date.getText();
+          try {
+            Statement stmt = conn.createStatement();
+            //create a SQL statement
+            String sql_statement = "SELECT a.drink1, a.drink2, COUNT(*) AS frequency " +
+                                "FROM order_history a " +
+                                "INNER JOIN order_history b ON a.order_id = b.order_id " +
+                                "WHERE a.drink1 < a.drink2 " +
+                                "AND a.order_date BETWEEN '" + start_date_text + "' AND '" + end_date_text + "' " +
+                                "GROUP BY a.drink1, a.drink2 " +
+                                "ORDER BY frequency DESC";
+          } catch (Exception e) {
+            System.out.println(e.toString());
+            JOptionPane.showMessageDialog(null,"Error calling sales together.");
+          }
+        }
+      });
+      sales_together_panel.add(start_date);
+      sales_together_panel.add(end_date);
+
+      sales_together_panel.add(sales_together_go);
+
+      sales_together_frame.add(sales_together_panel);
+
+      return sales_together_frame;
+    }
 
     // reports window
     public static JFrame reportsWindow(Connection conn) throws IOException {
