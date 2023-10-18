@@ -288,6 +288,11 @@ public class GUI extends JFrame implements ActionListener {
       }
     }
 
+    /*
+    Checks inventory levels to see if restock needed or not
+    @param conn A connection to the database
+    @return None, void function
+    */
     public static void checkInventoryLevels(Connection conn) {
       // for each item in inventory get current data
       ArrayList<ArrayList<String>> inventory_list = new ArrayList<ArrayList<String>>();
@@ -344,6 +349,11 @@ public class GUI extends JFrame implements ActionListener {
       }
     }
 
+    /*
+    Main function that opens and closes database
+    @param args A string array
+    @return None, void function
+    */
     public static void main(String[] args)
     {
       Connection conn = createConnection();
@@ -645,11 +655,10 @@ public class GUI extends JFrame implements ActionListener {
   
 
     /*
-    @param e Action event to show button is clicked
-    @param s String comparing to specific action performed
-    @return None, void function
+    Sales Report window that displays order ID's of orders with a certain menu ID in a given timeframe
+    @param conn A connection to the database
+    @return sales_frame a JFrame for the sales report
     */
-
     // sales window
     public static JFrame salesWindow(Connection conn) throws IOException {
       JFrame sales_frame = new JFrame();
