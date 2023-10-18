@@ -63,6 +63,12 @@ public class GUI extends JFrame implements ActionListener {
     static Boolean menu_check = false;
     static Boolean inventory_check = false;
 
+
+   /*
+   Creates a database connection using JDBC to connect to a PostgreSQL database.
+   @return A Connection object representing the database connection.
+   */
+    
     public static Connection createConnection() {
       Connection conn = null;
       try {
@@ -77,6 +83,12 @@ public class GUI extends JFrame implements ActionListener {
       }
       return conn;
     }
+
+    /*
+   Closes a database connection.
+   @param conn a Connection name
+   @return A Connection object representing the database connection.
+   */
     public static void closeConnection(Connection conn) {
       try {
         conn.close();
@@ -86,11 +98,21 @@ public class GUI extends JFrame implements ActionListener {
       }
     }
 
+    /*
+    @param button_name The button name, a panel JPanel and a GUI s
+    @return None, void function
+    */
+
     public static void implementButton(String button_name, JPanel panel, GUI s) {
       JButton button = new JButton(button_name);
       panel.add(button);
       button.addActionListener(s);
     }
+
+    /*
+    @param splitted Array of String, formatting An integer for different cases
+    @return drink_name 
+    */
 
     public static String getDrinkName(String[] splitted, int formatting) {
       int splitted_length = splitted.length;
@@ -106,6 +128,12 @@ public class GUI extends JFrame implements ActionListener {
       }
       return drink_name;
     }
+
+    /*
+    For adding or updating the menu or inventory
+    @param text_in, JTextField for entering the text, text_out JTextArea for displaying the input text, conn A connection to the database, is_add a Boolean to check if we're adding or updating, is_menu A boolean to check if if we're dealing with menu or inventory
+    @return None, void function
+    */
 
 
     public static void dataFeature(JTextField text_in, JTextArea text_out, Connection conn, Boolean is_add, Boolean is_menu) {
@@ -155,6 +183,13 @@ public class GUI extends JFrame implements ActionListener {
       }
       updateTable(conn);
     }
+
+
+    /*
+    Updates the Table when the items are added or updated
+    @param conn A connection to the database
+    @return None, void function
+    */
 
     public static void updateTable(Connection conn) {
       
@@ -523,8 +558,6 @@ public class GUI extends JFrame implements ActionListener {
         error1.printStackTrace();
       }
 
-      // do not close connection until done with all orders
-      // currently set to after close is clicked
       while (f.isDisplayable()) {
         if (paid) {
           // update inventory
@@ -595,13 +628,6 @@ public class GUI extends JFrame implements ActionListener {
             System.out.println(e.toString());
             JOptionPane.showMessageDialog(null,"Error accessing Database.");
           }
-
-          // // update tables
-          // inventory_check = true;
-          // updateTable(conn);
-          // inventory_check = false;
-
-          // update paid
           paid = false;
           // reset values
           num_drinks = 0;
