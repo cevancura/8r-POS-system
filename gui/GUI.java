@@ -1279,7 +1279,11 @@ public class GUI extends JFrame implements ActionListener {
       return reports_frame;
     }
 
-    // make customization window
+    /*
+    Creates a window of customizations available, click to select, click again to deselect
+    @param Connection conn to database
+    @return JFrame customizations_frame, frame of customization window
+    */
     public static JFrame customizationWindow(Connection conn) throws IOException {
       // Create a new frame for Customization options
       JFrame customizations_frame = new JFrame("Customization Options");
@@ -1362,6 +1366,14 @@ public class GUI extends JFrame implements ActionListener {
       return customizations_frame;
     }
 
+    /*
+    Creates and shows a window of drink types and calls customization window
+    @param Connection conn to database
+    @param String drink_type, type of drink selected
+    @param int size_x, number of x divisions of grid
+    @param int size_y, number of y divisions of grid
+    @return None, void function
+    */
     public static void typeWindow(Connection conn, String drink_type, int size_x, int size_y) throws IOException {
       // Create a new frame for type options
       JFrame outside_frame = new JFrame(drink_type + " Options");
@@ -1420,6 +1432,11 @@ public class GUI extends JFrame implements ActionListener {
       outside_frame.setVisible(true);
     }
 
+    /*
+    Creates and shows a window informing that a payment has been processed, allows employee to exit or make another order
+    @param None
+    @return None, void function
+    */
     public static void payWindow() {
       JFrame outside_frame = new JFrame("Payment Processed");
       outside_frame.setSize(400, 400);
@@ -1452,6 +1469,11 @@ public class GUI extends JFrame implements ActionListener {
       outside_frame.setVisible(true);
     }
 
+    /*
+    Creates and shows a window informing that an order has been cancelled
+    @param None
+    @return None, void function
+    */
     public static void cancelWindow() {
       JFrame outside_frame = new JFrame("Cancelled Order");
       outside_frame.setSize(400, 400);
@@ -1478,7 +1500,11 @@ public class GUI extends JFrame implements ActionListener {
       outside_frame.setVisible(true);
     }
 
-    // if button is pressed
+    /*
+    Contains commands to fulfill based on which button is pressed
+    @param ActionEvent e, action that was performed (button pressed)
+    @return None, void function
+    */
     public void actionPerformed(ActionEvent e) {   
         
         String s = e.getActionCommand();
@@ -1789,13 +1815,23 @@ public class GUI extends JFrame implements ActionListener {
           cancelWindow();
         }
     }
-    
+
+    /*
+    Fill rest of order_drinks array with code 0000, corresponding to no drink
+    @param int max_drinks max number of drinks
+    @return None, void function
+    */
     public static void fillIDList(int max_drinks) {
       while (order_drinks.size() < max_drinks) {
         order_drinks.add("0000");
       }
     }
 
+    /*
+    Get all names of drinks using data from file
+    @param String file_path to database
+    @return ArrayList<String> drink_names of all customizations
+    */
     public static ArrayList<String> getDrinkNames(String file_path) throws IOException {
       ArrayList<String> drink_names = new ArrayList<>();
       File file = new File(file_path);
@@ -1816,6 +1852,11 @@ public class GUI extends JFrame implements ActionListener {
       return drink_names;
     }
 
+    /*
+    Get all names of customizations using tables from database
+    @param Connection conn to database
+    @return ArrayList<String> drink_names of all customizations
+    */
     public static ArrayList<String> getDrinkNamesTable(Connection conn) throws IOException {
       ArrayList<String> drink_names = new ArrayList<>();
 
