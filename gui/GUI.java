@@ -776,9 +776,18 @@ public class GUI extends JFrame implements ActionListener {
 
       // from start to end
       // need to tally up items in drink_dictionary and count how many times used
-      LocalDate start_date = LocalDate.parse(start);
-      LocalDate end_date = LocalDate.parse(end);
-      LocalDate current_date = start_date;
+      LocalDate start_date = LocalDate.parse("2000-01-01");
+      LocalDate end_date = LocalDate.parse("2000-01-01");
+      LocalDate current_date = LocalDate.parse("2000-01-01");
+      try {
+        start_date = LocalDate.parse(start);
+        end_date = LocalDate.parse(end);
+        current_date = start_date;
+      }
+      catch (Exception e) {
+        JOptionPane.showMessageDialog(null,"Error, Date in Wrong Format.");
+        return null;
+      }
 
       // first, get items in drink_dictionary
       ArrayList<ArrayList<String>> drink_dictionary_list = new ArrayList<ArrayList<String>>();
@@ -805,8 +814,7 @@ public class GUI extends JFrame implements ActionListener {
 
       // from start date to end date
       if (!current_date.isBefore(end_date)) {
-        pop_text.append("Invalid Date Entry");
-        pop_frame.add(pop_text);
+        JOptionPane.showMessageDialog(null,"Invalid Date Entry");
         return pop_frame;
       }
       while (!current_date.equals(end_date)) {
@@ -857,10 +865,11 @@ public class GUI extends JFrame implements ActionListener {
 
       pop_frame.add(pop_text);
 
+      pop_frame.setVisible(true);
+
       return pop_frame;
     }
 
-    // popularity window
     // popularity window
     public static JFrame popularityWindow(Connection conn) throws IOException {
       JFrame popularity_frame = new JFrame();
@@ -887,7 +896,6 @@ public class GUI extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(null,"Error calculating Popularity.");
             f.printStackTrace();
           }
-          pop_frame.setVisible(true);
 
           // reset values
           start_date.setText("Start Date");
