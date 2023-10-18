@@ -740,6 +740,11 @@ public class GUI extends JFrame implements ActionListener {
     // excess window
 
     // restock window
+    /*
+    Restock Window displays list of items needing restock
+    @param conn A connection to the database
+    @return restock_frame a JFrame for the restock report
+    */
     public static JFrame restockWindow(Connection conn) throws IOException {
       JFrame restock_frame = new JFrame();
       restock_frame.setSize(400, 400);
@@ -774,7 +779,14 @@ public class GUI extends JFrame implements ActionListener {
 
       return restock_frame;
     }
-
+    /*
+    Popularity analysis of menu items display the popularity of a given number of menu items given timeframe
+    @param conn A connection to the database
+    @param start String with the given start timestamp
+    @param end String with the given end timestamp
+    @param num_items String with the given number of items
+    @return pop_frame a JFrame for the Popularity Analysis
+    */
     public static JFrame popularityCalculation(Connection conn, String start, String end, String num_items) throws IOException {
       JFrame pop_frame = new JFrame("Popularity Output");
       pop_frame.setSize(400,400);
@@ -880,6 +892,11 @@ public class GUI extends JFrame implements ActionListener {
     }
 
     // popularity window
+    /*
+    Popularity Window displays the popularity analysis results
+    @param conn A connection to the database
+    @return popularity a JFrame for the popularity window
+    */
     public static JFrame popularityWindow(Connection conn) throws IOException {
       JFrame popularity_frame = new JFrame();
       popularity_frame.setSize(400, 400);
@@ -925,6 +942,11 @@ public class GUI extends JFrame implements ActionListener {
       return popularity_frame;
     }
     //sales together window
+    /*
+    Sales Together Report displays list of pairs of menu items that sell together often
+    @param conn A connection to the database
+    @return sales_together_frame a JFrame for the What Sales Together report
+    */
     public static JFrame sales_together_window(Connection conn) throws IOException {
       JFrame sales_together_frame = new JFrame();
       sales_together_frame.setSize(400, 400);
@@ -984,6 +1006,11 @@ public class GUI extends JFrame implements ActionListener {
     }
 
     // reports window
+    /*
+    Displays Reports window with buttons to choose report to view
+    @param conn A connection to the database
+    @return reports_frame a JFrame for the reports buttons
+    */
     public static JFrame reportsWindow(Connection conn) throws IOException {
       // create frame for report
       JFrame reports_frame = new JFrame("Reports Window");
