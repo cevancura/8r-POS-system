@@ -804,10 +804,15 @@ public class GUI extends JFrame implements ActionListener {
       sales_together_frame.setSize(400, 400);
 
       JPanel sales_together_panel = new JPanel();
+        
       JTextField start_date = new JTextField("Start Date");
       JTextField end_date = new JTextField("End Date");  
 
       JButton sales_together_go = new JButton("Go");
+
+      JTextArea results_sales = new JTextArea(10, 30);
+      results_sales.setEditable(false);
+      JScrollPane scrollPane = new JScrollPane(results_sales);
 
       // check if clicked
       sales_together_go.addActionListener(new ActionListener() {
@@ -816,26 +821,34 @@ public class GUI extends JFrame implements ActionListener {
 
           String start_date_text = start_date.getText();
           String end_date_text = end_date.getText();
-          try {
-            Statement stmt = conn.createStatement();
-            //create a SQL statement
-            String sql_statement = "SELECT a.drink1, a.drink2, COUNT(*) AS frequency " +
+          String sql_statement = "SELECT a.drink1, a.drink2, COUNT(*) AS frequency " +
                                 "FROM order_history a " +
                                 "INNER JOIN order_history b ON a.order_id = b.order_id " +
                                 "WHERE a.drink1 < a.drink2 " +
                                 "AND a.order_date BETWEEN '" + start_date_text + "' AND '" + end_date_text + "' " +
                                 "GROUP BY a.drink1, a.drink2 " +
                                 "ORDER BY frequency DESC";
+          try {
+            Statement stmt = conn.createStatement();
+            ResultSet result = stmt.executeQuery(sql_statement);
+            while (result.next()) {
+              results_sales.append(result.getString("drink1") + ", " + result.getString("drink2") + ", Frequency: " + result.getString("frequency") + "\n");
+            }
+            result.close();
+            stmt.close();
+            
           } catch (Exception st_press) {
             System.out.println(st_press.toString());
             JOptionPane.showMessageDialog(null,"Error calling sales together.");
           }
+            sales_together_frame.setVisible(true);
         }
       });
       sales_together_panel.add(start_date);
       sales_together_panel.add(end_date);
 
       sales_together_panel.add(sales_together_go);
+      sales_together_panel.add(scrollPane);
 
       sales_together_frame.add(sales_together_panel);
 
