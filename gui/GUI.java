@@ -1,4 +1,4 @@
-import java.sql.*;
+fimport java.sql.*;
 import java.util.ArrayList;
 import java.awt.event.*;
 import javax.swing.*;
@@ -1219,6 +1219,13 @@ public class GUI extends JFrame implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
           // call excess function
+          JFrame excess_frame = new JFrame();
+          try {
+            excess_frame = excessWindow(conn);
+          } catch (Exception f){
+            JOptionPane.showMessageDialog(null,"Error excess window.");
+          }
+          excess_frame.setVisible(true);
         }
       });
       restock.addActionListener(new ActionListener() {
