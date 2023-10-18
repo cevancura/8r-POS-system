@@ -800,8 +800,8 @@ public class GUI extends JFrame implements ActionListener {
                                 "AND a.order_date BETWEEN '" + start_date_text + "' AND '" + end_date_text + "' " +
                                 "GROUP BY a.drink1, a.drink2 " +
                                 "ORDER BY frequency DESC";
-          } catch (Exception e) {
-            System.out.println(e.toString());
+          } catch (Exception st_press) {
+            System.out.println(st_press.toString());
             JOptionPane.showMessageDialog(null,"Error calling sales together.");
           }
         }
