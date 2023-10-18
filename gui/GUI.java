@@ -1656,6 +1656,11 @@ public class GUI extends JFrame implements ActionListener {
       return drink_names;
     }
 
+    /*
+    Get cost of drink using data from file
+    @param String file_path to file, String drink_name
+    @return double drink_cost of drink_name
+    */
     public static double getDrinkCost(String file_path, String drink_name) throws IOException {
       double drink_cost = 0;
       File file = new File(file_path);
@@ -1680,8 +1685,13 @@ public class GUI extends JFrame implements ActionListener {
       return drink_cost;
     }
 
-    public static double getDrinkCostTable(Connection conn, String drinkName) throws IOException {
-      double drinkCost = 0;
+    /*
+    Get cost of drink using data from file
+    @param Connection conn to database, String drink_name
+    @return double drink_cost of drink_name
+    */
+    public static double getDrinkCostTable(Connection conn, String drink_name) throws IOException {
+      double drink_cost = 0;
 
       //create a statement object
       try {
@@ -1692,8 +1702,8 @@ public class GUI extends JFrame implements ActionListener {
 
         ResultSet result = stmt.executeQuery(sqlStatement);
         while (result.next()) {
-          if (result.getString("name").equals(drinkName)) {
-            drinkCost = Double.valueOf(result.getString("price"));
+          if (result.getString("name").equals(drink_name)) {
+            drink_cost = Double.valueOf(result.getString("price"));
           }
         }
       } catch (Exception e){
@@ -1701,7 +1711,7 @@ public class GUI extends JFrame implements ActionListener {
         JOptionPane.showMessageDialog(null,"Error accessing Database.");
       }
 
-      return drinkCost;
+      return drink_cost;
     }
 
     /*
