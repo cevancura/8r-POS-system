@@ -363,7 +363,7 @@ public class GUI extends JFrame implements ActionListener {
       }
     }
 
-    /*
+/*
     Main function that opens and closes database
     @param args A string array
     @return None, void function
@@ -759,7 +759,7 @@ public class GUI extends JFrame implements ActionListener {
     // excess window
 
     // restock window
-    /*
+/*
     Restock Window displays list of items needing restock
     @param conn A connection to the database
     @return restock_frame a JFrame for the restock report
@@ -798,7 +798,7 @@ public class GUI extends JFrame implements ActionListener {
 
       return restock_frame;
     }
-    /*
+/*
     Popularity analysis of menu items display the popularity of a given number of menu items given timeframe
     @param conn A connection to the database
     @param start String with the given start timestamp
@@ -911,7 +911,7 @@ public class GUI extends JFrame implements ActionListener {
     }
 
     // popularity window
-    /*
+/*
     Popularity Window displays the popularity analysis results
     @param conn A connection to the database
     @return popularity a JFrame for the popularity window
@@ -961,7 +961,7 @@ public class GUI extends JFrame implements ActionListener {
       return popularity_frame;
     }
     //sales together window
-    /*
+/*
     Sales Together Report displays list of pairs of menu items that sell together often
     @param conn A connection to the database
     @return sales_together_frame a JFrame for the What Sales Together report
@@ -1025,7 +1025,7 @@ public class GUI extends JFrame implements ActionListener {
     }
 
     // reports window
-    /*
+/*
     Displays Reports window with buttons to choose report to view
     @param conn A connection to the database
     @return reports_frame a JFrame for the reports buttons
@@ -1723,6 +1723,11 @@ public class GUI extends JFrame implements ActionListener {
       return drinkCost;
     }
 
+    /*
+    Get id of drink using data from file
+    @param String file_path to file, String drink_name
+    @return String drink_id of drink_name
+    */
     public static String getDrinkID(String file_path, String drink_name) throws IOException {
       String drink_ID = "0000";
       File file = new File(file_path);
@@ -1747,8 +1752,13 @@ public class GUI extends JFrame implements ActionListener {
       return drink_ID;
     }
 
-    public static String getDrinkIDTable(Connection conn, String drinkName) throws IOException {
-      String drinkID = "0000";
+    /*
+    Get id of drink using tables from database
+    @param Connection conn to database, String drink_name
+    @return String drink_id of drink_name
+    */
+    public static String getDrinkIDTable(Connection conn, String drink_name) throws IOException {
+      String drink_ID = "0000";
 
       //create a statement object
       try {
@@ -1759,8 +1769,8 @@ public class GUI extends JFrame implements ActionListener {
 
         ResultSet result = stmt.executeQuery(sqlStatement);
         while (result.next()) {
-          if (result.getString("name").equals(drinkName)) {
-            drinkID = result.getString("drink_id");
+          if (result.getString("name").equals(drink_name)) {
+            drink_ID = result.getString("drink_id");
           }
         }
       } catch (Exception e){
@@ -1768,9 +1778,14 @@ public class GUI extends JFrame implements ActionListener {
         JOptionPane.showMessageDialog(null,"Error accessing Database.");
       }
 
-      return drinkID;
+      return drink_ID;
     }
 
+    /*
+    Get all names of customizations using data from file
+    @param String file_path to database
+    @return ArrayList<String> of all customizations
+    */
     public static ArrayList<String> getCustomizationNames(String file_path) throws IOException {
       ArrayList<String> customization_names = new ArrayList<>();
       File file = new File(file_path);
@@ -1791,8 +1806,13 @@ public class GUI extends JFrame implements ActionListener {
       return customization_names;
     }
 
+    /*
+    Get all names of customizations using tables from database
+    @param Connection conn to database
+    @return ArrayList<String> customization_names of all customizations
+    */
     public static ArrayList<String> getCustomizationNamesTable(Connection conn) throws IOException {
-      ArrayList<String> customizationNames = new ArrayList<>();
+      ArrayList<String> customization_names = new ArrayList<>();
 
       //create a statement object
       try {
@@ -1803,16 +1823,21 @@ public class GUI extends JFrame implements ActionListener {
 
         ResultSet result = stmt.executeQuery(sqlStatement);
         while (result.next()) {
-          customizationNames.add(result.getString("customization"));
+          customization_names.add(result.getString("customization"));
         }
       } catch (Exception e){
         System.out.println(e.toString());
         JOptionPane.showMessageDialog(null,"Error accessing Database.");
       }
 
-      return customizationNames;
+      return customization_names;
     }
 
+    /*
+    Get value of customization cost table with drinks and customizations using data from file
+    @param String file_path to database, String customName name of customization
+    @return double custom_cost with price of customization
+    */
     public static double getCustomizationCost(String file_path, String custom_name) throws IOException {
       double custom_cost = 0;
       File file = new File(file_path);
@@ -1837,8 +1862,13 @@ public class GUI extends JFrame implements ActionListener {
       return custom_cost;
     }
 
-    public static double getCustomizationCostTable(Connection conn, String customName) throws IOException {
-      double customCost = 0;
+    /*
+    Get value of customization cost table with drinks and customizations using tables from database
+    @param Connection conn to database, String customName name of customization
+    @return double custom_cost with price of customization
+    */
+    public static double getCustomizationCostTable(Connection conn, String custom_name) throws IOException {
+      double custom_cost = 0;
 
       //create a statement object
       try {
@@ -1849,8 +1879,8 @@ public class GUI extends JFrame implements ActionListener {
 
         ResultSet result = stmt.executeQuery(sqlStatement);
         while (result.next()) {
-          if (result.getString("customization").equals(customName)) {
-            customCost = Double.valueOf(result.getString("price"));
+          if (result.getString("customization").equals(custom_name)) {
+            custom_cost = Double.valueOf(result.getString("price"));
           }
         }
       } catch (Exception e){
@@ -1858,9 +1888,14 @@ public class GUI extends JFrame implements ActionListener {
         JOptionPane.showMessageDialog(null,"Error accessing Database.");
       }
     
-      return customCost;
+      return custom_cost;
     }
 
+    /*
+    Update database inventory table with drinks and customizations using values hard-coded in
+    @param Connection conn to database
+    @return None, void function
+    */
     public static void updateInventory(Connection conn) {
       // for each item in inventory find current amount
       ArrayList<ArrayList<String>> inventory_list = new ArrayList<ArrayList<String>>();
@@ -2594,6 +2629,11 @@ public class GUI extends JFrame implements ActionListener {
       checkInventoryLevels(conn);
     }
 
+    /*
+    Update database inventory table with drinks and customizations using tables from database
+    @param Connection conn to database
+    @return None, void function
+    */
     public static void updateInventoryTable(Connection conn) {
       // for each item in inventory find current amount
       ArrayList<ArrayList<String>> inventory_list = new ArrayList<ArrayList<String>>();
