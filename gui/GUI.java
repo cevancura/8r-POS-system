@@ -740,7 +740,7 @@ public class GUI extends JFrame implements ActionListener {
       return restock_frame;
     }
 
-    // restock window
+    // popularity window
     public static JFrame popularityWindow(Connection conn) throws IOException {
       JFrame popularity_frame = new JFrame();
       popularity_frame.setSize(400, 400);
@@ -830,6 +830,7 @@ public class GUI extends JFrame implements ActionListener {
       JButton excess = new JButton("Excess");
       JButton restock = new JButton("Restock");
       JButton popularity = new JButton("Popularity");
+      JButton sales_together = new JButton("What Sales Together");
 
       // check if clicked
       sales.addActionListener(new ActionListener() {
@@ -867,7 +868,7 @@ public class GUI extends JFrame implements ActionListener {
       popularity.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          // call restock function
+          // call popularity function
           JFrame popularity_frame = new JFrame();
           try {
             popularity_frame = popularityWindow(conn);
@@ -877,11 +878,25 @@ public class GUI extends JFrame implements ActionListener {
           popularity_frame.setVisible(true);
         }
       });
+      sales_together.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          // call sales together function
+          JFrame sales_together_frame = new JFrame();
+          try {
+            sales_together_frame = sales_together_window(conn);
+          } catch (Exception f){
+            JOptionPane.showMessageDialog(null,"Error sales together window.");
+          }
+          sales_together_frame.setVisible(true);
+        }
+      });
 
       reports_panel.add(sales);
       reports_panel.add(excess);
       reports_panel.add(restock);
       reports_panel.add(popularity);
+      reports_panel.add(sales_together);
 
       reports_frame.add(reports_panel);
 
