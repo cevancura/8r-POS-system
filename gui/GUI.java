@@ -62,6 +62,8 @@ public class GUI extends JFrame implements ActionListener {
     static JPanel p_reports;
     static Boolean menu_check = false;
     static Boolean inventory_check = false;
+    static JTextField ingredients;
+    static JTextArea ingredient_out;
 
 
    /*
@@ -135,11 +137,16 @@ public class GUI extends JFrame implements ActionListener {
     @return None, void function
     */
 
-
-    public static void dataFeature(JTextField text_in, JTextArea text_out, Connection conn, Boolean is_add, Boolean is_menu) {
+    public static void dataFeature(JTextField text_in, JTextArea text_out, JTextField ingredients, JTextArea ingredient_out, Connection conn, Boolean is_add, Boolean is_menu) {
       text_out.setText(text_in.getText());
       text_in.setText("enter the text");
+      ingredient_out.setText(ingredients.getText());
+      ingredients.setText("enter ingredient ID for the drink");
+
       String update = "";
+      String ingredient_string = "";
+      ingredient_string = ingredient_out.getText();
+      String add_ingredient_to_menu = "";
 
       String text = "Inventory";
       if (is_menu) {text = "Menu";}
@@ -153,7 +160,9 @@ public class GUI extends JFrame implements ActionListener {
             String[] splitted = text_out.getText().split("\\s+");
             
             if (is_add) {
-              if (is_menu) { update = "INSERT INTO drink_dictionary (drink_id, name, price) VALUES";}
+              if (is_menu) { 
+                update = "INSERT INTO drink_dictionary (drink_id, name, price, ingredients) VALUES";
+              }
               else {update = "INSERT INTO inventory (product_id, itemname, total_amount, current_amount, restock) VALUES";}
             }
             else {
@@ -164,7 +173,9 @@ public class GUI extends JFrame implements ActionListener {
             int splitted_length = splitted.length;
             String drink_name = getDrinkName(splitted, formatting);
             if (is_add) {
-              if(is_menu) { update += " (\'" + splitted[0] + "\', \'" + drink_name + "\', " + splitted[splitted_length -1] + ");";}
+              if(is_menu) { 
+                update += " (\'" + splitted[0] + "\', \'" + drink_name + "\', " + splitted[splitted_length -1] + ", \'" + ingredient_string + "\');";
+              }
               else { update += " (" + splitted[0] + ", \'" + drink_name + "\', " + splitted[splitted_length -3] + ", " + splitted[splitted_length -2] + ", \'" + splitted[splitted_length -1] + "\');"; }
             }
             else {
@@ -173,6 +184,9 @@ public class GUI extends JFrame implements ActionListener {
             }
             
             stmt.execute(update);
+            if(is_add && is_menu){
+              stmt.execute(add_ingredient_to_menu);
+            }
             out.setText("The " + text + " has been updated to " + text_out.getText());
             
             }catch (Exception n){
@@ -444,10 +458,15 @@ public class GUI extends JFrame implements ActionListener {
       
       
       //inserting into the database
+      
       text_input = new JTextField("enter the text");
       text_output = new JTextArea("");
+      ingredients = new JTextField("enter ingredient ID for item: ");
+      ingredient_out = new JTextArea("");
       p_add_menu.add(text_input);
       p_add_menu.add(text_output);
+      p_add_menu.add(ingredients);
+      p_add_menu.add(ingredient_out);
 
 
       text_input_inventory = new JTextField("enter the text");
@@ -1186,13 +1205,13 @@ public class GUI extends JFrame implements ActionListener {
 
         if(s.equals("Save Menu Item")){
           menu_check = true;
-          dataFeature(text_input, text_output, conn, true, true);
+          dataFeature(text_input, text_output, ingredients, ingredient_out, conn, true, true);
           menu_check = false;
         }
 
         if (s.equals("Save Inventory Item")){
           inventory_check = true;
-          dataFeature(text_input_inventory, text_output_inventory, conn, true, false);
+          dataFeature(text_input_inventory, text_output_inventory, ingredients, ingredient_out, conn, true, false);
           inventory_check = false;
         }
         //update menu 
@@ -1201,7 +1220,7 @@ public class GUI extends JFrame implements ActionListener {
         }
         if(s.equals("Save Updates for Menu Item")) {
           menu_check = true;
-          dataFeature(update_text_input, update_text_output, conn, false, true);
+          dataFeature(update_text_input, update_text_output,ingredients, ingredient_out, conn, false, true);
           menu_check = false;
         }
         if (s.equals("Update Inventory")){
@@ -1209,7 +1228,7 @@ public class GUI extends JFrame implements ActionListener {
         }
         if(s.equals("Save Updates for Inventory Item")){
           inventory_check = true;
-          dataFeature(update_input_inventory, update_output_inventory, conn, false, false);
+          dataFeature(update_input_inventory, update_output_inventory, ingredients, ingredient_out, conn, false, false);
           inventory_check = false;
         }
 
